@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://formfiller.dev/schemas/validator-config.schema.json",
+  "title": "Validator Configuration Schema",
+  "description": "Configuration for the FormFiller Validator",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": ["sequential", "parallel", "adaptive"],
+      "default": "sequential",
+      "description": "Execution mode for validation"
+    },
+    "locale": {
+      "type": "string",
+      "default": "en",
+      "description": "Locale for error messages"
+    },
+    "cache": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable caching of validation results"
+        },
+        "ttl": {
+          "type": "number",
+          "description": "Time-to-live for cached results in milliseconds"
+        },
+        "maxSize": {
+          "type": "number",
+          "description": "Maximum cache size"
+        },
+        "debounceMs": {
+          "type": "number",
+          "description": "Debounce delay for validation in milliseconds"
+        }
+      },
+      "required": ["enabled"]
+    },
+    "devtools": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable development tools (dependency graph viewer, profiling)"
+    },
+    "monitoring": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "metricsEndpoint": {
+          "type": "string",
+          "description": "Metrics collection endpoint (Prometheus compatible)"
+        },
+        "alerts": {
+          "type": "object",
+          "properties": {
+            "slack": {
+              "type": "object",
+              "properties": {
+                "webhookUrl": { "type": "string" },
+                "channel": { "type": "string" }
+              },
+              "required": ["webhookUrl"]
+            },
+            "email": {
+              "type": "object",
+              "properties": {
+                "smtp": {
+                  "type": "object",
+                  "properties": {
+                    "host": { "type": "string" },
+                    "port": { "type": "number" },
+                    "secure": { "type": "boolean" },
+                    "auth": {
+                      "type": "object",
+                      "properties": {
+                        "user": { "type": "string" },
+                        "pass": { "type": "string" }
+                      },
+                      "required": ["user", "pass"]
+                    }
+                  },
+                  "required": ["host", "port", "auth"]
+                },
+                "from": { "type": "string" },
+                "to": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "required": ["smtp", "from", "to"]
+            }
+          }
+        }
+      },
+      "required": ["enabled"]
+    },
+    "replay": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "storeEvents": {
+          "type": "boolean",
+          "default": false
+        },
+        "maxEvents": {
+          "type": "number",
+          "description": "Maximum number of events to store"
+        }
+      },
+      "required": ["enabled"]
+    },
+    "tenantContext": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "description": "Tenant identifier"
+        },
+        "organizationId": {
+          "type": "string",
+          "description": "Organization identifier"
+        },
+        "level": {
+          "type": "string",
+          "enum": ["global", "org", "tenant", "form"],
+          "description": "Hierarchy level for rule resolution"
+        }
+      },
+      "required": ["tenantId"]
+    },
+    "adapter": {
+      "type": "string",
+      "enum": ["joi", "custom"],
+      "default": "joi",
+      "description": "Validation library adapter"
+    }
+  }
+}
+

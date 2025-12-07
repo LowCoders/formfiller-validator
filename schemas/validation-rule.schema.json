@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://formfiller.dev/schemas/validation-rule.schema.json",
+  "title": "Validation Rule Schema",
+  "description": "Defines validation rules for form fields",
+  "type": "object",
+  "required": ["type"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "required",
+        "stringLength",
+        "range",
+        "pattern",
+        "email",
+        "numeric",
+        "compare",
+        "custom",
+        "async",
+        "crossField"
+      ],
+      "description": "Type of validation rule"
+    },
+    "message": {
+      "type": "string",
+      "description": "Error message to display when validation fails"
+    },
+    "min": {
+      "type": "number",
+      "description": "Minimum value (for stringLength, range rules)"
+    },
+    "max": {
+      "type": "number",
+      "description": "Maximum value (for stringLength, range rules)"
+    },
+    "pattern": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "object" }
+      ],
+      "description": "Regular expression pattern (for pattern rule)"
+    },
+    "comparisonTarget": {
+      "type": "string",
+      "description": "Field to compare against (for compare rule)"
+    },
+    "comparisonType": {
+      "type": "string",
+      "enum": ["==", "!=", "<", ">", "<=", ">="],
+      "description": "Comparison operator (for compare rule)"
+    },
+    "validationCallback": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "object" }
+      ],
+      "description": "Custom validation callback (for custom rule)"
+    },
+    "apiEndpoint": {
+      "type": "string",
+      "description": "API endpoint for async validation (for async rule)"
+    },
+    "apiMethod": {
+      "type": "string",
+      "enum": ["GET", "POST"],
+      "description": "HTTP method for API call (for async rule)"
+    },
+    "apiPayload": {
+      "type": "object",
+      "description": "Payload for API call (for async rule)"
+    },
+    "targetFields": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Target fields (for crossField rule)"
+    },
+    "crossFieldValidator": {
+      "type": "object",
+      "description": "Cross-field validation function (for crossField rule)"
+    }
+  }
+}
+

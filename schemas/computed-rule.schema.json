@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://formfiller.dev/schemas/computed-rule.schema.json",
+  "title": "Computed Rule Schema",
+  "description": "Defines computed rules that calculate values without affecting validation",
+  "type": "object",
+  "required": ["id", "name", "inputFields", "compute"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the computed rule"
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the computed rule"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of what this rule computes"
+    },
+    "inputFields": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Fields required as input for the computation"
+    },
+    "compute": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "object" }
+      ],
+      "description": "Computation function or formula"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Dependencies on other computed rules"
+    },
+    "returnToFrontend": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to return this result to the frontend"
+    },
+    "store": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to store this result"
+    }
+  }
+}
+
