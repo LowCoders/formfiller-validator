@@ -1,0 +1,1 @@
+{"version":3,"file":"ConditionalEvaluator.d.ts","sourceRoot":"","sources":["../../src/processors/ConditionalEvaluator.ts"],"names":[],"mappings":"AAMA,OAAO,EAAE,qBAAqB,EAAE,MAAM,mBAAmB,CAAC;AAC1D,OAAO,EAAE,iBAAiB,EAAE,MAAM,2BAA2B,CAAC;AAE9D,qBAAa,oBAAoB;IAI/B,QAAQ,CACN,UAAU,EAAE,qBAAqB,GAAG,qBAAqB,EAAE,EAC3D,OAAO,EAAE,iBAAiB,GACzB,OAAO;IA8EV,OAAO,CAAC,aAAa;CA0DtB"}
