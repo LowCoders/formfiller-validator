@@ -50,7 +50,7 @@ npm test
 
 ## Részletes Dokumentáció
 
-A teljes dokumentáció: [formfiller-docs](../formfiller-docs)
+A teljes dokumentáció: [formfiller-docs](https://lowcoders.github.io/formfiller-docs/)
 
 ## Licenc
 
