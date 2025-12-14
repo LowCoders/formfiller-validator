@@ -8,10 +8,27 @@ Fejlett validációs rendszer a FormFiller alkalmazáshoz. Beágyazott struktúr
 npm install formfiller-validator
 ```
 
-## Gyors Használat
+## Entry Points
+
+A csomag két entry point-ot biztosít:
+
+### Client-only (Alapértelmezett) - Joi-mentes
 
 ```typescript
-import { Validator } from 'formfiller-validator';
+// Könnyűsúlyú, Joi-mentes validátorok frontend használatra
+import { ClientValidator, ClientValidationContext, ClientValidationResult } from 'formfiller-validator';
+
+const validator = new ClientValidator();
+const result = await validator.validate(fieldName, value, rules, formData);
+```
+
+Támogatott szabálytípusok: `required`, `email`, `numeric`, `stringLength`, `range`, `pattern`, `arrayLength`, `crossField`
+
+### Full Validator - Joi-alapú
+
+```typescript
+// Teljes Joi-alapú validátor backend vagy advanced frontend használatra
+import { Validator } from 'formfiller-validator/full';
 
 const validator = new Validator({
   mode: 'parallel',
@@ -24,6 +41,15 @@ if (!result.valid) {
   console.error('Validációs hibák:', result.errors);
 }
 ```
+
+További szabálytípusok: `compare`, `custom`, `async`, `computed`, `temporal`, `plugin`
+
+## Bundle Méretek
+
+| Entry Point | Méret (gzip) | Függőségek |
+|-------------|--------------|------------|
+| Client-only (alapértelmezett) | ~3 KB | Nincs |
+| Full (Joi-val) | ~50 KB | Joi |
 
 ## Fő Funkciók
 

@@ -1,31 +1,21 @@
 /**
- * FormFiller Validator
+ * FormFiller Validator - Client Entry Point
  *
- * Main entry point
+ * Joi-free, lightweight validators for browser usage.
+ * This is the default entry point optimized for frontend bundle size.
+ *
+ * For full validation capabilities (including Joi-based validation),
+ * use 'formfiller-validator/full' instead.
  */
 
-// Core (Server-side with Joi)
-export { Validator } from './core/Validator';
-export { ValidationContext } from './core/ValidationContext';
-export { ValidationResult } from './core/ValidationResult';
-export { CallbackRegistry, getGlobalRegistry, resetGlobalRegistry } from './core/CallbackRegistry';
-
-// Validators (Lightweight, Joi-free)
+// Client-side validators (Joi-free, lightweight)
 export * from './validators';
 
-// Types
+// Types (no runtime dependencies)
 export * from './types';
 
-// Processors
-export { ConfigProcessor } from './processors/ConfigProcessor';
-export { ConditionalEvaluator } from './processors/ConditionalEvaluator';
-export { ValidationConditionEvaluator } from './processors/ValidationConditionEvaluator';
-
-// Adapters
-export { JoiAdapter } from './adapters/JoiAdapter';
-
-// Computed processors
-export * from './processors/computed';
-
-// Utils
+// Utils (Joi-free)
 export { DependencyGraphBuilder } from './utils/DependencyGraphBuilder';
+export { FieldPathBuilder } from './utils/FieldPathBuilder';
+export * from './utils/typeGuards';
+export * from './utils/typeHelpers';

@@ -1,9 +1,21 @@
 {
   "name": "formfiller-validator",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Advanced validation system for FormFiller with unified expression system, conditional rules, and parallel execution",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./full": {
+      "import": "./dist/full.js",
+      "require": "./dist/full.js",
+      "types": "./dist/full.d.ts"
+    }
+  },
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
