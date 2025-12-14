@@ -7,6 +7,12 @@
 
 import { CallbackRegistry, getGlobalRegistry, resetGlobalRegistry } from '../core/CallbackRegistry';
 
+// Type for simple value validators
+type SimpleValidator = (value: unknown) => boolean;
+
+// Type for cross-field validators that take form data
+type CrossFieldValidator = (data: Record<string, unknown>) => boolean;
+
 describe('CallbackRegistry', () => {
   let registry: CallbackRegistry;
 
@@ -20,7 +26,7 @@ describe('CallbackRegistry', () => {
 
   describe('Basic registration and retrieval', () => {
     it('should register and retrieve a custom callback', () => {
-      const callback = (value: any) => value > 0;
+      const callback: SimpleValidator = (value: unknown): boolean => (value as number) > 0;
       registry.register('isPositive', callback);
 
       const retrieved = registry.get('isPositive');
@@ -81,8 +87,8 @@ describe('CallbackRegistry', () => {
 
   describe('Overwriting callbacks', () => {
     it('should overwrite existing custom callback with overwrite: true', () => {
-      const callback1 = () => true;
-      const callback2 = () => false;
+      const callback1: SimpleValidator = (): boolean => true;
+      const callback2: SimpleValidator = (): boolean => false;
 
       registry.register('test', callback1);
       registry.register('test', callback2, { overwrite: true });
@@ -92,8 +98,8 @@ describe('CallbackRegistry', () => {
     });
 
     it('should overwrite existing custom callback without overwrite flag (custom callbacks allow overwrite)', () => {
-      const callback1 = () => true;
-      const callback2 = () => false;
+      const callback1: SimpleValidator = (): boolean => true;
+      const callback2: SimpleValidator = (): boolean => false;
 
       registry.register('test', callback1);
       registry.register('test', callback2);
@@ -234,7 +240,7 @@ describe('CallbackRegistry', () => {
     });
 
     it('should not allow overwriting predefined without overwrite flag', () => {
-      const customCallback = () => false;
+      const customCallback: CrossFieldValidator = (): boolean => false;
       registry.register('passwordMatch', customCallback);
 
       // Should still have the original predefined callback
@@ -243,7 +249,7 @@ describe('CallbackRegistry', () => {
     });
 
     it('should allow overwriting predefined with overwrite flag', () => {
-      const customCallback = () => false;
+      const customCallback: CrossFieldValidator = (): boolean => false;
       registry.register('passwordMatch', customCallback, { overwrite: true });
 
       const callback = registry.get('passwordMatch');
@@ -268,21 +274,21 @@ describe('CallbackRegistry', () => {
 
     describe('passwordMatch', () => {
       it('should return true for matching passwords', () => {
-        const callback = registry.get('passwordMatch') as Function;
+        const callback = registry.get('passwordMatch') as CrossFieldValidator;
         const result = callback({ password: 'test123', confirmPassword: 'test123' });
 
         expect(result).toBe(true);
       });
 
       it('should return false for non-matching passwords', () => {
-        const callback = registry.get('passwordMatch') as Function;
+        const callback = registry.get('passwordMatch') as CrossFieldValidator;
         const result = callback({ password: 'test123', confirmPassword: 'different' });
 
         expect(result).toBe(false);
       });
 
       it('should return false for single field', () => {
-        const callback = registry.get('passwordMatch') as Function;
+        const callback = registry.get('passwordMatch') as CrossFieldValidator;
         const result = callback({ password: 'test123' });
 
         expect(result).toBe(false);
@@ -291,7 +297,7 @@ describe('CallbackRegistry', () => {
 
     describe('dateRangeValid', () => {
       it('should return true for valid date range', () => {
-        const callback = registry.get('dateRangeValid') as Function;
+        const callback = registry.get('dateRangeValid') as CrossFieldValidator;
         const result = callback({
           startDate: '2024-01-01',
           endDate: '2024-12-31',
@@ -301,7 +307,7 @@ describe('CallbackRegistry', () => {
       });
 
       it('should return false for invalid date range', () => {
-        const callback = registry.get('dateRangeValid') as Function;
+        const callback = registry.get('dateRangeValid') as CrossFieldValidator;
         const result = callback({
           startDate: '2024-12-31',
           endDate: '2024-01-01',
@@ -311,7 +317,7 @@ describe('CallbackRegistry', () => {
       });
 
       it('should return false for invalid dates', () => {
-        const callback = registry.get('dateRangeValid') as Function;
+        const callback = registry.get('dateRangeValid') as CrossFieldValidator;
         const result = callback({
           startDate: 'not-a-date',
           endDate: '2024-01-01',
@@ -323,21 +329,21 @@ describe('CallbackRegistry', () => {
 
     describe('numericRangeValid', () => {
       it('should return true for valid numeric range', () => {
-        const callback = registry.get('numericRangeValid') as Function;
+        const callback = registry.get('numericRangeValid') as CrossFieldValidator;
         const result = callback({ min: 10, max: 100 });
 
         expect(result).toBe(true);
       });
 
       it('should return false for invalid numeric range', () => {
-        const callback = registry.get('numericRangeValid') as Function;
+        const callback = registry.get('numericRangeValid') as CrossFieldValidator;
         const result = callback({ min: 100, max: 10 });
 
         expect(result).toBe(false);
       });
 
       it('should return false for NaN values', () => {
-        const callback = registry.get('numericRangeValid') as Function;
+        const callback = registry.get('numericRangeValid') as CrossFieldValidator;
         const result = callback({ min: 'abc', max: 100 });
 
         expect(result).toBe(false);
@@ -346,105 +352,105 @@ describe('CallbackRegistry', () => {
 
     describe('notEmpty', () => {
       it('should return true for non-empty string', () => {
-        const callback = registry.get('notEmpty') as Function;
+        const callback = registry.get('notEmpty') as SimpleValidator;
         expect(callback('hello')).toBe(true);
       });
 
       it('should return false for empty string', () => {
-        const callback = registry.get('notEmpty') as Function;
+        const callback = registry.get('notEmpty') as SimpleValidator;
         expect(callback('')).toBe(false);
       });
 
       it('should return false for whitespace-only string', () => {
-        const callback = registry.get('notEmpty') as Function;
+        const callback = registry.get('notEmpty') as SimpleValidator;
         expect(callback('   ')).toBe(false);
       });
 
       it('should return true for non-empty array', () => {
-        const callback = registry.get('notEmpty') as Function;
+        const callback = registry.get('notEmpty') as SimpleValidator;
         expect(callback([1, 2, 3])).toBe(true);
       });
 
       it('should return false for empty array', () => {
-        const callback = registry.get('notEmpty') as Function;
+        const callback = registry.get('notEmpty') as SimpleValidator;
         expect(callback([])).toBe(false);
       });
 
       it('should return true for non-empty object', () => {
-        const callback = registry.get('notEmpty') as Function;
+        const callback = registry.get('notEmpty') as SimpleValidator;
         expect(callback({ key: 'value' })).toBe(true);
       });
 
       it('should return false for empty object', () => {
-        const callback = registry.get('notEmpty') as Function;
+        const callback = registry.get('notEmpty') as SimpleValidator;
         expect(callback({})).toBe(false);
       });
 
       it('should return false for null', () => {
-        const callback = registry.get('notEmpty') as Function;
+        const callback = registry.get('notEmpty') as SimpleValidator;
         expect(callback(null)).toBe(false);
       });
 
       it('should return false for undefined', () => {
-        const callback = registry.get('notEmpty') as Function;
+        const callback = registry.get('notEmpty') as SimpleValidator;
         expect(callback(undefined)).toBe(false);
       });
 
       it('should return true for number', () => {
-        const callback = registry.get('notEmpty') as Function;
+        const callback = registry.get('notEmpty') as SimpleValidator;
         expect(callback(42)).toBe(true);
       });
     });
 
     describe('isPositive', () => {
       it('should return true for positive number', () => {
-        const callback = registry.get('isPositive') as Function;
+        const callback = registry.get('isPositive') as SimpleValidator;
         expect(callback(5)).toBe(true);
       });
 
       it('should return false for zero', () => {
-        const callback = registry.get('isPositive') as Function;
+        const callback = registry.get('isPositive') as SimpleValidator;
         expect(callback(0)).toBe(false);
       });
 
       it('should return false for negative number', () => {
-        const callback = registry.get('isPositive') as Function;
+        const callback = registry.get('isPositive') as SimpleValidator;
         expect(callback(-5)).toBe(false);
       });
 
       it('should return false for NaN', () => {
-        const callback = registry.get('isPositive') as Function;
+        const callback = registry.get('isPositive') as SimpleValidator;
         expect(callback('abc')).toBe(false);
       });
     });
 
     describe('isNonNegative', () => {
       it('should return true for positive number', () => {
-        const callback = registry.get('isNonNegative') as Function;
+        const callback = registry.get('isNonNegative') as SimpleValidator;
         expect(callback(5)).toBe(true);
       });
 
       it('should return true for zero', () => {
-        const callback = registry.get('isNonNegative') as Function;
+        const callback = registry.get('isNonNegative') as SimpleValidator;
         expect(callback(0)).toBe(true);
       });
 
       it('should return false for negative number', () => {
-        const callback = registry.get('isNonNegative') as Function;
+        const callback = registry.get('isNonNegative') as SimpleValidator;
         expect(callback(-5)).toBe(false);
       });
     });
 
     describe('isNotEmpty (crossField)', () => {
       it('should return true for non-empty target field', () => {
-        const callback = registry.get('isNotEmpty') as Function;
+        const callback = registry.get('isNotEmpty') as CrossFieldValidator;
         const result = callback({ targetField: 'value', _currentValue: '' });
 
         expect(result).toBe(true);
       });
 
       it('should return false for empty target field', () => {
-        const callback = registry.get('isNotEmpty') as Function;
+        const callback = registry.get('isNotEmpty') as CrossFieldValidator;
         const result = callback({ targetField: '', _currentValue: 'ignored' });
 
         expect(result).toBe(false);
@@ -453,14 +459,14 @@ describe('CallbackRegistry', () => {
 
     describe('isTrue', () => {
       it('should return true for true value', () => {
-        const callback = registry.get('isTrue') as Function;
+        const callback = registry.get('isTrue') as CrossFieldValidator;
         const result = callback({ checkbox: true, _currentValue: '' });
 
         expect(result).toBe(true);
       });
 
       it('should return false for false value', () => {
-        const callback = registry.get('isTrue') as Function;
+        const callback = registry.get('isTrue') as CrossFieldValidator;
         const result = callback({ checkbox: false, _currentValue: '' });
 
         expect(result).toBe(false);
@@ -469,14 +475,14 @@ describe('CallbackRegistry', () => {
 
     describe('isFalse', () => {
       it('should return true for false value', () => {
-        const callback = registry.get('isFalse') as Function;
+        const callback = registry.get('isFalse') as CrossFieldValidator;
         const result = callback({ checkbox: false, _currentValue: '' });
 
         expect(result).toBe(true);
       });
 
       it('should return false for true value', () => {
-        const callback = registry.get('isFalse') as Function;
+        const callback = registry.get('isFalse') as CrossFieldValidator;
         const result = callback({ checkbox: true, _currentValue: '' });
 
         expect(result).toBe(false);
@@ -485,7 +491,7 @@ describe('CallbackRegistry', () => {
 
     describe('atLeastOneRequired', () => {
       it('should return true when one field has value', () => {
-        const callback = registry.get('atLeastOneRequired') as Function;
+        const callback = registry.get('atLeastOneRequired') as CrossFieldValidator;
         const result = callback({
           email: 'test@example.com',
           phone: '',
@@ -496,7 +502,7 @@ describe('CallbackRegistry', () => {
       });
 
       it('should return false when all fields are empty', () => {
-        const callback = registry.get('atLeastOneRequired') as Function;
+        const callback = registry.get('atLeastOneRequired') as CrossFieldValidator;
         const result = callback({
           email: '',
           phone: '',
@@ -509,7 +515,7 @@ describe('CallbackRegistry', () => {
 
     describe('validateSumEquals', () => {
       it('should return true when current equals sum of targets', () => {
-        const callback = registry.get('validateSumEquals') as Function;
+        const callback = registry.get('validateSumEquals') as CrossFieldValidator;
         const result = callback({
           base: 20,
           extra: 5,
@@ -520,7 +526,7 @@ describe('CallbackRegistry', () => {
       });
 
       it('should return false when current does not equal sum', () => {
-        const callback = registry.get('validateSumEquals') as Function;
+        const callback = registry.get('validateSumEquals') as CrossFieldValidator;
         const result = callback({
           base: 20,
           extra: 5,
@@ -533,7 +539,7 @@ describe('CallbackRegistry', () => {
 
     describe('validatePercentageSum', () => {
       it('should return true when percentages sum to 100', () => {
-        const callback = registry.get('validatePercentageSum') as Function;
+        const callback = registry.get('validatePercentageSum') as CrossFieldValidator;
         const result = callback({
           partner1: 40,
           partner2: 35,
@@ -545,7 +551,7 @@ describe('CallbackRegistry', () => {
       });
 
       it('should return false when percentages do not sum to 100', () => {
-        const callback = registry.get('validatePercentageSum') as Function;
+        const callback = registry.get('validatePercentageSum') as CrossFieldValidator;
         const result = callback({
           partner1: 40,
           partner2: 40,
@@ -559,7 +565,7 @@ describe('CallbackRegistry', () => {
 
     describe('validateDateInRange', () => {
       it('should return true when date is in range', () => {
-        const callback = registry.get('validateDateInRange') as Function;
+        const callback = registry.get('validateDateInRange') as CrossFieldValidator;
         const result = callback({
           projectStart: '2024-01-01',
           projectEnd: '2024-12-31',
@@ -570,7 +576,7 @@ describe('CallbackRegistry', () => {
       });
 
       it('should return false when date is out of range', () => {
-        const callback = registry.get('validateDateInRange') as Function;
+        const callback = registry.get('validateDateInRange') as CrossFieldValidator;
         const result = callback({
           projectStart: '2024-01-01',
           projectEnd: '2024-12-31',
@@ -581,7 +587,7 @@ describe('CallbackRegistry', () => {
       });
 
       it('should return true for invalid current date (empty/invalid passes)', () => {
-        const callback = registry.get('validateDateInRange') as Function;
+        const callback = registry.get('validateDateInRange') as CrossFieldValidator;
         const result = callback({
           projectStart: '2024-01-01',
           projectEnd: '2024-12-31',
@@ -594,7 +600,7 @@ describe('CallbackRegistry', () => {
 
     describe('validateProductEquals', () => {
       it('should return true when current equals product of targets', () => {
-        const callback = registry.get('validateProductEquals') as Function;
+        const callback = registry.get('validateProductEquals') as CrossFieldValidator;
         const result = callback({
           hours: 40,
           rate: 25,
@@ -605,7 +611,7 @@ describe('CallbackRegistry', () => {
       });
 
       it('should return false when current does not equal product', () => {
-        const callback = registry.get('validateProductEquals') as Function;
+        const callback = registry.get('validateProductEquals') as CrossFieldValidator;
         const result = callback({
           hours: 40,
           rate: 25,
@@ -616,7 +622,7 @@ describe('CallbackRegistry', () => {
       });
 
       it('should return true for empty target fields', () => {
-        const callback = registry.get('validateProductEquals') as Function;
+        const callback = registry.get('validateProductEquals') as CrossFieldValidator;
         const result = callback({
           _currentValue: 0,
         });
