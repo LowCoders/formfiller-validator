@@ -17,6 +17,7 @@ export declare class ClientValidator {
     shouldApplyRule(rule: ValidationRule, formData: Record<string, any>): boolean;
     validateRule(_fieldName: string, value: any, rule: ValidationRule, context: ClientValidationContext): boolean;
     private validateCrossField;
+    private validateCompare;
     hasCrossFieldValidator(validatorName: string | undefined): boolean;
     getAvailableCrossFieldValidators(): string[];
     private validateRequired;

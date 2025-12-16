@@ -99,6 +99,8 @@ class ClientValidator {
                 return this.validatePattern(value, rule.pattern);
             case 'crossField':
                 return this.validateCrossField(value, rule, context);
+            case 'compare':
+                return this.validateCompare(value, rule, context);
             default:
                 console.warn(`ClientValidator: Unknown rule type '${rule.type}' - skipping`);
                 return true;
@@ -132,6 +134,32 @@ class ClientValidator {
             values[targetField] = context.getValue(targetField);
         }
         return this.callbackRegistry.execute(validatorName, values, params);
+    }
+    validateCompare(value, rule, context) {
+        if (value === '' || value === null || value === undefined) {
+            return true;
+        }
+        if (!rule.comparisonTarget) {
+            return true;
+        }
+        const targetValue = context.getValue(rule.comparisonTarget);
+        const comparisonType = rule.comparisonType || '==';
+        switch (comparisonType) {
+            case '==':
+                return value == targetValue;
+            case '!=':
+                return value != targetValue;
+            case '>':
+                return value > targetValue;
+            case '<':
+                return value < targetValue;
+            case '>=':
+                return value >= targetValue;
+            case '<=':
+                return value <= targetValue;
+            default:
+                return value == targetValue;
+        }
     }
     hasCrossFieldValidator(validatorName) {
         return this.callbackRegistry.has(validatorName);
@@ -251,6 +279,8 @@ class ClientValidator {
                 return 'Az érték nem felel meg a mintának';
             case 'crossField':
                 return 'Mezők közötti validáció sikertelen';
+            case 'compare':
+                return 'A mezők értékei nem egyeznek';
             default:
                 return 'Érvénytelen érték';
         }

@@ -2,7 +2,7 @@
  * ClientValidator - Lightweight client-side validator (Joi-free)
  *
  * Implements basic validation rules without external dependencies:
- * - required, email, numeric, stringLength, range, pattern, crossField
+ * - required, email, numeric, stringLength, range, pattern, crossField, compare
  *
  * Supports 'when' conditions via ClientValidationConditionEvaluator
  */
@@ -186,6 +186,9 @@ export class ClientValidator {
       case 'crossField':
         return this.validateCrossField(value, rule, context);
 
+      case 'compare':
+        return this.validateCompare(value, rule, context);
+
       default:
         console.warn(`ClientValidator: Unknown rule type '${rule.type}' - skipping`);
         return true; // Unknown rules pass (will be handled by backend)
@@ -240,6 +243,45 @@ export class ClientValidator {
 
     // Execute callback
     return this.callbackRegistry.execute(validatorName, values, params);
+  }
+
+  /**
+   * Validate compare rule
+   * Compares the current field value with another field's value
+   */
+  private validateCompare(
+    value: any,
+    rule: ValidationRule,
+    context: ClientValidationContext
+  ): boolean {
+    // Allow empty values (use required rule for mandatory check)
+    if (value === '' || value === null || value === undefined) {
+      return true;
+    }
+
+    if (!rule.comparisonTarget) {
+      return true; // No target specified, pass
+    }
+
+    const targetValue = context.getValue(rule.comparisonTarget);
+    const comparisonType = rule.comparisonType || '==';
+
+    switch (comparisonType) {
+      case '==':
+        return value == targetValue;
+      case '!=':
+        return value != targetValue;
+      case '>':
+        return value > targetValue;
+      case '<':
+        return value < targetValue;
+      case '>=':
+        return value >= targetValue;
+      case '<=':
+        return value <= targetValue;
+      default:
+        return value == targetValue;
+    }
   }
 
   /**
@@ -432,6 +474,8 @@ export class ClientValidator {
         return 'Az érték nem felel meg a mintának';
       case 'crossField':
         return 'Mezők közötti validáció sikertelen';
+      case 'compare':
+        return 'A mezők értékei nem egyeznek';
       default:
         return 'Érvénytelen érték';
     }
