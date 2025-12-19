@@ -394,12 +394,17 @@ export class ConfigProcessor {
     context: ValidationContext,
     result: ValidationResult
   ): Promise<boolean> {
-    const { isValidationRule, isValidationRuleGroup } = require('../utils/typeGuards');
+    const {
+      isValidationRule,
+      isValidationRuleGroup,
+      isCrossFieldType,
+      enrichCrossFieldRule,
+    } = require('../utils/typeGuards');
     let hasErrors = false;
 
     for (const ruleOrGroup of rules) {
       if (isValidationRule(ruleOrGroup)) {
-        const rule = ruleOrGroup as import('formfiller-schema').ValidationRule;
+        let rule = ruleOrGroup as import('formfiller-schema').ValidationRule;
 
         // ✨ NEW: Check if rule should be applied based on 'when' condition
         const shouldApply = this.validationConditionEvaluator.shouldApplyRule(rule, context);
@@ -411,6 +416,11 @@ export class ConfigProcessor {
         if (rule.type === 'computed') {
           this.processComputedRule(rule, fieldName, fieldValue);
           continue; // Computed rules don't affect validation errors
+        }
+
+        // Enrich crossField rules: automatically add current field to targetFields
+        if (isCrossFieldType(rule.type)) {
+          rule = enrichCrossFieldRule(rule, fieldName);
         }
 
         // Check if required rule should be applied based on field-level requiredIf
@@ -438,6 +448,8 @@ export class ConfigProcessor {
               targetFields: rule.targetFields,
               crossFieldValidator:
                 typeof rule.crossFieldValidator === 'string' ? rule.crossFieldValidator : undefined,
+              // Error target for display routing
+              errorTarget: rule.errorTarget,
             }
           );
         }

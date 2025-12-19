@@ -81,12 +81,19 @@ export interface ValidationResult {
     dependencyGraph?: DependencyGraphExport;
     stats?: ValidationStats;
 }
+export interface TargetFieldLabel {
+    path: string;
+    pathLabels: string[];
+}
 export interface ValidationError {
     field: string;
     message: string;
     rule: string;
     params?: Record<string, any>;
     path?: string[];
+    pathLabels?: string[];
+    targetFieldLabels?: TargetFieldLabel[];
+    errorTarget?: 'currentField' | 'allTargetFields' | string[];
 }
 export interface FieldValidationResult {
     valid: boolean;

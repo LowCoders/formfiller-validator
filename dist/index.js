@@ -23,4 +23,5 @@ var FieldPathBuilder_1 = require("./utils/FieldPathBuilder");
 Object.defineProperty(exports, "FieldPathBuilder", { enumerable: true, get: function () { return FieldPathBuilder_1.FieldPathBuilder; } });
 __exportStar(require("./utils/typeGuards"), exports);
 __exportStar(require("./utils/typeHelpers"), exports);
+__exportStar(require("./utils/errorMessageBuilder"), exports);
 //# sourceMappingURL=index.js.map

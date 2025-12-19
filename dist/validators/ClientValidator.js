@@ -97,7 +97,15 @@ class ClientValidator {
                 return this.validateRange(value, rule.min, rule.max);
             case 'pattern':
                 return this.validatePattern(value, rule.pattern);
-            case 'crossField':
+            case 'crossFieldEquals':
+            case 'crossFieldNotEquals':
+            case 'crossFieldGreaterThan':
+            case 'crossFieldLessThan':
+            case 'crossFieldSumEquals':
+            case 'crossFieldPercentageSum':
+            case 'crossFieldDateInRange':
+            case 'crossFieldAtLeastOne':
+            case 'crossFieldCustom':
                 return this.validateCrossField(value, rule, context);
             case 'compare':
                 return this.validateCompare(value, rule, context);

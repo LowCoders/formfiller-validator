@@ -234,6 +234,16 @@ export interface ValidationResult {
 /**
  * Validation error
  */
+/**
+ * Target field label info for crossField validation errors
+ */
+export interface TargetFieldLabel {
+  /** Field path (e.g., 'personalData.address.street') */
+  path: string;
+  /** Hierarchical labels for each path segment */
+  pathLabels: string[];
+}
+
 export interface ValidationError {
   /** Field name (dataPath) */
   field: string;
@@ -249,6 +259,28 @@ export interface ValidationError {
 
   /** Nested path (for nested structures) */
   path?: string[];
+
+  /**
+   * Hierarchical labels for the field path.
+   * Example: path = ['personalData', 'address', 'street']
+   *          pathLabels = ['Personal Data', 'Address', 'Street']
+   * Falls back to path segment name if label is not available.
+   */
+  pathLabels?: string[];
+
+  /**
+   * For crossField validators: labels for all target fields
+   * Enables form-level error display with proper field references
+   */
+  targetFieldLabels?: TargetFieldLabel[];
+
+  /**
+   * Where to display this error
+   * - 'currentField': only at the current field
+   * - 'allTargetFields': at all fields involved in the validation
+   * - string[]: specific field paths
+   */
+  errorTarget?: 'currentField' | 'allTargetFields' | string[];
 }
 
 /**

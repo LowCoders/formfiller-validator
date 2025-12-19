@@ -210,11 +210,11 @@ class ConfigProcessor {
         return false;
     }
     async validateRules(rules, fieldName, fieldValue, isRequired, context, result) {
-        const { isValidationRule, isValidationRuleGroup } = require('../utils/typeGuards');
+        const { isValidationRule, isValidationRuleGroup, isCrossFieldType, enrichCrossFieldRule, } = require('../utils/typeGuards');
         let hasErrors = false;
         for (const ruleOrGroup of rules) {
             if (isValidationRule(ruleOrGroup)) {
-                const rule = ruleOrGroup;
+                let rule = ruleOrGroup;
                 const shouldApply = this.validationConditionEvaluator.shouldApplyRule(rule, context);
                 if (!shouldApply) {
                     continue;
@@ -222,6 +222,9 @@ class ConfigProcessor {
                 if (rule.type === 'computed') {
                     this.processComputedRule(rule, fieldName, fieldValue);
                     continue;
+                }
+                if (isCrossFieldType(rule.type)) {
+                    rule = enrichCrossFieldRule(rule, fieldName);
                 }
                 if (rule.type === 'required' && !rule.when && !isRequired) {
                     continue;
@@ -237,6 +240,7 @@ class ConfigProcessor {
                         comparisonType: rule.comparisonType,
                         targetFields: rule.targetFields,
                         crossFieldValidator: typeof rule.crossFieldValidator === 'string' ? rule.crossFieldValidator : undefined,
+                        errorTarget: rule.errorTarget,
                     });
                 }
             }

@@ -1,5 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CROSS_FIELD_TYPES = void 0;
+exports.isCrossFieldType = isCrossFieldType;
+exports.getCrossFieldValidatorName = getCrossFieldValidatorName;
+exports.enrichCrossFieldRule = enrichCrossFieldRule;
 exports.isValidationRule = isValidationRule;
 exports.isValidationRuleGroup = isValidationRuleGroup;
 exports.getGroupRules = getGroupRules;
@@ -8,6 +12,37 @@ exports.getGroupMessage = getGroupMessage;
 exports.flattenValidationRules = flattenValidationRules;
 exports.extractFieldReferences = extractFieldReferences;
 exports.extractConditionalFields = extractConditionalFields;
+exports.CROSS_FIELD_TYPES = [
+    'crossField',
+    'crossFieldEquals',
+    'crossFieldNotEquals',
+    'crossFieldGreaterThan',
+    'crossFieldLessThan',
+    'crossFieldSumEquals',
+    'crossFieldPercentageSum',
+    'crossFieldDateInRange',
+    'crossFieldAtLeastOne',
+    'crossFieldCustom',
+];
+function isCrossFieldType(type) {
+    return type === 'crossField' || type.startsWith('crossField');
+}
+function getCrossFieldValidatorName(type) {
+    return type.replace('crossField', '').toLowerCase();
+}
+function enrichCrossFieldRule(rule, currentFieldPath) {
+    if (!isCrossFieldType(rule.type)) {
+        return rule;
+    }
+    const targetFields = [...(rule.targetFields || [])];
+    if (!targetFields.includes(currentFieldPath)) {
+        targetFields.push(currentFieldPath);
+    }
+    return {
+        ...rule,
+        targetFields,
+    };
+}
 function isValidationRule(rule) {
     return 'type' in rule && typeof rule.type === 'string';
 }

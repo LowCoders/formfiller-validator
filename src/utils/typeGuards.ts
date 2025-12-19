@@ -1,4 +1,70 @@
-import { ValidationRuleOrGroup, ConditionalExpression } from 'formfiller-schema';
+import { ValidationRuleOrGroup, ConditionalExpression, ValidationRule } from 'formfiller-schema';
+
+// ============================================================================
+// CrossField Type Helpers
+// ============================================================================
+
+/**
+ * All supported crossField validation types
+ */
+export const CROSS_FIELD_TYPES = [
+  'crossField', // Legacy type - prefer specific crossField* types
+  'crossFieldEquals',
+  'crossFieldNotEquals',
+  'crossFieldGreaterThan',
+  'crossFieldLessThan',
+  'crossFieldSumEquals',
+  'crossFieldPercentageSum',
+  'crossFieldDateInRange',
+  'crossFieldAtLeastOne',
+  'crossFieldCustom',
+] as const;
+
+export type CrossFieldType = (typeof CROSS_FIELD_TYPES)[number];
+
+/**
+ * Check if a validation rule type is a crossField type
+ * @param type - The validation rule type to check
+ * @returns true if the type starts with 'crossField'
+ */
+export function isCrossFieldType(type: string): type is CrossFieldType {
+  return type === 'crossField' || type.startsWith('crossField');
+}
+
+/**
+ * Extract the validator function name from a crossField type
+ * @param type - The crossField type (e.g., 'crossFieldEquals')
+ * @returns The validator function name in lowercase (e.g., 'equals')
+ */
+export function getCrossFieldValidatorName(type: string): string {
+  return type.replace('crossField', '').toLowerCase();
+}
+
+/**
+ * Enrich a crossField rule by automatically adding the current field path to targetFields.
+ * When a crossField rule is defined at field level, the current field should be
+ * included in the validation without requiring explicit declaration.
+ *
+ * @param rule - The validation rule to enrich
+ * @param currentFieldPath - The path of the field where the rule is defined
+ * @returns A new enriched rule (original is not mutated)
+ */
+export function enrichCrossFieldRule(rule: ValidationRule, currentFieldPath: string): ValidationRule {
+  if (!isCrossFieldType(rule.type)) {
+    return rule;
+  }
+
+  const targetFields = [...(rule.targetFields || [])];
+
+  if (!targetFields.includes(currentFieldPath)) {
+    targetFields.push(currentFieldPath);
+  }
+
+  return {
+    ...rule,
+    targetFields,
+  };
+}
 
 /**
  * Type guard to check if a ValidationRuleOrGroup is a ValidationRule

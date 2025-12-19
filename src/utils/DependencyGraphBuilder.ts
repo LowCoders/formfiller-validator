@@ -170,8 +170,8 @@ export class DependencyGraphBuilder {
         }
       }
 
-      // Extract from crossField rules
-      if (rule.type === 'crossField' && rule.targetFields) {
+      // Extract from crossField* rules
+      if (rule.type.startsWith('crossField') && rule.targetFields) {
         for (const targetField of rule.targetFields) {
           if (!node.dependencies.includes(targetField)) {
             node.dependencies.push(targetField);

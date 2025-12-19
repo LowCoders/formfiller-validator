@@ -110,7 +110,15 @@ class JoiAdapter {
                 return this.createCustomSchema(rule, context);
             case 'async':
                 return this.createAsyncSchema(rule, context);
-            case 'crossField':
+            case 'crossFieldEquals':
+            case 'crossFieldNotEquals':
+            case 'crossFieldGreaterThan':
+            case 'crossFieldLessThan':
+            case 'crossFieldSumEquals':
+            case 'crossFieldPercentageSum':
+            case 'crossFieldDateInRange':
+            case 'crossFieldAtLeastOne':
+            case 'crossFieldCustom':
                 return this.createCrossFieldSchema(rule, context);
             case 'computed':
                 return joi_1.default.any();

@@ -100,7 +100,7 @@ class DependencyGraphBuilder {
                     node.dependencies.push(rule.comparisonTarget);
                 }
             }
-            if (rule.type === 'crossField' && rule.targetFields) {
+            if (rule.type.startsWith('crossField') && rule.targetFields) {
                 for (const targetField of rule.targetFields) {
                     if (!node.dependencies.includes(targetField)) {
                         node.dependencies.push(targetField);
