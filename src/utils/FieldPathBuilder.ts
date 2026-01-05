@@ -9,7 +9,7 @@
  */
 
 import { FieldConfig } from 'formfiller-schema';
-import { getNestedItems, getFieldName, isContainerField } from './typeHelpers';
+import { getNestedItems, getFieldName, isContainerField } from './typeHelpers.js';
 
 export class FieldPathBuilder {
   /**

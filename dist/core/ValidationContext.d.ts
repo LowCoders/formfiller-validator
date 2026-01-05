@@ -1,4 +1,4 @@
-import { ValidationContext as IValidationContext, FormConfig, ValidatorConfig, DependencyGraph } from '../types';
+import { ValidationContext as IValidationContext, FormConfig, ValidatorConfig, DependencyGraph } from '../types/index.js';
 export declare class ValidationContext implements IValidationContext {
     readonly data: Record<string, any>;
     readonly config: FormConfig;

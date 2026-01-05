@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.NumericMatchProcessor = void 0;
-class NumericMatchProcessor {
+export class NumericMatchProcessor {
     evaluate(fieldValue, rule) {
         const correctAnswer = rule.correctAnswer;
         const points = rule.points ?? 1;
@@ -43,5 +40,4 @@ class NumericMatchProcessor {
         };
     }
 }
-exports.NumericMatchProcessor = NumericMatchProcessor;
 //# sourceMappingURL=NumericMatchProcessor.js.map

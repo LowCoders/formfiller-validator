@@ -1,14 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConfigProcessor = void 0;
-const ValidationResult_1 = require("../core/ValidationResult");
-const ConditionalEvaluator_1 = require("./ConditionalEvaluator");
-const ValidationConditionEvaluator_1 = require("./ValidationConditionEvaluator");
-const JoiAdapter_1 = require("../adapters/JoiAdapter");
-const FieldPathBuilder_1 = require("../utils/FieldPathBuilder");
-const typeHelpers_1 = require("../utils/typeHelpers");
-const computed_1 = require("./computed");
-class ConfigProcessor {
+import { ValidationResult } from '../core/ValidationResult.js';
+import { ConditionalEvaluator } from './ConditionalEvaluator.js';
+import { ValidationConditionEvaluator } from './ValidationConditionEvaluator.js';
+import { JoiAdapter } from '../adapters/JoiAdapter.js';
+import { FieldPathBuilder } from '../utils/FieldPathBuilder.js';
+import { isContainerField, isDataField, getNestedItems, getFieldName } from '../utils/typeHelpers.js';
+import { isValidationRule, isValidationRuleGroup, getGroupRules, getGroupOperator, getGroupMessage, isCrossFieldType, enrichCrossFieldRule, } from '../utils/typeGuards.js';
+import { ExactMatchProcessor, ArrayMatchProcessor, NumericMatchProcessor, KeywordMatchProcessor, AggregateProcessor, } from './computed/index.js';
+export class ConfigProcessor {
     conditionalEvaluator;
     validationConditionEvaluator;
     joiAdapter;
@@ -20,18 +18,18 @@ class ConfigProcessor {
     aggregateProcessor;
     fieldComputedResults = {};
     constructor(registry) {
-        this.conditionalEvaluator = new ConditionalEvaluator_1.ConditionalEvaluator();
-        this.validationConditionEvaluator = new ValidationConditionEvaluator_1.ValidationConditionEvaluator(this.conditionalEvaluator);
-        this.joiAdapter = new JoiAdapter_1.JoiAdapter(registry);
-        this.fieldPathBuilder = new FieldPathBuilder_1.FieldPathBuilder();
-        this.exactMatchProcessor = new computed_1.ExactMatchProcessor();
-        this.arrayMatchProcessor = new computed_1.ArrayMatchProcessor();
-        this.numericMatchProcessor = new computed_1.NumericMatchProcessor();
-        this.keywordMatchProcessor = new computed_1.KeywordMatchProcessor();
-        this.aggregateProcessor = new computed_1.AggregateProcessor();
+        this.conditionalEvaluator = new ConditionalEvaluator();
+        this.validationConditionEvaluator = new ValidationConditionEvaluator(this.conditionalEvaluator);
+        this.joiAdapter = new JoiAdapter(registry);
+        this.fieldPathBuilder = new FieldPathBuilder();
+        this.exactMatchProcessor = new ExactMatchProcessor();
+        this.arrayMatchProcessor = new ArrayMatchProcessor();
+        this.numericMatchProcessor = new NumericMatchProcessor();
+        this.keywordMatchProcessor = new KeywordMatchProcessor();
+        this.aggregateProcessor = new AggregateProcessor();
     }
     async process(context) {
-        const result = new ValidationResult_1.ValidationResult();
+        const result = new ValidationResult();
         this.fieldComputedResults = {};
         if (context.config.validationRules && context.config.validationRules.length > 0) {
         }
@@ -108,14 +106,14 @@ class ConfigProcessor {
         }
     }
     async processItem(item, context, parentPath = '') {
-        const result = new ValidationResult_1.ValidationResult();
-        const fieldName = (0, typeHelpers_1.getFieldName)(item);
-        if ((0, typeHelpers_1.isContainerField)(item)) {
+        const result = new ValidationResult();
+        const fieldName = getFieldName(item);
+        if (isContainerField(item)) {
             const nestedResult = await this.processNestedItems(item, context, parentPath);
             result.merge(nestedResult);
             return result;
         }
-        if (!(0, typeHelpers_1.isDataField)(item) || !fieldName) {
+        if (!isDataField(item) || !fieldName) {
             return result;
         }
         const fieldPath = this.fieldPathBuilder.buildPath(item, parentPath);
@@ -151,9 +149,9 @@ class ConfigProcessor {
         return result;
     }
     async processNestedItems(item, context, parentPath = '') {
-        const result = new ValidationResult_1.ValidationResult();
+        const result = new ValidationResult();
         const nextPath = this.fieldPathBuilder.getNextParentPath(item, parentPath);
-        const nestedItems = (0, typeHelpers_1.getNestedItems)(item);
+        const nestedItems = getNestedItems(item);
         if (nestedItems) {
             for (const nestedItem of nestedItems) {
                 const nestedResult = await this.processItem(nestedItem, context, nextPath);
@@ -190,8 +188,6 @@ class ConfigProcessor {
         return false;
     }
     hasRequiredRule(rules) {
-        const { isValidationRule, isValidationRuleGroup } = require('../utils/typeGuards');
-        const { getGroupRules } = require('../utils/typeGuards');
         for (const ruleOrGroup of rules) {
             if (isValidationRule(ruleOrGroup)) {
                 const rule = ruleOrGroup;
@@ -210,7 +206,6 @@ class ConfigProcessor {
         return false;
     }
     async validateRules(rules, fieldName, fieldValue, isRequired, context, result) {
-        const { isValidationRule, isValidationRuleGroup, isCrossFieldType, enrichCrossFieldRule, } = require('../utils/typeGuards');
         let hasErrors = false;
         for (const ruleOrGroup of rules) {
             if (isValidationRule(ruleOrGroup)) {
@@ -239,7 +234,6 @@ class ConfigProcessor {
                         comparisonTarget: rule.comparisonTarget,
                         comparisonType: rule.comparisonType,
                         targetFields: rule.targetFields,
-                        crossFieldValidator: typeof rule.crossFieldValidator === 'string' ? rule.crossFieldValidator : undefined,
                         errorTarget: rule.errorTarget,
                     });
                 }
@@ -283,7 +277,6 @@ class ConfigProcessor {
         }
     }
     async validateRuleGroup(group, fieldName, fieldValue, isRequired, context, result) {
-        const { isValidationRule, isValidationRuleGroup, getGroupRules, getGroupOperator, getGroupMessage, } = require('../utils/typeGuards');
         const errors = [];
         const rules = getGroupRules(group);
         const operator = getGroupOperator(group);
@@ -304,7 +297,7 @@ class ConfigProcessor {
             }
             else if (isValidationRuleGroup(ruleOrNestedGroup)) {
                 const nestedGroup = ruleOrNestedGroup;
-                const tempResult = new ValidationResult_1.ValidationResult();
+                const tempResult = new ValidationResult();
                 const nestedHasError = await this.validateRuleGroup(nestedGroup, fieldName, fieldValue, isRequired, context, tempResult);
                 if (nestedHasError) {
                     const nestedMessage = getGroupMessage(nestedGroup);
@@ -373,5 +366,4 @@ class ConfigProcessor {
         }
     }
 }
-exports.ConfigProcessor = ConfigProcessor;
 //# sourceMappingURL=ConfigProcessor.js.map

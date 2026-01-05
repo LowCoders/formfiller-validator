@@ -2,8 +2,8 @@
  * Auto Disabled Tests - visibleIf alapján automatikus disabled beállítás tesztelése
  */
 
-import { Validator } from '../core/Validator';
-import { FormConfig } from '../types';
+import { Validator } from '../core/Validator.js';
+import { FormConfig } from '../types/index.js';
 
 describe('Auto Disabled based on visibleIf', () => {
   let validator: Validator;

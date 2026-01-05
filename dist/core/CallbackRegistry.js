@@ -1,9 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CallbackRegistry = void 0;
-exports.getGlobalRegistry = getGlobalRegistry;
-exports.resetGlobalRegistry = resetGlobalRegistry;
-class CallbackRegistry {
+export class CallbackRegistry {
     callbacks = new Map();
     register(name, callback, options = {}) {
         const { type = 'custom', description, overwrite = false } = options;
@@ -247,7 +242,7 @@ class CallbackRegistry {
                 type: 'crossField',
                 description: 'Checks if array contains any of the specified values',
             },
-            validateSumEquals: {
+            sumEquals: {
                 callback: (values) => {
                     const currentValue = values._currentValue;
                     const targetValues = Object.entries(values)
@@ -259,7 +254,7 @@ class CallbackRegistry {
                 type: 'crossField',
                 description: 'Checks if current field value equals sum of target fields',
             },
-            validatePercentageSum: {
+            percentageSum: {
                 callback: (values) => {
                     const allValues = Object.entries(values)
                         .filter(([key]) => key !== '_currentValue')
@@ -270,7 +265,7 @@ class CallbackRegistry {
                 type: 'crossField',
                 description: 'Checks if all percentage fields sum to exactly 100%',
             },
-            validateDateInRange: {
+            dateInRange: {
                 callback: (values) => {
                     const currentValue = values._currentValue;
                     const targetEntries = Object.entries(values).filter(([key]) => key !== '_currentValue');
@@ -289,7 +284,7 @@ class CallbackRegistry {
                 type: 'crossField',
                 description: 'Checks if current date is within project start and end dates',
             },
-            atLeastOneRequired: {
+            atLeastOne: {
                 callback: (values) => {
                     const targetValues = Object.entries(values)
                         .filter(([key]) => key !== '_currentValue')
@@ -309,7 +304,7 @@ class CallbackRegistry {
                 type: 'crossField',
                 description: 'Checks if at least one target field is not empty',
             },
-            validateProductEquals: {
+            productEquals: {
                 callback: (values) => {
                     const currentValue = Number(values._currentValue) || 0;
                     const targetValues = Object.entries(values)
@@ -326,16 +321,15 @@ class CallbackRegistry {
         };
     }
 }
-exports.CallbackRegistry = CallbackRegistry;
 let globalRegistry = null;
-function getGlobalRegistry() {
+export function getGlobalRegistry() {
     if (!globalRegistry) {
         globalRegistry = new CallbackRegistry();
         globalRegistry.registerPredefined();
     }
     return globalRegistry;
 }
-function resetGlobalRegistry() {
+export function resetGlobalRegistry() {
     globalRegistry = null;
 }
 //# sourceMappingURL=CallbackRegistry.js.map

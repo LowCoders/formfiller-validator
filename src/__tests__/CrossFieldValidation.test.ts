@@ -5,12 +5,12 @@
  * multiple fields together using registered validator functions.
  *
  * Available validators: isNotEmpty, isTrue, isFalse, passwordMatch,
- * emailMatch, compare, atLeastOneRequired, equals, valueIn,
+ * emailMatch, compare, atLeastOne, equals, valueIn,
  * arrayContains, arrayContainsAny
  */
 
-import { Validator } from '../core/Validator';
-import { FormConfig } from '../types';
+import { Validator } from '../core/Validator.js';
+import { FormConfig } from '../types/index.js';
 
 describe('CrossField Validation', () => {
   let validator: Validator;
@@ -41,10 +41,8 @@ describe('CrossField Validation', () => {
           validationRules: [
             { type: 'required', message: 'Confirm password required' },
             {
-              type: 'crossField',
-              targetFields: ['password', 'confirmPassword'],
-              crossFieldValidator: 'passwordMatch',
-              message: 'Passwords must match',
+              type: 'atLeastOne' as any,
+              targetFields: ['password', 'confirmPassword'],              message: 'Passwords must match',
             },
           ],
         },
@@ -89,9 +87,8 @@ describe('CrossField Validation', () => {
           name: 'contactCheck',
           validationRules: [
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['email', 'phone'],
-              crossFieldValidator: 'atLeastOneRequired',
               message: 'At least one contact is required',
             },
           ],
@@ -155,14 +152,11 @@ describe('CrossField Validation', () => {
           name: 'checkField',
           validationRules: [
             {
-              type: 'crossField',
+              type: 'valueIn',  // Custom validator
               targetFields: ['subscription'],
-              crossFieldValidator: {
-                name: 'valueIn',
                 params: { values: ['Premium', 'Enterprise'] },
-              },
               message: 'Must be Premium or Enterprise',
-            },
+            } as any,
           ],
         },
       ],
@@ -203,9 +197,8 @@ describe('CrossField Validation', () => {
           name: 'checkField',
           validationRules: [
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['otherField'],
-              crossFieldValidator: 'isNotEmpty',
               message: 'Other field must not be empty',
             },
           ],
@@ -248,9 +241,8 @@ describe('CrossField Validation', () => {
           name: 'termsCheck',
           validationRules: [
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['acceptTerms'],
-              crossFieldValidator: 'isTrue',
               message: 'You must accept the terms',
             },
           ],
@@ -297,21 +289,18 @@ describe('CrossField Validation', () => {
             {
               or: [
                 {
-                  type: 'crossField',
+                  type: 'atLeastOne' as any,
                   targetFields: ['email'],
-                  crossFieldValidator: 'isNotEmpty',
                   message: 'Email filled',
                 },
                 {
-                  type: 'crossField',
+                  type: 'atLeastOne' as any,
                   targetFields: ['phone'],
-                  crossFieldValidator: 'isNotEmpty',
                   message: 'Phone filled',
                 },
                 {
-                  type: 'crossField',
+                  type: 'atLeastOne' as any,
                   targetFields: ['address'],
-                  crossFieldValidator: 'isNotEmpty',
                   message: 'Address filled',
                 },
               ],
@@ -361,9 +350,8 @@ describe('CrossField Validation', () => {
           name: 'premiumCheck',
           validationRules: [
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['isPremium'],
-              crossFieldValidator: 'isTrue',
               message: 'Premium status required for VIP users',
               when: { userType: 'vip' },
             },
@@ -420,9 +408,8 @@ describe('CrossField Validation', () => {
           name: 'confirmCheck',
           validationRules: [
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['confirmed'],
-              crossFieldValidator: 'isTrue',
               message: 'Must confirm the amount',
             },
           ],

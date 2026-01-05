@@ -1,5 +1,5 @@
 import { ConditionalExpression } from 'formfiller-schema';
-import { ValidationContext } from '../core/ValidationContext';
+import { ValidationContext } from '../core/ValidationContext.js';
 export declare class ConditionalEvaluator {
     evaluate(expression: ConditionalExpression | ConditionalExpression[], context: ValidationContext): boolean;
     private compareValues;

@@ -6,8 +6,8 @@
  */
 
 import { ValidationRule } from 'formfiller-schema';
-import { ClientValidationContext } from './ClientValidationContext';
-import { ClientConditionalEvaluator } from './ClientConditionalEvaluator';
+import { ClientValidationContext } from './ClientValidationContext.js';
+import { ClientConditionalEvaluator } from './ClientConditionalEvaluator.js';
 
 export class ClientValidationConditionEvaluator {
   private conditionalEvaluator: ClientConditionalEvaluator;

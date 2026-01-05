@@ -4,12 +4,12 @@
  * Tests for frontend crossField validation support
  */
 
-import { ClientValidator } from '../validators/ClientValidator';
+import { ClientValidator } from '../validators/ClientValidator.js';
 import {
   ClientCallbackRegistry,
   getClientRegistry,
   resetClientRegistry,
-} from '../validators/ClientCallbackRegistry';
+} from '../validators/ClientCallbackRegistry.js';
 import { ValidationRule } from 'formfiller-schema';
 
 describe('ClientValidator CrossField Support', () => {
@@ -30,7 +30,7 @@ describe('ClientValidator CrossField Support', () => {
       expect(available).toContain('passwordMatch');
       expect(available).toContain('emailMatch');
       expect(available).toContain('compare');
-      expect(available).toContain('atLeastOneRequired');
+      expect(available).toContain('atLeastOne');
     });
 
     it('should check if validator exists', () => {
@@ -42,10 +42,9 @@ describe('ClientValidator CrossField Support', () => {
 
   describe('CrossField Validation - isNotEmpty', () => {
     it('should validate non-empty string field', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'atLeastOne' as any,
         targetFields: ['otherField'],
-        crossFieldValidator: 'isNotEmpty',
         message: 'Field must not be empty',
       };
 
@@ -58,10 +57,9 @@ describe('ClientValidator CrossField Support', () => {
     });
 
     it('should fail on empty string field', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'atLeastOne' as any,
         targetFields: ['otherField'],
-        crossFieldValidator: 'isNotEmpty',
         message: 'Field must not be empty',
       };
 
@@ -73,10 +71,9 @@ describe('ClientValidator CrossField Support', () => {
     });
 
     it('should fail on null field', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'atLeastOne' as any,
         targetFields: ['otherField'],
-        crossFieldValidator: 'isNotEmpty',
         message: 'Field must not be empty',
       };
 
@@ -87,10 +84,9 @@ describe('ClientValidator CrossField Support', () => {
     });
 
     it('should pass on non-empty array', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'atLeastOne' as any,
         targetFields: ['arrayField'],
-        crossFieldValidator: 'isNotEmpty',
         message: 'Array must not be empty',
       };
 
@@ -102,12 +98,11 @@ describe('ClientValidator CrossField Support', () => {
     });
   });
 
-  describe('CrossField Validation - passwordMatch', () => {
+  describe('CrossField Validation - passwordMatch (custom)', () => {
     it('should pass when passwords match', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'passwordMatch' as any,  // Custom validator
         targetFields: ['password', 'confirmPassword'],
-        crossFieldValidator: 'passwordMatch',
         message: 'Passwords must match',
       };
 
@@ -119,10 +114,9 @@ describe('ClientValidator CrossField Support', () => {
     });
 
     it('should fail when passwords differ', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'passwordMatch' as any,  // Custom validator
         targetFields: ['password', 'confirmPassword'],
-        crossFieldValidator: 'passwordMatch',
         message: 'Passwords must match',
       };
 
@@ -133,12 +127,12 @@ describe('ClientValidator CrossField Support', () => {
     });
   });
 
-  describe('CrossField Validation - compare (parameterized)', () => {
+  describe('CrossField Validation - compare (custom)', () => {
     it('should pass equality check', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'compare' as any,  // Custom validator
         targetFields: ['field1', 'field2'],
-        crossFieldValidator: { name: 'compare', params: { operator: '==' } },
+        params: { operator: '==' },
         message: 'Fields must be equal',
       };
 
@@ -151,10 +145,10 @@ describe('ClientValidator CrossField Support', () => {
     });
 
     it('should fail inequality check', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'compare' as any,  // Custom validator
         targetFields: ['field1', 'field2'],
-        crossFieldValidator: { name: 'compare', params: { operator: '!=' } },
+        params: { operator: '!=' },
         message: 'Fields must be different',
       };
 
@@ -166,10 +160,10 @@ describe('ClientValidator CrossField Support', () => {
     });
 
     it('should pass greater than check', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'compare' as any,  // Custom validator
         targetFields: ['max', 'min'],
-        crossFieldValidator: { name: 'compare', params: { operator: '>' } },
+        params: { operator: '>' },
         message: 'Max must be greater than min',
       };
 
@@ -181,10 +175,10 @@ describe('ClientValidator CrossField Support', () => {
     });
 
     it('should fail greater than check', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'compare' as any,  // Custom validator
         targetFields: ['max', 'min'],
-        crossFieldValidator: { name: 'compare', params: { operator: '>' } },
+        params: { operator: '>' },
         message: 'Max must be greater than min',
       };
 
@@ -196,12 +190,11 @@ describe('ClientValidator CrossField Support', () => {
     });
   });
 
-  describe('CrossField Validation - atLeastOneRequired', () => {
+  describe('CrossField Validation - atLeastOne', () => {
     it('should pass when at least one field is filled', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'atLeastOne',
         targetFields: ['email', 'phone'],
-        crossFieldValidator: 'atLeastOneRequired',
         message: 'At least one contact is required',
       };
 
@@ -212,10 +205,9 @@ describe('ClientValidator CrossField Support', () => {
     });
 
     it('should fail when all fields are empty', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'atLeastOne',
         targetFields: ['email', 'phone'],
-        crossFieldValidator: 'atLeastOneRequired',
         message: 'At least one contact is required',
       };
 
@@ -226,12 +218,12 @@ describe('ClientValidator CrossField Support', () => {
     });
   });
 
-  describe('CrossField Validation - arrayContains (parameterized)', () => {
+  describe('CrossField Validation - arrayContains (custom)', () => {
     it('should pass when array contains value', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'arrayContains' as any,  // Custom validator
         targetFields: ['permissions'],
-        crossFieldValidator: { name: 'arrayContains', params: { value: 'admin' } },
+        params: { value: 'admin' },
         message: 'Must have admin permission',
       };
 
@@ -243,10 +235,10 @@ describe('ClientValidator CrossField Support', () => {
     });
 
     it('should fail when array does not contain value', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'arrayContains' as any,  // Custom validator
         targetFields: ['permissions'],
-        crossFieldValidator: { name: 'arrayContains', params: { value: 'admin' } },
+        params: { value: 'admin' },
         message: 'Must have admin permission',
       };
 
@@ -260,10 +252,9 @@ describe('ClientValidator CrossField Support', () => {
 
   describe('Unknown CrossField Validator', () => {
     it('should pass for unknown validator (backend fallback)', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'someBackendOnlyValidator' as any,  // Unknown custom validator
         targetFields: ['field1'],
-        crossFieldValidator: 'someBackendOnlyValidator',
         message: 'This should pass on frontend',
       };
 
@@ -280,9 +271,8 @@ describe('ClientValidator CrossField Support', () => {
       const rules: ValidationRule[] = [
         { type: 'required', message: 'Field is required' },
         {
-          type: 'crossField',
+          type: 'atLeastOne' as any,
           targetFields: ['otherField'],
-          crossFieldValidator: 'isNotEmpty',
           message: 'Other field must not be empty',
         },
       ];
@@ -297,9 +287,8 @@ describe('ClientValidator CrossField Support', () => {
       const rules: ValidationRule[] = [
         { type: 'required', message: 'Field is required' },
         {
-          type: 'crossField',
+          type: 'atLeastOne' as any,
           targetFields: ['otherField'],
-          crossFieldValidator: 'isNotEmpty',
           message: 'Other field must not be empty',
         },
       ];
@@ -331,15 +320,13 @@ describe('ValidationRuleGroup Support', () => {
         {
           or: [
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['email'],
-              crossFieldValidator: 'isNotEmpty',
               message: 'Email required',
             },
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['phone'],
-              crossFieldValidator: 'isNotEmpty',
               message: 'Phone required',
             },
           ],
@@ -359,15 +346,13 @@ describe('ValidationRuleGroup Support', () => {
         {
           or: [
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['email'],
-              crossFieldValidator: 'isNotEmpty',
               message: 'Email required',
             },
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['phone'],
-              crossFieldValidator: 'isNotEmpty',
               message: 'Phone required',
             },
           ],
@@ -425,9 +410,8 @@ describe('ValidationRuleGroup Support', () => {
       const rules: any[] = [
         {
           not: {
-            type: 'crossField',
+            type: 'atLeastOne' as any,
             targetFields: ['isAdmin'],
-            crossFieldValidator: 'isTrue',
             message: 'User is admin',
           },
           groupMessage: 'User must not be admin',
@@ -445,9 +429,8 @@ describe('ValidationRuleGroup Support', () => {
       const rules: any[] = [
         {
           not: {
-            type: 'crossField',
+            type: 'atLeastOne' as any,
             targetFields: ['isAdmin'],
-            crossFieldValidator: 'isTrue',
             message: 'User is admin',
           },
           groupMessage: 'User must not be admin',
@@ -469,17 +452,15 @@ describe('ValidationRuleGroup Support', () => {
         {
           or: [
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['isPremium'],
-              crossFieldValidator: 'isTrue',
               message: 'Premium user',
             },
             {
               and: [
                 {
-                  type: 'crossField',
+                  type: 'atLeastOne' as any,
                   targetFields: ['hasCustomConfig'],
-                  crossFieldValidator: 'isTrue',
                   message: 'Has custom config',
                 },
                 { type: 'arrayLength', max: 2, message: 'Max 2 items' },

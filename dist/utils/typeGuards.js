@@ -1,36 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CROSS_FIELD_TYPES = void 0;
-exports.isCrossFieldType = isCrossFieldType;
-exports.getCrossFieldValidatorName = getCrossFieldValidatorName;
-exports.enrichCrossFieldRule = enrichCrossFieldRule;
-exports.isValidationRule = isValidationRule;
-exports.isValidationRuleGroup = isValidationRuleGroup;
-exports.getGroupRules = getGroupRules;
-exports.getGroupOperator = getGroupOperator;
-exports.getGroupMessage = getGroupMessage;
-exports.flattenValidationRules = flattenValidationRules;
-exports.extractFieldReferences = extractFieldReferences;
-exports.extractConditionalFields = extractConditionalFields;
-exports.CROSS_FIELD_TYPES = [
-    'crossField',
-    'crossFieldEquals',
-    'crossFieldNotEquals',
-    'crossFieldGreaterThan',
-    'crossFieldLessThan',
-    'crossFieldSumEquals',
-    'crossFieldPercentageSum',
-    'crossFieldDateInRange',
-    'crossFieldAtLeastOne',
-    'crossFieldCustom',
-];
-function isCrossFieldType(type) {
-    return type === 'crossField' || type.startsWith('crossField');
+import { CROSS_FIELD_TYPES, } from 'formfiller-schema';
+export { CROSS_FIELD_TYPES };
+export function isCrossFieldType(type) {
+    return CROSS_FIELD_TYPES.includes(type);
 }
-function getCrossFieldValidatorName(type) {
-    return type.replace('crossField', '').toLowerCase();
+export function getCrossFieldValidatorName(type) {
+    return type;
 }
-function enrichCrossFieldRule(rule, currentFieldPath) {
+export function enrichCrossFieldRule(rule, currentFieldPath) {
     if (!isCrossFieldType(rule.type)) {
         return rule;
     }
@@ -43,10 +19,10 @@ function enrichCrossFieldRule(rule, currentFieldPath) {
         targetFields,
     };
 }
-function isValidationRule(rule) {
+export function isValidationRule(rule) {
     return 'type' in rule && typeof rule.type === 'string';
 }
-function isValidationRuleGroup(rule) {
+export function isValidationRuleGroup(rule) {
     const group = rule;
     if ('operator' in group &&
         ('and' === group.operator || 'or' === group.operator || 'not' === group.operator)) {
@@ -59,7 +35,7 @@ function isValidationRuleGroup(rule) {
     }
     return false;
 }
-function getGroupRules(group) {
+export function getGroupRules(group) {
     if (group.rules && Array.isArray(group.rules)) {
         return group.rules;
     }
@@ -74,7 +50,7 @@ function getGroupRules(group) {
     }
     return [];
 }
-function getGroupOperator(group) {
+export function getGroupOperator(group) {
     if (group.operator) {
         return group.operator;
     }
@@ -86,10 +62,10 @@ function getGroupOperator(group) {
         return 'not';
     return 'and';
 }
-function getGroupMessage(group) {
+export function getGroupMessage(group) {
     return group.groupMessage || group.message;
 }
-function flattenValidationRules(rules) {
+export function flattenValidationRules(rules) {
     const result = [];
     for (const rule of rules) {
         if (isValidationRule(rule)) {
@@ -102,7 +78,7 @@ function flattenValidationRules(rules) {
     }
     return result;
 }
-function extractFieldReferences(rules) {
+export function extractFieldReferences(rules) {
     const fields = new Set();
     for (const rule of rules) {
         if (isValidationRule(rule)) {
@@ -125,7 +101,7 @@ function extractFieldReferences(rules) {
     }
     return Array.from(fields);
 }
-function extractConditionalFields(expression) {
+export function extractConditionalFields(expression) {
     const fields = new Set();
     if (typeof expression !== 'object' || expression === null) {
         return [];

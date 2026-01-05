@@ -3,7 +3,7 @@
  */
 
 import { ValidationRule } from 'formfiller-schema';
-import { ComputedValidationResult } from './types';
+import { ComputedValidationResult } from './types.js';
 
 export class NumericMatchProcessor {
   /**

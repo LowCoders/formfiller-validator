@@ -9,8 +9,8 @@
  * - Readonly fields (readonlyIf: true) ARE validated (security!)
  */
 
-import { Validator } from '../core/Validator';
-import { FormConfig } from '../types';
+import { Validator } from '../core/Validator.js';
+import { FormConfig } from '../types/index.js';
 
 describe('Validation Scope', () => {
   let validator: Validator;

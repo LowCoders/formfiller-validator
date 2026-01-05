@@ -11,6 +11,7 @@
       "enum": [
         "required",
         "stringLength",
+        "arrayLength",
         "range",
         "pattern",
         "email",
@@ -18,7 +19,14 @@
         "compare",
         "custom",
         "async",
-        "crossField"
+        "equals",
+        "notEquals",
+        "greaterThan",
+        "lessThan",
+        "sumEquals",
+        "percentageSum",
+        "dateInRange",
+        "atLeastOne"
       ],
       "description": "Type of validation rule"
     },
@@ -73,12 +81,7 @@
     "targetFields": {
       "type": "array",
       "items": { "type": "string" },
-      "description": "Target fields (for crossField rule)"
-    },
-    "crossFieldValidator": {
-      "type": "object",
-      "description": "Cross-field validation function (for crossField rule)"
+      "description": "Target fields for cross-field validation (equals, notEquals, sumEquals, etc.)"
     }
   }
 }
-

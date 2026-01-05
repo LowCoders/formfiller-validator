@@ -124,7 +124,7 @@ src/__tests__/
 - ✅ compare (==, !=, >, <, >=, <=) (parameterized)
 - ✅ passwordMatch, emailMatch
 - ✅ arrayContains, arrayNotContains, arrayContainsAny (parameterized)
-- ✅ atLeastOneRequired, matchesPattern
+- ✅ atLeastOne, matchesPattern
 
 **Backend (CallbackRegistry):**
 - ✅ All frontend validators (backend version)

@@ -13,7 +13,7 @@ import {
   flattenValidationRules,
   extractFieldReferences,
   extractConditionalFields,
-} from '../utils/typeGuards';
+} from '../utils/typeGuards.js';
 import { ValidationRule, ValidationRuleGroup, ValidationRuleOrGroup } from 'formfiller-schema';
 
 describe('typeGuards', () => {
@@ -23,12 +23,12 @@ describe('typeGuards', () => {
 
   describe('isValidationRule', () => {
     it('should return true for validation rule with type', () => {
-      const rule: ValidationRule = { type: 'required', message: 'Required' };
+      const rule = { type: 'required', message: 'Required' };
       expect(isValidationRule(rule)).toBe(true);
     });
 
     it('should return true for complex validation rule', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'stringLength',
         min: 5,
         max: 100,
@@ -108,7 +108,7 @@ describe('typeGuards', () => {
     });
 
     it('should return false for validation rule', () => {
-      const rule: ValidationRule = { type: 'required' };
+      const rule = { type: 'required' };
       expect(isValidationRuleGroup(rule)).toBe(false);
     });
   });
@@ -285,9 +285,8 @@ describe('typeGuards', () => {
     it('should extract crossField target fields', () => {
       const rules: ValidationRuleOrGroup[] = [
         {
-          type: 'crossField',
+          type: 'atLeastOne',
           targetFields: ['email', 'phone'],
-          crossFieldValidator: 'atLeastOneRequired',
         },
       ];
 
@@ -326,9 +325,8 @@ describe('typeGuards', () => {
         {
           or: [
             {
-              type: 'crossField',
+              type: 'atLeastOne',
               targetFields: ['field1'],
-              crossFieldValidator: 'isNotEmpty',
             },
             {
               type: 'compare',
@@ -347,14 +345,12 @@ describe('typeGuards', () => {
     it('should return unique fields', () => {
       const rules: ValidationRuleOrGroup[] = [
         {
-          type: 'crossField',
+          type: 'atLeastOne',
           targetFields: ['email'],
-          crossFieldValidator: 'isNotEmpty',
         },
         {
-          type: 'crossField',
+          type: 'atLeastOne',
           targetFields: ['email', 'phone'],
-          crossFieldValidator: 'atLeastOneRequired',
         },
       ];
 

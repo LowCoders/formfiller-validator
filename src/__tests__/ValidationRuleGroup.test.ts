@@ -10,7 +10,7 @@ import {
   getGroupRules,
   getGroupOperator,
   getGroupMessage,
-} from '../utils/typeGuards';
+} from '../utils/typeGuards.js';
 import { ValidationRule, ValidationRuleGroup } from 'formfiller-schema';
 
 describe('ValidationRuleGroup Type Guards', () => {
@@ -59,7 +59,7 @@ describe('ValidationRuleGroup Type Guards', () => {
     });
 
     it('should not detect ValidationRule as group', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         message: 'Field is required',
       };
@@ -194,8 +194,8 @@ describe('Nested ValidationRuleGroup', () => {
     const notGroup: ValidationRuleGroup = {
       not: {
         and: [
-          { type: 'crossField', targetFields: ['field1'], crossFieldValidator: 'isNotEmpty' },
-          { type: 'crossField', targetFields: ['field2'], crossFieldValidator: 'isNotEmpty' },
+          { type: 'atLeastOne', targetFields: ['field1'] },
+          { type: 'atLeastOne', targetFields: ['field2'] },
         ],
         groupMessage: 'Both fields empty',
       },
@@ -268,8 +268,8 @@ describe('Nested ValidationRuleGroup', () => {
           {
             not: {
               or: [
-                { type: 'crossField', targetFields: ['fieldA'], crossFieldValidator: 'isNotEmpty' },
-                { type: 'crossField', targetFields: ['fieldB'], crossFieldValidator: 'isNotEmpty' },
+                { type: 'atLeastOne', targetFields: ['fieldA'] },
+                { type: 'atLeastOne', targetFields: ['fieldB'] },
               ],
               groupMessage: 'A OR B',
             },
@@ -277,9 +277,8 @@ describe('Nested ValidationRuleGroup', () => {
           },
           {
             not: {
-              type: 'crossField',
+              type: 'atLeastOne',
               targetFields: ['fieldC'],
-              crossFieldValidator: 'isTrue',
               message: 'C is true',
             },
             groupMessage: 'NOT C',
@@ -305,21 +304,18 @@ describe('Nested ValidationRuleGroup', () => {
       const orGroup: ValidationRuleGroup = {
         or: [
           {
-            type: 'crossField',
+            type: 'atLeastOne',
             targetFields: ['email'],
-            crossFieldValidator: 'isNotEmpty',
             message: 'Email filled',
           },
           {
-            type: 'crossField',
+            type: 'atLeastOne',
             targetFields: ['phone'],
-            crossFieldValidator: 'isNotEmpty',
             message: 'Phone filled',
           },
           {
-            type: 'crossField',
+            type: 'atLeastOne',
             targetFields: ['address'],
-            crossFieldValidator: 'isNotEmpty',
             message: 'Address filled',
           },
         ],
@@ -332,10 +328,10 @@ describe('Nested ValidationRuleGroup', () => {
       const rules = getGroupRules(orGroup);
       expect(rules).toHaveLength(3);
 
-      // All should be crossField rules
+      // All should be atLeastOne rules
       rules.forEach((rule) => {
         if (isValidationRule(rule)) {
-          expect((rule as any).type).toBe('crossField');
+          expect((rule as any).type).toBe('atLeastOne');
         }
       });
     });

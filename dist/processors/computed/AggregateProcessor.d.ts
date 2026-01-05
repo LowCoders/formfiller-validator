@@ -1,4 +1,4 @@
-import { AggregateResult, FieldComputedResult } from './types';
+import { AggregateResult, FieldComputedResult } from './types.js';
 import { ComputedRule } from 'formfiller-schema';
 export declare class AggregateProcessor {
     private conditionalEvaluator;

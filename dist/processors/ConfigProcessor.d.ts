@@ -1,6 +1,6 @@
-import { ValidationContext } from '../core/ValidationContext';
-import { ValidationResult } from '../core/ValidationResult';
-import { CallbackRegistry } from '../core/CallbackRegistry';
+import { ValidationContext } from '../core/ValidationContext.js';
+import { ValidationResult } from '../core/ValidationResult.js';
+import { CallbackRegistry } from '../core/CallbackRegistry.js';
 export declare class ConfigProcessor {
     private readonly conditionalEvaluator;
     private readonly validationConditionEvaluator;

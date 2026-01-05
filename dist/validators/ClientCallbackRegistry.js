@@ -1,9 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClientCallbackRegistry = void 0;
-exports.getClientRegistry = getClientRegistry;
-exports.resetClientRegistry = resetClientRegistry;
-class ClientCallbackRegistry {
+export class ClientCallbackRegistry {
     callbacks = new Map();
     constructor() {
         this.registerPredefinedValidators();
@@ -126,7 +121,7 @@ class ClientCallbackRegistry {
             }
             return true;
         }, 'Validates that numeric values are in ascending order');
-        this.register('atLeastOneRequired', (values) => {
+        this.register('atLeastOne', (values) => {
             const targetVals = getTargetValues(values);
             return targetVals.some((val) => {
                 if (val === null || val === undefined)
@@ -140,6 +135,40 @@ class ClientCallbackRegistry {
                 return true;
             });
         }, 'Checks if at least one target field is not empty');
+        this.register('sumEquals', (values) => {
+            const currentValue = values._currentValue;
+            const targetValues = getTargetValues(values).map((val) => Number(val) || 0);
+            const sum = targetValues.reduce((acc, val) => acc + val, 0);
+            return Number(currentValue) === sum;
+        }, 'Checks if current field value equals sum of target fields');
+        this.register('percentageSum', (values) => {
+            const allValues = getTargetValues(values).map((val) => Number(val) || 0);
+            const sum = allValues.reduce((acc, val) => acc + val, 0);
+            return sum === 100;
+        }, 'Checks if all percentage fields sum to exactly 100%');
+        this.register('dateInRange', (values) => {
+            const currentValue = values._currentValue;
+            const targetVals = getTargetValues(values).filter((v) => v !== undefined);
+            if (targetVals.length < 2)
+                return true;
+            const [startVal, endVal] = targetVals;
+            const projectStart = new Date(startVal);
+            const projectEnd = new Date(endVal);
+            const currentDate = new Date(currentValue);
+            if (isNaN(projectStart.getTime()) || isNaN(projectEnd.getTime()))
+                return true;
+            if (isNaN(currentDate.getTime()))
+                return true;
+            return currentDate >= projectStart && currentDate <= projectEnd;
+        }, 'Checks if current date is within date range');
+        this.register('productEquals', (values) => {
+            const currentValue = Number(values._currentValue) || 0;
+            const targetValues = getTargetValues(values).map((val) => Number(val) || 0);
+            if (targetValues.length === 0)
+                return true;
+            const product = targetValues.reduce((acc, val) => acc * val, 1);
+            return currentValue === product;
+        }, 'Checks if current field value equals product of target fields');
         this.register('arrayContains', (values, params) => {
             const targetVals = getTargetValues(values);
             const arr = targetVals.find((v) => v !== undefined);
@@ -201,15 +230,14 @@ class ClientCallbackRegistry {
         }, 'Checks if value is NOT in the disallowed values list', true);
     }
 }
-exports.ClientCallbackRegistry = ClientCallbackRegistry;
 let globalClientRegistry = null;
-function getClientRegistry() {
+export function getClientRegistry() {
     if (!globalClientRegistry) {
         globalClientRegistry = new ClientCallbackRegistry();
     }
     return globalClientRegistry;
 }
-function resetClientRegistry() {
+export function resetClientRegistry() {
     globalClientRegistry = null;
 }
 //# sourceMappingURL=ClientCallbackRegistry.js.map

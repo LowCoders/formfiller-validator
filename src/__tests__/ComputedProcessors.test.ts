@@ -9,11 +9,11 @@
  * - AggregateProcessor
  */
 
-import { ExactMatchProcessor } from '../processors/computed/ExactMatchProcessor';
-import { NumericMatchProcessor } from '../processors/computed/NumericMatchProcessor';
-import { ArrayMatchProcessor } from '../processors/computed/ArrayMatchProcessor';
-import { KeywordMatchProcessor } from '../processors/computed/KeywordMatchProcessor';
-import { AggregateProcessor } from '../processors/computed/AggregateProcessor';
+import { ExactMatchProcessor } from '../processors/computed/ExactMatchProcessor.js';
+import { NumericMatchProcessor } from '../processors/computed/NumericMatchProcessor.js';
+import { ArrayMatchProcessor } from '../processors/computed/ArrayMatchProcessor.js';
+import { KeywordMatchProcessor } from '../processors/computed/KeywordMatchProcessor.js';
+import { AggregateProcessor } from '../processors/computed/AggregateProcessor.js';
 import { ValidationRule, ComputedRule } from 'formfiller-schema';
 
 describe('ComputedProcessors', () => {
@@ -30,7 +30,7 @@ describe('ComputedProcessors', () => {
 
     describe('String matching', () => {
       it('should return correct=true for exact string match (case insensitive)', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 'Budapest',
         };
@@ -43,7 +43,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=true for match with leading/trailing spaces', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 'Budapest',
         };
@@ -54,7 +54,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=false for incorrect string', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 'Budapest',
           message: 'Wrong city!',
@@ -68,7 +68,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should use default message when no custom message provided', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 'Budapest',
         };
@@ -81,7 +81,7 @@ describe('ComputedProcessors', () => {
 
     describe('Number matching', () => {
       it('should return correct=true for exact number match', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 42,
           points: 2,
@@ -95,7 +95,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=true for number as string match', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 42,
         };
@@ -106,7 +106,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=false for incorrect number', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 42,
         };
@@ -117,7 +117,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=false for NaN input', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 42,
         };
@@ -130,7 +130,7 @@ describe('ComputedProcessors', () => {
 
     describe('Points and Penalty', () => {
       it('should apply penalty for incorrect answer', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 'correct',
           points: 5,
@@ -145,7 +145,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should use default points (1) when not specified', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 'test',
         };
@@ -159,7 +159,7 @@ describe('ComputedProcessors', () => {
 
     describe('Edge cases', () => {
       it('should handle null input', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 'test',
         };
@@ -171,7 +171,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should handle undefined input', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 'test',
         };
@@ -182,7 +182,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should handle empty string', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: '',
         };
@@ -207,7 +207,7 @@ describe('ComputedProcessors', () => {
 
     describe('Exact numeric match', () => {
       it('should return correct=true for exact match', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 100,
         };
@@ -219,7 +219,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=false for non-matching value', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 100,
         };
@@ -232,7 +232,7 @@ describe('ComputedProcessors', () => {
 
     describe('Tolerance matching', () => {
       it('should return correct=true within tolerance', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 100,
           tolerance: 5,
@@ -244,7 +244,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=true at tolerance boundary', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 100,
           tolerance: 5,
@@ -256,7 +256,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=false outside tolerance', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 100,
           tolerance: 5,
@@ -269,7 +269,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=true for negative direction tolerance', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 100,
           tolerance: 5,
@@ -283,7 +283,7 @@ describe('ComputedProcessors', () => {
 
     describe('Invalid inputs', () => {
       it('should return correct=false for non-numeric user input', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 100,
         };
@@ -295,7 +295,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should handle string numbers correctly', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 100,
         };
@@ -308,7 +308,7 @@ describe('ComputedProcessors', () => {
 
     describe('Points and penalties', () => {
       it('should award correct points on match', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 42,
           points: 10,
@@ -320,7 +320,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should apply penalty on mismatch', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 42,
           points: 10,
@@ -347,7 +347,7 @@ describe('ComputedProcessors', () => {
 
     describe('Exact array match', () => {
       it('should return correct=true for exact array match (same order)', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: ['A', 'B', 'C'],
         };
@@ -359,7 +359,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=true for exact match regardless of order', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: ['A', 'B', 'C'],
         };
@@ -370,7 +370,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=false for partial match without partialCredit', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: ['A', 'B', 'C'],
           partialCredit: false,
@@ -382,7 +382,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=false for extra items', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: ['A', 'B'],
         };
@@ -395,7 +395,7 @@ describe('ComputedProcessors', () => {
 
     describe('Partial credit', () => {
       it('should award partial credit for partial match', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: ['A', 'B', 'C'],
           points: 3,
@@ -411,7 +411,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should apply penalty for incorrect items with partial credit', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: ['A', 'B', 'C'],
           points: 3,
@@ -428,7 +428,7 @@ describe('ComputedProcessors', () => {
 
     describe('Single value to array', () => {
       it('should convert single value to array for comparison', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: ['A'],
         };
@@ -441,7 +441,7 @@ describe('ComputedProcessors', () => {
 
     describe('Invalid configuration', () => {
       it('should return error for non-array correctAnswer', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: 'not an array',
         };
@@ -455,7 +455,7 @@ describe('ComputedProcessors', () => {
 
     describe('Points and penalties', () => {
       it('should use custom points', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           correctAnswer: ['A', 'B'],
           points: 5,
@@ -482,7 +482,7 @@ describe('ComputedProcessors', () => {
 
     describe('Required keywords', () => {
       it('should return correct=true when all required keywords present', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           keywords: {
             required: ['important', 'keyword'],
@@ -496,7 +496,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should return correct=false when required keyword missing', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           keywords: {
             required: ['important', 'missing'],
@@ -511,7 +511,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should be case insensitive', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           keywords: {
             required: ['IMPORTANT'],
@@ -527,7 +527,7 @@ describe('ComputedProcessors', () => {
 
     describe('Minimum length', () => {
       it('should fail if text is shorter than minLength', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           keywords: { required: [], optional: [] },
           minLength: 100,
@@ -540,7 +540,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should pass if text meets minLength', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           keywords: { required: [], optional: [] },
           minLength: 5,
@@ -554,7 +554,7 @@ describe('ComputedProcessors', () => {
 
     describe('Optional keywords and partial credit', () => {
       it('should award full points with 50%+ optional keywords', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           keywords: {
             required: ['main'],
@@ -571,7 +571,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should award partial points with some optional keywords', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           keywords: {
             required: ['main'],
@@ -589,7 +589,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should award base points with no optional keywords', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           keywords: {
             required: ['main'],
@@ -609,7 +609,7 @@ describe('ComputedProcessors', () => {
 
     describe('Edge cases', () => {
       it('should handle empty input', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           keywords: { required: ['test'], optional: [] },
         };
@@ -620,7 +620,7 @@ describe('ComputedProcessors', () => {
       });
 
       it('should handle null input', () => {
-        const rule: ValidationRule = {
+        const rule = {
           type: 'computed',
           keywords: { required: ['test'], optional: [] },
         };

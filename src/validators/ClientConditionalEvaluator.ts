@@ -6,7 +6,7 @@
  */
 
 import { ConditionalExpression } from 'formfiller-schema';
-import { ClientValidationContext } from './ClientValidationContext';
+import { ClientValidationContext } from './ClientValidationContext.js';
 
 export class ClientConditionalEvaluator {
   /**

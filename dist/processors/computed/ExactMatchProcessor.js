@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExactMatchProcessor = void 0;
-class ExactMatchProcessor {
+export class ExactMatchProcessor {
     evaluate(fieldValue, rule) {
         const correctAnswer = rule.correctAnswer;
         const points = rule.points ?? 1;
@@ -28,5 +25,4 @@ class ExactMatchProcessor {
         };
     }
 }
-exports.ExactMatchProcessor = ExactMatchProcessor;
 //# sourceMappingURL=ExactMatchProcessor.js.map

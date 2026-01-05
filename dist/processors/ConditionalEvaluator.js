@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConditionalEvaluator = void 0;
-class ConditionalEvaluator {
+export class ConditionalEvaluator {
     evaluate(expression, context) {
         if (Array.isArray(expression)) {
             return expression.every((cond) => this.evaluate(cond, context));
@@ -102,5 +99,4 @@ class ConditionalEvaluator {
         }
     }
 }
-exports.ConditionalEvaluator = ConditionalEvaluator;
 //# sourceMappingURL=ConditionalEvaluator.js.map

@@ -1,12 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLabelText = getLabelText;
-exports.buildPathLabels = buildPathLabels;
-exports.formatPathLabels = formatPathLabels;
-exports.buildTargetFieldLabels = buildTargetFieldLabels;
-exports.formatErrorWithFieldRefs = formatErrorWithFieldRefs;
-exports.buildValidationError = buildValidationError;
-function getLabelText(config) {
+export function getLabelText(config) {
     if (!config)
         return undefined;
     const fieldConfig = config;
@@ -26,7 +18,7 @@ function getLabelText(config) {
     }
     return fieldConfig.name;
 }
-function buildPathLabels(fieldPath, fieldConfigMap) {
+export function buildPathLabels(fieldPath, fieldConfigMap) {
     const pathParts = fieldPath.split('.');
     const labels = [];
     let currentPath = '';
@@ -43,23 +35,23 @@ function buildPathLabels(fieldPath, fieldConfigMap) {
     }
     return labels;
 }
-function formatPathLabels(pathLabels, separator = ' > ') {
+export function formatPathLabels(pathLabels, separator = ' > ') {
     return pathLabels.join(separator);
 }
-function buildTargetFieldLabels(targetFields, fieldConfigMap) {
+export function buildTargetFieldLabels(targetFields, fieldConfigMap) {
     return targetFields.map((path) => ({
         path,
         pathLabels: buildPathLabels(path, fieldConfigMap),
     }));
 }
-function formatErrorWithFieldRefs(baseMessage, targetFieldLabels) {
+export function formatErrorWithFieldRefs(baseMessage, targetFieldLabels) {
     if (!targetFieldLabels || targetFieldLabels.length === 0) {
         return baseMessage;
     }
     const fieldRefs = targetFieldLabels.map((t) => formatPathLabels(t.pathLabels)).join(', ');
     return `${baseMessage} (${fieldRefs})`;
 }
-function buildValidationError(field, message, rule, fieldConfigMap, targetFields, errorTarget) {
+export function buildValidationError(field, message, rule, fieldConfigMap, targetFields, errorTarget) {
     const path = field.split('.');
     const pathLabels = buildPathLabels(field, fieldConfigMap);
     const result = {

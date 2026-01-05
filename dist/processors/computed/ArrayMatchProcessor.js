@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ArrayMatchProcessor = void 0;
-class ArrayMatchProcessor {
+export class ArrayMatchProcessor {
     evaluate(fieldValue, rule) {
         const correctAnswer = rule.correctAnswer;
         const points = rule.points ?? 1;
@@ -50,5 +47,4 @@ class ArrayMatchProcessor {
         };
     }
 }
-exports.ArrayMatchProcessor = ArrayMatchProcessor;
 //# sourceMappingURL=ArrayMatchProcessor.js.map

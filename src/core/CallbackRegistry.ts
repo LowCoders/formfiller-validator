@@ -6,7 +6,7 @@
  * and allows registration of custom validators.
  */
 
-import { ValidationContext } from './ValidationContext';
+import { ValidationContext } from './ValidationContext.js';
 
 /**
  * Validation callback signature for single-value validators (custom validation)
@@ -386,8 +386,9 @@ export class CallbackRegistry {
       /**
        * Validates that current field value equals the sum of target fields
        * Example: total_vacation_days = base_vacation_days + extra_vacation_days
+       * Type: sumEquals
        */
-      validateSumEquals: {
+      sumEquals: {
         callback: (values: Record<string, any>) => {
           const currentValue = values._currentValue;
           const targetValues = Object.entries(values)
@@ -403,8 +404,9 @@ export class CallbackRegistry {
       /**
        * Validates that all percentage fields sum to exactly 100%
        * All target fields (including current) must sum to 100
+       * Type: percentageSum
        */
-      validatePercentageSum: {
+      percentageSum: {
         callback: (values: Record<string, any>) => {
           // Sum all values except _currentValue (but the current field should be in targetFields)
           const allValues = Object.entries(values)
@@ -420,8 +422,9 @@ export class CallbackRegistry {
       /**
        * Validates that current date is within project date range
        * Expects targetFields: [project_start, project_end]
+       * Type: dateInRange
        */
-      validateDateInRange: {
+      dateInRange: {
         callback: (values: Record<string, any>) => {
           const currentValue = values._currentValue;
           const targetEntries = Object.entries(values).filter(([key]) => key !== '_currentValue');
@@ -445,8 +448,9 @@ export class CallbackRegistry {
 
       /**
        * General validator: at least one target field must not be empty
+       * Type: atLeastOne
        */
-      atLeastOneRequired: {
+      atLeastOne: {
         callback: (values: Record<string, any>) => {
           const targetValues = Object.entries(values)
             .filter(([key]) => key !== '_currentValue')
@@ -467,8 +471,9 @@ export class CallbackRegistry {
       /**
        * Validates that current field value equals the product of target fields
        * Example: total = hours × rate
+       * Maps to: crossFieldProductEquals (if added to schema)
        */
-      validateProductEquals: {
+      productEquals: {
         callback: (values: Record<string, any>) => {
           const currentValue = Number(values._currentValue) || 0;
           const targetValues = Object.entries(values)

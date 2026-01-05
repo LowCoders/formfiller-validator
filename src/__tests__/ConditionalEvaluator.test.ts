@@ -2,9 +2,9 @@
  * ConditionalEvaluator Tests
  */
 
-import { ConditionalEvaluator } from '../processors/ConditionalEvaluator';
-import { ValidationContext } from '../core/ValidationContext';
-import { FormConfig } from '../types';
+import { ConditionalEvaluator } from '../processors/ConditionalEvaluator.js';
+import { ValidationContext } from '../core/ValidationContext.js';
+import { FormConfig } from '../types/index.js';
 
 describe('ConditionalEvaluator', () => {
   let evaluator: ConditionalEvaluator;

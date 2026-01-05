@@ -1,4 +1,4 @@
-import { ValidationContext } from './ValidationContext';
+import { ValidationContext } from './ValidationContext.js';
 export type SingleValueCallback = (value: any, context: ValidationContext) => boolean | Promise<boolean>;
 export type CrossFieldCallback = (values: Record<string, any>, context: ValidationContext) => boolean | Promise<boolean>;
 export type ValidationCallback = SingleValueCallback | CrossFieldCallback;

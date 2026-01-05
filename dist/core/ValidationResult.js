@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ValidationResult = void 0;
-class ValidationResult {
+export class ValidationResult {
     valid;
     errors;
     computedResults;
@@ -165,5 +162,4 @@ class ValidationResult {
         return result;
     }
 }
-exports.ValidationResult = ValidationResult;
 //# sourceMappingURL=ValidationResult.js.map

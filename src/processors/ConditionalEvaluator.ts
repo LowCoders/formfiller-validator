@@ -5,7 +5,7 @@
  */
 
 import { ConditionalExpression } from 'formfiller-schema';
-import { ValidationContext } from '../core/ValidationContext';
+import { ValidationContext } from '../core/ValidationContext.js';
 
 export class ConditionalEvaluator {
   /**

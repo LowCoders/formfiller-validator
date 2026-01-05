@@ -1,4 +1,4 @@
-import { ValidationResult as IValidationResult, ValidationError, FieldValidationResult, ValidationMetadata, ValidationStats, DependencyGraphExport } from '../types';
+import { ValidationResult as IValidationResult, ValidationError, FieldValidationResult, ValidationMetadata, ValidationStats, DependencyGraphExport } from '../types/index.js';
 export declare class ValidationResult implements IValidationResult {
     valid: boolean;
     errors: ValidationError[];

@@ -2,8 +2,8 @@
  * ValidationContext Tests
  */
 
-import { ValidationContext } from '../core/ValidationContext';
-import { FormConfig } from '../types';
+import { ValidationContext } from '../core/ValidationContext.js';
+import { FormConfig } from '../types/index.js';
 
 describe('ValidationContext', () => {
   let context: ValidationContext;

@@ -4,15 +4,24 @@
  * Processes form configuration, extracts validation rules, and evaluates conditional expressions
  */
 
-import { ValidationContext } from '../core/ValidationContext';
-import { ValidationResult } from '../core/ValidationResult';
+import { ValidationContext } from '../core/ValidationContext.js';
+import { ValidationResult } from '../core/ValidationResult.js';
 import { FieldConfig, ComputedRule } from 'formfiller-schema';
-import { ConditionalEvaluator } from './ConditionalEvaluator';
-import { ValidationConditionEvaluator } from './ValidationConditionEvaluator';
-import { JoiAdapter } from '../adapters/JoiAdapter';
-import { FieldPathBuilder } from '../utils/FieldPathBuilder';
-import { CallbackRegistry } from '../core/CallbackRegistry';
-import { isContainerField, isDataField, getNestedItems, getFieldName } from '../utils/typeHelpers';
+import { ConditionalEvaluator } from './ConditionalEvaluator.js';
+import { ValidationConditionEvaluator } from './ValidationConditionEvaluator.js';
+import { JoiAdapter } from '../adapters/JoiAdapter.js';
+import { FieldPathBuilder } from '../utils/FieldPathBuilder.js';
+import { CallbackRegistry } from '../core/CallbackRegistry.js';
+import { isContainerField, isDataField, getNestedItems, getFieldName } from '../utils/typeHelpers.js';
+import {
+  isValidationRule,
+  isValidationRuleGroup,
+  getGroupRules,
+  getGroupOperator,
+  getGroupMessage,
+  isCrossFieldType,
+  enrichCrossFieldRule,
+} from '../utils/typeGuards.js';
 import {
   ExactMatchProcessor,
   ArrayMatchProcessor,
@@ -21,7 +30,7 @@ import {
   AggregateProcessor,
   FieldComputedResult,
   ComputedValidationResult,
-} from './computed';
+} from './computed/index.js';
 
 export class ConfigProcessor {
   private readonly conditionalEvaluator: ConditionalEvaluator;
@@ -361,10 +370,6 @@ export class ConfigProcessor {
    * Check if validation rules contain a required rule
    */
   private hasRequiredRule(rules: import('formfiller-schema').ValidationRuleOrGroup[]): boolean {
-    const { isValidationRule, isValidationRuleGroup } = require('../utils/typeGuards');
-
-    const { getGroupRules } = require('../utils/typeGuards');
-
     for (const ruleOrGroup of rules) {
       if (isValidationRule(ruleOrGroup)) {
         const rule = ruleOrGroup as import('formfiller-schema').ValidationRule;
@@ -394,12 +399,6 @@ export class ConfigProcessor {
     context: ValidationContext,
     result: ValidationResult
   ): Promise<boolean> {
-    const {
-      isValidationRule,
-      isValidationRuleGroup,
-      isCrossFieldType,
-      enrichCrossFieldRule,
-    } = require('../utils/typeGuards');
     let hasErrors = false;
 
     for (const ruleOrGroup of rules) {
@@ -446,8 +445,6 @@ export class ConfigProcessor {
               comparisonType: rule.comparisonType,
               // CrossField params
               targetFields: rule.targetFields,
-              crossFieldValidator:
-                typeof rule.crossFieldValidator === 'string' ? rule.crossFieldValidator : undefined,
               // Error target for display routing
               errorTarget: rule.errorTarget,
             }
@@ -532,13 +529,6 @@ export class ConfigProcessor {
     context: ValidationContext,
     result: ValidationResult
   ): Promise<boolean> {
-    const {
-      isValidationRule,
-      isValidationRuleGroup,
-      getGroupRules,
-      getGroupOperator,
-      getGroupMessage,
-    } = require('../utils/typeGuards');
     const errors: string[] = [];
 
     // Get rules array (handles both formats)

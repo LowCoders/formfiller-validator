@@ -1,5 +1,5 @@
 import { ValidationRule } from 'formfiller-schema';
-import { ComputedValidationResult } from './types';
+import { ComputedValidationResult } from './types.js';
 export declare class ExactMatchProcessor {
     evaluate(fieldValue: any, rule: ValidationRule): ComputedValidationResult;
 }

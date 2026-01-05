@@ -6,9 +6,9 @@
  */
 
 import Joi from 'joi';
-import { ValidationRule } from '../types';
-import { ValidationContext } from '../core/ValidationContext';
-import { CallbackRegistry } from '../core/CallbackRegistry';
+import { ValidationRule } from '../types/index.js';
+import { ValidationContext } from '../core/ValidationContext.js';
+import { CallbackRegistry } from '../core/CallbackRegistry.js';
 
 /**
  * Cache key generation for cacheable rules
@@ -171,15 +171,14 @@ export class JoiAdapter {
       case 'async':
         return this.createAsyncSchema(rule, context);
 
-      case 'crossFieldEquals':
-      case 'crossFieldNotEquals':
-      case 'crossFieldGreaterThan':
-      case 'crossFieldLessThan':
-      case 'crossFieldSumEquals':
-      case 'crossFieldPercentageSum':
-      case 'crossFieldDateInRange':
-      case 'crossFieldAtLeastOne':
-      case 'crossFieldCustom':
+      case 'equals':
+      case 'notEquals':
+      case 'greaterThan':
+      case 'lessThan':
+      case 'sumEquals':
+      case 'percentageSum':
+      case 'dateInRange':
+      case 'atLeastOne':
         return this.createCrossFieldSchema(rule, context);
 
       case 'computed':
@@ -423,30 +422,15 @@ export class JoiAdapter {
 
   /**
    * Create cross-field validation schema
+   * The type IS the callback name (e.g., 'atLeastOne')
    */
   private createCrossFieldSchema(rule: ValidationRule, context: ValidationContext): Joi.Schema {
-    if (!rule.targetFields || !rule.crossFieldValidator) {
+    if (!rule.targetFields) {
       return Joi.any();
     }
 
-    // Resolve validator: can be string, {name, params} object, or function
-    let validator: (
-      values: Record<string, any>,
-      context: ValidationContext
-    ) => boolean | Promise<boolean>;
-    let params: Record<string, any> | undefined;
-
-    if (typeof rule.crossFieldValidator === 'string') {
-      validator = this.resolveCallback(rule.crossFieldValidator);
-    } else if (typeof rule.crossFieldValidator === 'object' && 'name' in rule.crossFieldValidator) {
-      // New parameterized format: { name: string, params?: Record<string, any> }
-      validator = this.resolveCallback(rule.crossFieldValidator.name);
-      params = rule.crossFieldValidator.params;
-    } else if (typeof rule.crossFieldValidator === 'function') {
-      validator = rule.crossFieldValidator;
-    } else {
-      return Joi.any(); // Unknown format, pass through
-    }
+    // Type IS the callback name - use directly
+    const validator = this.resolveCallback(rule.type);
 
     return Joi.any().custom(async (value, _helpers) => {
       try {
@@ -458,17 +442,7 @@ export class JoiAdapter {
           values[targetField] = context.getValue(targetField);
         }
 
-        // Pass params to validator if available (for parameterized validators)
-        // Backend validators receive params via context.params
-        // Temporarily inject params into context (mutable operation)
-        if (params) {
-          (context as any).params = params;
-        }
         const isValid = await validator(values, context);
-        // Clean up params after validation
-        if (params) {
-          delete (context as any).params;
-        }
 
         if (!isValid) {
           // IMPORTANT: Must THROW for async custom validators, not return!

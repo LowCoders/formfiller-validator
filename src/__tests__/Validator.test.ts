@@ -2,8 +2,8 @@
  * Validator Tests
  */
 
-import { Validator } from '../core/Validator';
-import { FormConfig } from '../types';
+import { Validator } from '../core/Validator.js';
+import { FormConfig } from '../types/index.js';
 
 describe('Validator', () => {
   let validator: Validator;

@@ -9,7 +9,7 @@ import {
   FormConfig,
   ValidatorConfig,
   DependencyGraph,
-} from '../types';
+} from '../types/index.js';
 
 export class ValidationContext implements IValidationContext {
   public readonly data: Record<string, any>;

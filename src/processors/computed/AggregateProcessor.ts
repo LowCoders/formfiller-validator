@@ -2,8 +2,8 @@
  * AggregateProcessor - Form-level aggregation and evaluation
  */
 
-import { ConditionalEvaluator } from '../ConditionalEvaluator';
-import { AggregateResult, FieldComputedResult, CategoryScore } from './types';
+import { ConditionalEvaluator } from '../ConditionalEvaluator.js';
+import { AggregateResult, FieldComputedResult, CategoryScore } from './types.js';
 import { ComputedRule } from 'formfiller-schema';
 
 export class AggregateProcessor {

@@ -9,23 +9,23 @@
  */
 
 // Re-export everything from client (Joi-free)
-export * from './validators';
-export * from './types';
-export { DependencyGraphBuilder } from './utils/DependencyGraphBuilder';
+export * from './validators/index.js';
+export * from './types/index.js';
+export { DependencyGraphBuilder } from './utils/DependencyGraphBuilder.js';
 
 // Server-side Core (Joi-dependent)
-export { Validator } from './core/Validator';
-export { ValidationContext } from './core/ValidationContext';
-export { ValidationResult } from './core/ValidationResult';
-export { CallbackRegistry, getGlobalRegistry, resetGlobalRegistry } from './core/CallbackRegistry';
+export { Validator } from './core/Validator.js';
+export { ValidationContext } from './core/ValidationContext.js';
+export { ValidationResult } from './core/ValidationResult.js';
+export { CallbackRegistry, getGlobalRegistry, resetGlobalRegistry } from './core/CallbackRegistry.js';
 
 // Processors (Joi-dependent)
-export { ConfigProcessor } from './processors/ConfigProcessor';
-export { ConditionalEvaluator } from './processors/ConditionalEvaluator';
-export { ValidationConditionEvaluator } from './processors/ValidationConditionEvaluator';
+export { ConfigProcessor } from './processors/ConfigProcessor.js';
+export { ConditionalEvaluator } from './processors/ConditionalEvaluator.js';
+export { ValidationConditionEvaluator } from './processors/ValidationConditionEvaluator.js';
 
 // Adapters (Joi-dependent)
-export { JoiAdapter } from './adapters/JoiAdapter';
+export { JoiAdapter } from './adapters/JoiAdapter.js';
 
 // Computed processors
-export * from './processors/computed';
+export * from './processors/computed/index.js';

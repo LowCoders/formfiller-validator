@@ -257,9 +257,10 @@ export class ClientCallbackRegistry {
 
     /**
      * Checks if at least one target field is not empty
+     * Type: atLeastOne
      */
     this.register(
-      'atLeastOneRequired',
+      'atLeastOne',
       (values: Record<string, any>) => {
         const targetVals = getTargetValues(values);
 
@@ -272,6 +273,79 @@ export class ClientCallbackRegistry {
         });
       },
       'Checks if at least one target field is not empty'
+    );
+
+    /**
+     * Validates that current field value equals the sum of target fields
+     * Type: sumEquals
+     */
+    this.register(
+      'sumEquals',
+      (values: Record<string, any>) => {
+        const currentValue = values._currentValue;
+        const targetValues = getTargetValues(values).map((val) => Number(val) || 0);
+        const sum = targetValues.reduce((acc, val) => acc + val, 0);
+        return Number(currentValue) === sum;
+      },
+      'Checks if current field value equals sum of target fields'
+    );
+
+    /**
+     * Validates that all percentage fields sum to exactly 100%
+     * Type: percentageSum
+     */
+    this.register(
+      'percentageSum',
+      (values: Record<string, any>) => {
+        const allValues = getTargetValues(values).map((val) => Number(val) || 0);
+        const sum = allValues.reduce((acc, val) => acc + val, 0);
+        return sum === 100;
+      },
+      'Checks if all percentage fields sum to exactly 100%'
+    );
+
+    /**
+     * Validates that current date is within date range
+     * Type: dateInRange
+     */
+    this.register(
+      'dateInRange',
+      (values: Record<string, any>) => {
+        const currentValue = values._currentValue;
+        const targetVals = getTargetValues(values).filter((v) => v !== undefined);
+
+        if (targetVals.length < 2) return true; // Skip if not enough dates
+
+        const [startVal, endVal] = targetVals;
+        const projectStart = new Date(startVal);
+        const projectEnd = new Date(endVal);
+        const currentDate = new Date(currentValue);
+
+        // Check if dates are valid
+        if (isNaN(projectStart.getTime()) || isNaN(projectEnd.getTime())) return true;
+        if (isNaN(currentDate.getTime())) return true; // Empty/invalid date passes
+
+        return currentDate >= projectStart && currentDate <= projectEnd;
+      },
+      'Checks if current date is within date range'
+    );
+
+    /**
+     * Validates that current field value equals the product of target fields
+     * Maps to: crossFieldProductEquals (if added to schema)
+     */
+    this.register(
+      'productEquals',
+      (values: Record<string, any>) => {
+        const currentValue = Number(values._currentValue) || 0;
+        const targetValues = getTargetValues(values).map((val) => Number(val) || 0);
+
+        if (targetValues.length === 0) return true;
+
+        const product = targetValues.reduce((acc, val) => acc * val, 1);
+        return currentValue === product;
+      },
+      'Checks if current field value equals product of target fields'
     );
 
     /**

@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AggregateProcessor = void 0;
-const ConditionalEvaluator_1 = require("../ConditionalEvaluator");
-class AggregateProcessor {
+import { ConditionalEvaluator } from '../ConditionalEvaluator.js';
+export class AggregateProcessor {
     conditionalEvaluator;
     constructor() {
-        this.conditionalEvaluator = new ConditionalEvaluator_1.ConditionalEvaluator();
+        this.conditionalEvaluator = new ConditionalEvaluator();
     }
     aggregate(fieldResults, config) {
         const breakdown = [];
@@ -80,5 +77,4 @@ class AggregateProcessor {
         };
     }
 }
-exports.AggregateProcessor = AggregateProcessor;
 //# sourceMappingURL=AggregateProcessor.js.map

@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.KeywordMatchProcessor = void 0;
-class KeywordMatchProcessor {
+export class KeywordMatchProcessor {
     evaluate(fieldValue, rule) {
         const points = rule.points ?? 1;
         const penalty = rule.penalty ?? 0;
@@ -65,5 +62,4 @@ class KeywordMatchProcessor {
         };
     }
 }
-exports.KeywordMatchProcessor = KeywordMatchProcessor;
 //# sourceMappingURL=KeywordMatchProcessor.js.map

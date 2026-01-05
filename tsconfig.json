@@ -5,9 +5,9 @@
     "lib": ["ES2022"],
     
     /* Modules */
-    "module": "commonjs",
+    "module": "NodeNext",
     "rootDir": "./src",
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     
     /* Emit */

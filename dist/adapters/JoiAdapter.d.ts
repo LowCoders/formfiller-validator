@@ -1,7 +1,7 @@
 import Joi from 'joi';
-import { ValidationRule } from '../types';
-import { ValidationContext } from '../core/ValidationContext';
-import { CallbackRegistry } from '../core/CallbackRegistry';
+import { ValidationRule } from '../types/index.js';
+import { ValidationContext } from '../core/ValidationContext.js';
+import { CallbackRegistry } from '../core/CallbackRegistry.js';
 export declare class JoiAdapter {
     private registry;
     private schemaCache;

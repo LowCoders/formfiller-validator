@@ -1,6 +1,5 @@
-import { ValidationRuleOrGroup, ConditionalExpression, ValidationRule } from 'formfiller-schema';
-export declare const CROSS_FIELD_TYPES: readonly ["crossField", "crossFieldEquals", "crossFieldNotEquals", "crossFieldGreaterThan", "crossFieldLessThan", "crossFieldSumEquals", "crossFieldPercentageSum", "crossFieldDateInRange", "crossFieldAtLeastOne", "crossFieldCustom"];
-export type CrossFieldType = (typeof CROSS_FIELD_TYPES)[number];
+import { ValidationRuleOrGroup, ConditionalExpression, ValidationRule, CROSS_FIELD_TYPES, CrossFieldType } from 'formfiller-schema';
+export { CROSS_FIELD_TYPES, CrossFieldType };
 export declare function isCrossFieldType(type: string): type is CrossFieldType;
 export declare function getCrossFieldValidatorName(type: string): string;
 export declare function enrichCrossFieldRule(rule: ValidationRule, currentFieldPath: string): ValidationRule;

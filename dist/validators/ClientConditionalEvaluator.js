@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClientConditionalEvaluator = void 0;
-class ClientConditionalEvaluator {
+export class ClientConditionalEvaluator {
     evaluate(expression, context) {
         if (Array.isArray(expression)) {
             return expression.every((cond) => this.evaluate(cond, context));
@@ -102,5 +99,4 @@ class ClientConditionalEvaluator {
         }
     }
 }
-exports.ClientConditionalEvaluator = ClientConditionalEvaluator;
 //# sourceMappingURL=ClientConditionalEvaluator.js.map

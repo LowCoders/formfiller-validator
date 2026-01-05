@@ -8,18 +8,20 @@
  */
 
 import { ValidationRule, ValidationRuleGroup, ValidationRuleOrGroup } from 'formfiller-schema';
-import { ClientValidationContext } from './ClientValidationContext';
-import { ClientValidationResult } from './ClientValidationResult';
-import { ClientConditionalEvaluator } from './ClientConditionalEvaluator';
-import { ClientValidationConditionEvaluator } from './ClientValidationConditionEvaluator';
-import { ClientCallbackRegistry, getClientRegistry } from './ClientCallbackRegistry';
+import { ClientValidationContext } from './ClientValidationContext.js';
+import { ClientValidationResult } from './ClientValidationResult.js';
+import { ClientConditionalEvaluator } from './ClientConditionalEvaluator.js';
+import { ClientValidationConditionEvaluator } from './ClientValidationConditionEvaluator.js';
+import { ClientCallbackRegistry, getClientRegistry } from './ClientCallbackRegistry.js';
 import {
   isValidationRule,
   isValidationRuleGroup,
   getGroupRules,
   getGroupOperator,
   getGroupMessage,
-} from '../utils/typeGuards';
+  isCrossFieldType,
+  enrichCrossFieldRule,
+} from '../utils/typeGuards.js';
 
 export class ClientValidator {
   private conditionalEvaluator: ClientConditionalEvaluator;
@@ -77,14 +79,24 @@ export class ClientValidator {
     }
 
     if (isValidationRule(ruleOrGroup)) {
-      const rule = ruleOrGroup;
+      let rule = ruleOrGroup;
 
       // Check 'when' condition
       if (!this.validationConditionEvaluator.shouldApplyRule(rule, context)) {
         return { valid: true, message: '', ruleType: rule.type };
       }
 
+      // Enrich crossField rules: automatically add current field to targetFields
+      // and derive crossFieldValidator from type if not explicitly set
+      const isCrossField = isCrossFieldType(rule.type);
+      console.log(`[ClientValidator] Field: ${fieldName}, Type: ${rule.type}, isCrossField: ${isCrossField}`);
+      if (isCrossField) {
+        rule = enrichCrossFieldRule(rule, fieldName);
+        console.log(`[ClientValidator] Enriched targetFields:`, rule.targetFields);
+      }
+
       const isValid = this.validateRule(fieldName, value, rule, context);
+      console.log(`[ClientValidator] validateRule result: ${isValid}`);
       return {
         valid: isValid,
         message: rule.message || this.getDefaultMessage(rule.type),
@@ -183,15 +195,14 @@ export class ClientValidator {
       case 'pattern':
         return this.validatePattern(value, rule.pattern);
 
-      case 'crossFieldEquals':
-      case 'crossFieldNotEquals':
-      case 'crossFieldGreaterThan':
-      case 'crossFieldLessThan':
-      case 'crossFieldSumEquals':
-      case 'crossFieldPercentageSum':
-      case 'crossFieldDateInRange':
-      case 'crossFieldAtLeastOne':
-      case 'crossFieldCustom':
+      case 'equals':
+      case 'notEquals':
+      case 'greaterThan':
+      case 'lessThan':
+      case 'sumEquals':
+      case 'percentageSum':
+      case 'dateInRange':
+      case 'atLeastOne':
         return this.validateCrossField(value, rule, context);
 
       case 'compare':
@@ -205,33 +216,20 @@ export class ClientValidator {
 
   /**
    * Validate crossField rule
-   * Collects values from target fields and executes the crossFieldValidator callback
+   * The type IS the callback name (e.g., 'atLeastOne')
    */
   private validateCrossField(
     value: any,
     rule: ValidationRule,
     context: ClientValidationContext
   ): boolean {
-    if (!rule.targetFields || !rule.crossFieldValidator) {
-      return true; // No configuration, pass
+    if (!rule.targetFields) {
+      console.log(`[ClientValidator] validateCrossField: No targetFields, returning true`);
+      return true; // No targetFields, pass
     }
 
-    // Resolve validator name and params
-    let validatorName: string;
-    let params: Record<string, any> | undefined;
-
-    if (typeof rule.crossFieldValidator === 'string') {
-      validatorName = rule.crossFieldValidator;
-    } else if (typeof rule.crossFieldValidator === 'object' && 'name' in rule.crossFieldValidator) {
-      validatorName = rule.crossFieldValidator.name;
-      params = rule.crossFieldValidator.params;
-    } else {
-      // Inline function - not supported on client (needs backend)
-      console.warn(
-        'ClientValidator: Inline crossFieldValidator functions require backend validation'
-      );
-      return true;
-    }
+    // Type IS the callback name - use directly
+    const validatorName = rule.type;
 
     // Check if validator exists in registry
     if (!this.callbackRegistry.has(validatorName)) {
@@ -249,8 +247,12 @@ export class ClientValidator {
       values[targetField] = context.getValue(targetField);
     }
 
+    console.log(`[ClientValidator] validateCrossField: ${validatorName}, values:`, values);
+
     // Execute callback
-    return this.callbackRegistry.execute(validatorName, values, params);
+    const result = this.callbackRegistry.execute(validatorName, values);
+    console.log(`[ClientValidator] validateCrossField result: ${result}`);
+    return result;
   }
 
   /**
@@ -480,10 +482,22 @@ export class ClientValidator {
         return 'Az érték a megengedett tartományon kívül van';
       case 'pattern':
         return 'Az érték nem felel meg a mintának';
-      case 'crossField':
-        return 'Mezők közötti validáció sikertelen';
       case 'compare':
         return 'A mezők értékei nem egyeznek';
+      case 'equals':
+      case 'notEquals':
+        return 'A mezők értékei nem egyeznek';
+      case 'greaterThan':
+      case 'lessThan':
+        return 'A mezők értékei nem megfelelőek';
+      case 'sumEquals':
+        return 'Az összeg nem megfelelő';
+      case 'percentageSum':
+        return 'A százalékok összege nem 100%';
+      case 'dateInRange':
+        return 'A dátum kívül esik a tartományon';
+      case 'atLeastOne':
+        return 'Legalább egy mező kitöltése kötelező';
       default:
         return 'Érvénytelen érték';
     }

@@ -1,6 +1,6 @@
 import { ValidationRule, ValidationRuleOrGroup } from 'formfiller-schema';
-import { ClientValidationContext } from './ClientValidationContext';
-import { ClientValidationResult } from './ClientValidationResult';
+import { ClientValidationContext } from './ClientValidationContext.js';
+import { ClientValidationResult } from './ClientValidationResult.js';
 export declare class ClientValidator {
     private conditionalEvaluator;
     private validationConditionEvaluator;

@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Validator = void 0;
-const ValidationContext_1 = require("./ValidationContext");
-const ValidationResult_1 = require("./ValidationResult");
-const ConfigProcessor_1 = require("../processors/ConfigProcessor");
-const DependencyGraphBuilder_1 = require("../utils/DependencyGraphBuilder");
-const CallbackRegistry_1 = require("./CallbackRegistry");
-class Validator {
+import { ValidationContext } from './ValidationContext.js';
+import { ValidationResult } from './ValidationResult.js';
+import { ConfigProcessor } from '../processors/ConfigProcessor.js';
+import { DependencyGraphBuilder } from '../utils/DependencyGraphBuilder.js';
+import { getGlobalRegistry } from './CallbackRegistry.js';
+export class Validator {
     config;
     configProcessor;
     dependencyGraphBuilder;
@@ -23,7 +20,7 @@ class Validator {
             adapter: config.adapter || 'joi',
             customValidators: config.customValidators,
         };
-        this.registry = (0, CallbackRegistry_1.getGlobalRegistry)();
+        this.registry = getGlobalRegistry();
         if (config.customValidators) {
             Object.entries(config.customValidators).forEach(([name, callback]) => {
                 this.registry.register(name, callback, {
@@ -32,15 +29,15 @@ class Validator {
                 });
             });
         }
-        this.configProcessor = new ConfigProcessor_1.ConfigProcessor(this.registry);
-        this.dependencyGraphBuilder = new DependencyGraphBuilder_1.DependencyGraphBuilder();
+        this.configProcessor = new ConfigProcessor(this.registry);
+        this.dependencyGraphBuilder = new DependencyGraphBuilder();
     }
     async validate(data, formConfig, externalContext) {
         const startTime = Date.now();
-        const result = new ValidationResult_1.ValidationResult();
+        const result = new ValidationResult();
         try {
             const dependencyGraph = this.dependencyGraphBuilder.build(formConfig);
-            const context = new ValidationContext_1.ValidationContext(data, formConfig, this.config, {
+            const context = new ValidationContext(data, formConfig, this.config, {
                 cache: this.config.cache?.enabled ? new Map() : undefined,
                 dependencyGraph,
                 externalContext,
@@ -67,7 +64,7 @@ class Validator {
     }
     async validateField(fieldName, _value, data, formConfig, externalContext) {
         const fullResult = await this.validate(data, formConfig, externalContext);
-        const result = new ValidationResult_1.ValidationResult();
+        const result = new ValidationResult();
         const fieldResult = fullResult.fieldResults?.[fieldName];
         if (fieldResult) {
             if (!fieldResult.valid) {
@@ -88,5 +85,4 @@ class Validator {
         return { ...this.config };
     }
 }
-exports.Validator = Validator;
 //# sourceMappingURL=Validator.js.map

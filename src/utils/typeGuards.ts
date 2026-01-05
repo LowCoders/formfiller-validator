@@ -1,43 +1,31 @@
-import { ValidationRuleOrGroup, ConditionalExpression, ValidationRule } from 'formfiller-schema';
+import {
+  ValidationRuleOrGroup,
+  ConditionalExpression,
+  ValidationRule,
+  CROSS_FIELD_TYPES,
+  CrossFieldType,
+} from 'formfiller-schema';
 
-// ============================================================================
-// CrossField Type Helpers
-// ============================================================================
-
-/**
- * All supported crossField validation types
- */
-export const CROSS_FIELD_TYPES = [
-  'crossField', // Legacy type - prefer specific crossField* types
-  'crossFieldEquals',
-  'crossFieldNotEquals',
-  'crossFieldGreaterThan',
-  'crossFieldLessThan',
-  'crossFieldSumEquals',
-  'crossFieldPercentageSum',
-  'crossFieldDateInRange',
-  'crossFieldAtLeastOne',
-  'crossFieldCustom',
-] as const;
-
-export type CrossFieldType = (typeof CROSS_FIELD_TYPES)[number];
+// Re-export from schema for backwards compatibility
+export { CROSS_FIELD_TYPES, CrossFieldType };
 
 /**
  * Check if a validation rule type is a crossField type
  * @param type - The validation rule type to check
- * @returns true if the type starts with 'crossField'
+ * @returns true if the type is in CROSS_FIELD_TYPES
  */
 export function isCrossFieldType(type: string): type is CrossFieldType {
-  return type === 'crossField' || type.startsWith('crossField');
+  return (CROSS_FIELD_TYPES as readonly string[]).includes(type);
 }
 
 /**
- * Extract the validator function name from a crossField type
- * @param type - The crossField type (e.g., 'crossFieldEquals')
- * @returns The validator function name in lowercase (e.g., 'equals')
+ * Get the validator callback name for a crossField type.
+ * Since the type IS the callback name, this just returns the type.
+ * @param type - The crossField type (e.g., 'atLeastOne')
+ * @returns The validator function name (same as type)
  */
 export function getCrossFieldValidatorName(type: string): string {
-  return type.replace('crossField', '').toLowerCase();
+  return type;
 }
 
 /**

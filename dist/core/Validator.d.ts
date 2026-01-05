@@ -1,4 +1,4 @@
-import { ValidatorConfig, FormConfig, ValidationResult as IValidationResult } from '../types';
+import { ValidatorConfig, FormConfig, ValidationResult as IValidationResult } from '../types/index.js';
 export declare class Validator {
     private readonly config;
     private readonly configProcessor;

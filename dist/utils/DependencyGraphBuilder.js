@@ -1,12 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DependencyGraphBuilder = void 0;
-const typeHelpers_1 = require("./typeHelpers");
-const FieldPathBuilder_1 = require("./FieldPathBuilder");
-class DependencyGraphBuilder {
+import { getNestedItems, getFieldName } from './typeHelpers.js';
+import { FieldPathBuilder } from './FieldPathBuilder.js';
+import { isValidationRule, isValidationRuleGroup, getGroupRules } from './typeGuards.js';
+export class DependencyGraphBuilder {
     fieldPathBuilder;
     constructor() {
-        this.fieldPathBuilder = new FieldPathBuilder_1.FieldPathBuilder();
+        this.fieldPathBuilder = new FieldPathBuilder();
     }
     build(formConfig) {
         const nodes = new Map();
@@ -23,7 +21,7 @@ class DependencyGraphBuilder {
     }
     extractFields(items, nodes, parentPath = '') {
         for (const item of items) {
-            const fieldName = (0, typeHelpers_1.getFieldName)(item);
+            const fieldName = getFieldName(item);
             if (fieldName) {
                 const fieldPath = this.fieldPathBuilder.buildPath(item, parentPath);
                 if (!nodes.has(fieldName)) {
@@ -41,7 +39,7 @@ class DependencyGraphBuilder {
                 this.extractDependenciesFromConditionals(item, node);
                 this.extractDependenciesFromRules(item, node);
             }
-            const nestedItems = (0, typeHelpers_1.getNestedItems)(item);
+            const nestedItems = getNestedItems(item);
             if (nestedItems) {
                 const nextPath = this.fieldPathBuilder.getNextParentPath(item, parentPath);
                 this.extractFields(nestedItems, nodes, nextPath);
@@ -92,7 +90,6 @@ class DependencyGraphBuilder {
         }
     }
     extractDependenciesFromRuleOrGroup(ruleOrGroup, node) {
-        const { isValidationRule, isValidationRuleGroup } = require('./typeGuards');
         if (isValidationRule(ruleOrGroup)) {
             const rule = ruleOrGroup;
             if (rule.type === 'compare' && rule.comparisonTarget) {
@@ -110,7 +107,6 @@ class DependencyGraphBuilder {
         }
         else if (isValidationRuleGroup(ruleOrGroup)) {
             const group = ruleOrGroup;
-            const { getGroupRules } = require('./typeGuards');
             const nestedRules = getGroupRules(group);
             for (const nestedRule of nestedRules) {
                 this.extractDependenciesFromRuleOrGroup(nestedRule, node);
@@ -209,5 +205,4 @@ class DependencyGraphBuilder {
         };
     }
 }
-exports.DependencyGraphBuilder = DependencyGraphBuilder;
 //# sourceMappingURL=DependencyGraphBuilder.js.map

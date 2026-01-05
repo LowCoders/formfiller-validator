@@ -5,8 +5,8 @@
  * Handles visibleIf, disabledIf, requiredIf, readonlyIf, when conditions.
  */
 
-import { ClientConditionalEvaluator } from '../validators/ClientConditionalEvaluator';
-import { ClientValidationContext } from '../validators/ClientValidationContext';
+import { ClientConditionalEvaluator } from '../validators/ClientConditionalEvaluator.js';
+import { ClientValidationContext } from '../validators/ClientValidationContext.js';
 
 describe('ClientConditionalEvaluator', () => {
   let evaluator: ClientConditionalEvaluator;

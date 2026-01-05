@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClientValidationConditionEvaluator = void 0;
-class ClientValidationConditionEvaluator {
+export class ClientValidationConditionEvaluator {
     conditionalEvaluator;
     constructor(conditionalEvaluator) {
         this.conditionalEvaluator = conditionalEvaluator;
@@ -22,5 +19,4 @@ class ClientValidationConditionEvaluator {
         return rules.filter((rule) => this.shouldApplyRule(rule, context));
     }
 }
-exports.ClientValidationConditionEvaluator = ClientValidationConditionEvaluator;
 //# sourceMappingURL=ClientValidationConditionEvaluator.js.map

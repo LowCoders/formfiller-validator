@@ -2,9 +2,9 @@
  * ValidationConditionEvaluator Unit Tests
  */
 
-import { ValidationConditionEvaluator } from '../processors/ValidationConditionEvaluator';
-import { ConditionalEvaluator } from '../processors/ConditionalEvaluator';
-import { ValidationContext } from '../core/ValidationContext';
+import { ValidationConditionEvaluator } from '../processors/ValidationConditionEvaluator.js';
+import { ConditionalEvaluator } from '../processors/ConditionalEvaluator.js';
+import { ValidationContext } from '../core/ValidationContext.js';
 import { ValidationRule } from 'formfiller-schema';
 
 describe('ValidationConditionEvaluator', () => {
@@ -18,7 +18,7 @@ describe('ValidationConditionEvaluator', () => {
 
   describe('shouldApplyRule', () => {
     it('should return true when rule has no when condition', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         message: 'Field is required',
       };
@@ -34,7 +34,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return true when simple equality condition is met', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: { userRole: 'admin' },
         message: 'Field is required for admin',
@@ -51,7 +51,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return false when simple equality condition is NOT met', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: { userRole: 'admin' },
         message: 'Field is required for admin',
@@ -68,7 +68,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return true when implicit "in" array condition is met - admin', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: { userRole: ['admin', 'moderator'] },
         message: 'Field is required for admin/moderator',
@@ -87,7 +87,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return true when implicit "in" array condition is met - moderator', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: { userRole: ['admin', 'moderator'] },
         message: 'Field is required for admin/moderator',
@@ -104,7 +104,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return false when implicit "in" array condition is NOT met', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: { userRole: ['admin', 'moderator'] },
         message: 'Field is required for admin/moderator',
@@ -121,7 +121,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return true when explicit operator condition is met', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: { age: ['<', 18] },
         message: 'Field is required for minors',
@@ -138,7 +138,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return false when explicit operator condition is NOT met', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: { age: ['<', 18] },
         message: 'Field is required for minors',
@@ -155,7 +155,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return true when AND condition is met', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: {
           and: [{ country: 'US' }, { isStudent: true }],
@@ -174,7 +174,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return false when AND condition is partially met', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: {
           and: [{ country: 'US' }, { isStudent: true }],
@@ -193,7 +193,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return true when OR condition is met (first)', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: {
           or: [{ country: 'US' }, { country: 'UK' }],
@@ -212,7 +212,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return true when OR condition is met (second)', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: {
           or: [{ country: 'US' }, { country: 'UK' }],
@@ -231,7 +231,7 @@ describe('ValidationConditionEvaluator', () => {
     });
 
     it('should return false when OR condition is NOT met', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         when: {
           or: [{ country: 'US' }, { country: 'UK' }],

@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClientValidationContext = void 0;
-class ClientValidationContext {
+export class ClientValidationContext {
     data;
     formConfig;
     constructor(data, formConfig) {
@@ -34,5 +31,4 @@ class ClientValidationContext {
         return true;
     }
 }
-exports.ClientValidationContext = ClientValidationContext;
 //# sourceMappingURL=ClientValidationContext.js.map

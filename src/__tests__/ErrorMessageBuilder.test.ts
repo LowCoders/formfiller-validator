@@ -11,7 +11,7 @@ import {
   buildTargetFieldLabels,
   formatErrorWithFieldRefs,
   getLabelText,
-} from '../utils/errorMessageBuilder';
+} from '../utils/errorMessageBuilder.js';
 import { FieldConfig } from 'formfiller-schema';
 
 describe('ErrorMessageBuilder', () => {

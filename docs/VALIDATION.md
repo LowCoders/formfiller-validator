@@ -177,8 +177,22 @@ flowchart LR
 | `range` | Szám tartomány | `min`, `max` |
 | `pattern` | Regex minta | `pattern` |
 | `compare` | Mező összehasonlítás | `comparisonTarget`, `comparisonType` |
-| `crossField` | Több mező validáció | `targetFields`, `crossFieldValidator` |
 | `computed` | Számított szabály | `subtype`, `expectedValue` |
+
+### CrossField Típusok
+
+A típus értéke közvetlenül a callback neve - nincs szükség külön `crossFieldValidator` property-re:
+
+| Típus | Leírás | Paraméterek |
+|-------|--------|-------------|
+| `atLeastOne` | Legalább egy mező kitöltve | `targetFields` |
+| `equals` | Mezők egyenlőek | `targetFields` |
+| `notEquals` | Mezők nem egyenlőek | `targetFields` |
+| `greaterThan` | Első mező nagyobb | `targetFields` |
+| `lessThan` | Első mező kisebb | `targetFields` |
+| `sumEquals` | Mezők összege egyezik | `targetFields` |
+| `percentageSum` | Mezők összege 100% | `targetFields` |
+| `dateInRange` | Dátum tartományban | `targetFields` |
 
 ---
 
@@ -306,9 +320,9 @@ Előre definiált cross-field validátorok a `CallbackRegistry`-ben:
 | `emailMatch` | Email címek egyezése |
 | `dateRangeValid` | Dátumok sorrendje |
 | `numericRangeValid` | Számok sorrendje |
-| `validateSumEquals` | Összeg ellenőrzés |
-| `validatePercentageSum` | 100% összeg |
-| `atLeastOneRequired` | Minimum egy kitöltött |
+| `sumEquals` | Összeg ellenőrzés |
+| `percentageSum` | 100% összeg |
+| `atLeastOne` | Minimum egy kitöltött |
 
 ---
 

@@ -1,5 +1,5 @@
 import { FieldConfig } from 'formfiller-schema';
-import { TargetFieldLabel } from '../types';
+import { TargetFieldLabel } from '../types/index.js';
 export declare function getLabelText(config: FieldConfig): string | undefined;
 export declare function buildPathLabels(fieldPath: string, fieldConfigMap: Map<string, FieldConfig>): string[];
 export declare function formatPathLabels(pathLabels: string[], separator?: string): string;

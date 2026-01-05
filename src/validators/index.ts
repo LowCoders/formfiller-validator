@@ -4,16 +4,16 @@
  * Lightweight validator for client-side validation (browser-safe, no Joi dependency)
  */
 
-export { ClientValidator } from './ClientValidator';
-export { ClientValidationContext } from './ClientValidationContext';
-export { ClientValidationResult } from './ClientValidationResult';
-export { ClientConditionalEvaluator } from './ClientConditionalEvaluator';
-export { ClientValidationConditionEvaluator } from './ClientValidationConditionEvaluator';
+export { ClientValidator } from './ClientValidator.js';
+export { ClientValidationContext } from './ClientValidationContext.js';
+export { ClientValidationResult } from './ClientValidationResult.js';
+export { ClientConditionalEvaluator } from './ClientConditionalEvaluator.js';
+export { ClientValidationConditionEvaluator } from './ClientValidationConditionEvaluator.js';
 export {
   ClientCallbackRegistry,
   getClientRegistry,
   resetClientRegistry,
-} from './ClientCallbackRegistry';
+} from './ClientCallbackRegistry.js';
 
-export type { ClientValidationError } from './ClientValidationResult';
-export type { ClientCrossFieldCallback } from './ClientCallbackRegistry';
+export type { ClientValidationError } from './ClientValidationResult.js';
+export type { ClientCrossFieldCallback } from './ClientCallbackRegistry.js';

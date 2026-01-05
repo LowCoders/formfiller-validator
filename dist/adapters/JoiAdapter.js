@@ -1,10 +1,4 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.JoiAdapter = void 0;
-const joi_1 = __importDefault(require("joi"));
+import Joi from 'joi';
 function getCacheableRuleKey(rule) {
     const cacheableTypes = [
         'required',
@@ -29,7 +23,7 @@ function getCacheableRuleKey(rule) {
         keyParts.push(`msg:${rule.message}`);
     return keyParts.join('|');
 }
-class JoiAdapter {
+export class JoiAdapter {
     registry;
     schemaCache = new Map();
     static MAX_CACHE_SIZE = 500;
@@ -61,7 +55,7 @@ class JoiAdapter {
     createSchemaInternal(rule, context) {
         switch (rule.type) {
             case 'required':
-                return joi_1.default.any()
+                return Joi.any()
                     .required()
                     .custom((value, helpers) => {
                     if (value === null || value === undefined) {
@@ -76,7 +70,7 @@ class JoiAdapter {
                     'any.required': rule.message || 'This field is required',
                 });
             case 'email':
-                return joi_1.default.string()
+                return Joi.string()
                     .optional()
                     .allow('')
                     .custom((value, helpers) => {
@@ -93,7 +87,7 @@ class JoiAdapter {
                     'string.email': rule.message || 'Invalid email format',
                 });
             case 'numeric':
-                return joi_1.default.number().messages({
+                return Joi.number().messages({
                     'number.base': rule.message || 'Value must be a number',
                 });
             case 'stringLength':
@@ -110,28 +104,27 @@ class JoiAdapter {
                 return this.createCustomSchema(rule, context);
             case 'async':
                 return this.createAsyncSchema(rule, context);
-            case 'crossFieldEquals':
-            case 'crossFieldNotEquals':
-            case 'crossFieldGreaterThan':
-            case 'crossFieldLessThan':
-            case 'crossFieldSumEquals':
-            case 'crossFieldPercentageSum':
-            case 'crossFieldDateInRange':
-            case 'crossFieldAtLeastOne':
-            case 'crossFieldCustom':
+            case 'equals':
+            case 'notEquals':
+            case 'greaterThan':
+            case 'lessThan':
+            case 'sumEquals':
+            case 'percentageSum':
+            case 'dateInRange':
+            case 'atLeastOne':
                 return this.createCrossFieldSchema(rule, context);
             case 'computed':
-                return joi_1.default.any();
+                return Joi.any();
             case 'temporal':
                 return this.createTemporalSchema(rule, context);
             case 'plugin':
                 return this.createPluginSchema(rule, context);
             default:
-                return joi_1.default.any();
+                return Joi.any();
         }
     }
     createStringLengthSchema(rule) {
-        let schema = joi_1.default.string();
+        let schema = Joi.string();
         if (rule.min !== undefined) {
             schema = schema.min(rule.min);
         }
@@ -144,7 +137,7 @@ class JoiAdapter {
         });
     }
     createArrayLengthSchema(rule) {
-        let schema = joi_1.default.array();
+        let schema = Joi.array();
         if (rule.min !== undefined) {
             schema = schema.min(rule.min);
         }
@@ -157,7 +150,7 @@ class JoiAdapter {
         });
     }
     createRangeSchema(rule) {
-        let schema = joi_1.default.number();
+        let schema = Joi.number();
         if (rule.min !== undefined) {
             schema = schema.min(rule.min);
         }
@@ -171,10 +164,10 @@ class JoiAdapter {
     }
     createPatternSchema(rule) {
         if (!rule.pattern) {
-            return joi_1.default.any();
+            return Joi.any();
         }
         const pattern = typeof rule.pattern === 'string' ? new RegExp(rule.pattern) : rule.pattern;
-        return joi_1.default.string()
+        return Joi.string()
             .pattern(pattern)
             .messages({
             'string.pattern.base': rule.message || 'Value does not match the required pattern',
@@ -182,12 +175,12 @@ class JoiAdapter {
     }
     createCompareSchema(rule, context) {
         if (!rule.comparisonTarget) {
-            return joi_1.default.any();
+            return Joi.any();
         }
         const targetValue = context.getValue(rule.comparisonTarget);
         const comparisonType = rule.comparisonType || '==';
         const customMessage = rule.message || `Value must be ${comparisonType} ${targetValue}`;
-        return joi_1.default.any()
+        return Joi.any()
             .custom((value, helpers) => {
             let isValid = false;
             switch (comparisonType) {
@@ -221,12 +214,12 @@ class JoiAdapter {
     }
     createCustomSchema(rule, context) {
         if (!rule.validationCallback) {
-            return joi_1.default.any();
+            return Joi.any();
         }
         const callback = typeof rule.validationCallback === 'string'
             ? this.resolveCallback(rule.validationCallback)
             : rule.validationCallback;
-        return joi_1.default.any().custom(async (value, _helpers) => {
+        return Joi.any().custom(async (value, _helpers) => {
             try {
                 const isValid = await callback(value, context);
                 if (!isValid) {
@@ -255,9 +248,9 @@ class JoiAdapter {
     }
     createAsyncSchema(rule, _context) {
         if (!rule.apiEndpoint) {
-            return joi_1.default.any();
+            return Joi.any();
         }
-        return joi_1.default.any().custom(async (value, _helpers) => {
+        return Joi.any().custom(async (value, _helpers) => {
             try {
                 const timeout = rule.apiTimeout || 5000;
                 const method = rule.apiMethod || 'POST';
@@ -290,25 +283,11 @@ class JoiAdapter {
         });
     }
     createCrossFieldSchema(rule, context) {
-        if (!rule.targetFields || !rule.crossFieldValidator) {
-            return joi_1.default.any();
+        if (!rule.targetFields) {
+            return Joi.any();
         }
-        let validator;
-        let params;
-        if (typeof rule.crossFieldValidator === 'string') {
-            validator = this.resolveCallback(rule.crossFieldValidator);
-        }
-        else if (typeof rule.crossFieldValidator === 'object' && 'name' in rule.crossFieldValidator) {
-            validator = this.resolveCallback(rule.crossFieldValidator.name);
-            params = rule.crossFieldValidator.params;
-        }
-        else if (typeof rule.crossFieldValidator === 'function') {
-            validator = rule.crossFieldValidator;
-        }
-        else {
-            return joi_1.default.any();
-        }
-        return joi_1.default.any().custom(async (value, _helpers) => {
+        const validator = this.resolveCallback(rule.type);
+        return Joi.any().custom(async (value, _helpers) => {
             try {
                 const values = {
                     _currentValue: value,
@@ -316,13 +295,7 @@ class JoiAdapter {
                 for (const targetField of rule.targetFields) {
                     values[targetField] = context.getValue(targetField);
                 }
-                if (params) {
-                    context.params = params;
-                }
                 const isValid = await validator(values, context);
-                if (params) {
-                    delete context.params;
-                }
                 if (!isValid) {
                     throw new Error(rule.message || 'Cross-field validation failed');
                 }
@@ -346,7 +319,7 @@ class JoiAdapter {
                 ? new Date(rule.validUntil)
                 : rule.validUntil
             : null;
-        return joi_1.default.any()
+        return Joi.any()
             .custom((value, helpers) => {
             try {
                 const now = new Date();
@@ -382,9 +355,9 @@ class JoiAdapter {
     }
     createPluginSchema(rule, _context) {
         if (!rule.pluginName) {
-            return joi_1.default.any();
+            return Joi.any();
         }
-        return joi_1.default.any().custom(async (value, _helpers) => {
+        return Joi.any().custom(async (value, _helpers) => {
             try {
                 console.warn(`Plugin validation not implemented: ${rule.pluginName}`);
                 return value;
@@ -401,7 +374,7 @@ class JoiAdapter {
             return { valid: true };
         }
         catch (error) {
-            if (error instanceof joi_1.default.ValidationError) {
+            if (error instanceof Joi.ValidationError) {
                 return {
                     valid: false,
                     error: error.message,
@@ -439,5 +412,4 @@ class JoiAdapter {
         return this.schemaCache.size;
     }
 }
-exports.JoiAdapter = JoiAdapter;
 //# sourceMappingURL=JoiAdapter.js.map

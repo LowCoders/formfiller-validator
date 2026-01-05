@@ -1,4 +1,4 @@
-import { FormConfig, DependencyGraph } from '../types';
+import { FormConfig, DependencyGraph } from '../types/index.js';
 export declare class DependencyGraphBuilder {
     private readonly fieldPathBuilder;
     constructor();

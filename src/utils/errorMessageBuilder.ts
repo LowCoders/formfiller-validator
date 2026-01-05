@@ -8,7 +8,7 @@
  */
 
 import { FieldConfig } from 'formfiller-schema';
-import { TargetFieldLabel } from '../types';
+import { TargetFieldLabel } from '../types/index.js';
 
 /**
  * Get label text from a field config

@@ -4,12 +4,12 @@
  * Entry point for the validation system
  */
 
-import { ValidatorConfig, FormConfig, ValidationResult as IValidationResult } from '../types';
-import { ValidationContext } from './ValidationContext';
-import { ValidationResult } from './ValidationResult';
-import { ConfigProcessor } from '../processors/ConfigProcessor';
-import { DependencyGraphBuilder } from '../utils/DependencyGraphBuilder';
-import { CallbackRegistry, getGlobalRegistry } from './CallbackRegistry';
+import { ValidatorConfig, FormConfig, ValidationResult as IValidationResult } from '../types/index.js';
+import { ValidationContext } from './ValidationContext.js';
+import { ValidationResult } from './ValidationResult.js';
+import { ConfigProcessor } from '../processors/ConfigProcessor.js';
+import { DependencyGraphBuilder } from '../utils/DependencyGraphBuilder.js';
+import { CallbackRegistry, getGlobalRegistry } from './CallbackRegistry.js';
 
 export class Validator {
   private readonly config: ValidatorConfig;

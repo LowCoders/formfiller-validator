@@ -4,10 +4,11 @@
  * Analyzes form configuration and builds a dependency graph for parallel execution
  */
 
-import { FormConfig, DependencyGraph, DependencyNode } from '../types';
+import { FormConfig, DependencyGraph, DependencyNode } from '../types/index.js';
 import { FieldConfig } from 'formfiller-schema';
-import { getNestedItems, getFieldName } from './typeHelpers';
-import { FieldPathBuilder } from './FieldPathBuilder';
+import { getNestedItems, getFieldName } from './typeHelpers.js';
+import { FieldPathBuilder } from './FieldPathBuilder.js';
+import { isValidationRule, isValidationRuleGroup, getGroupRules } from './typeGuards.js';
 
 export class DependencyGraphBuilder {
   private readonly fieldPathBuilder: FieldPathBuilder;
@@ -159,8 +160,6 @@ export class DependencyGraphBuilder {
     ruleOrGroup: import('formfiller-schema').ValidationRuleOrGroup,
     node: DependencyNode
   ): void {
-    const { isValidationRule, isValidationRuleGroup } = require('./typeGuards');
-
     if (isValidationRule(ruleOrGroup)) {
       const rule = ruleOrGroup as import('formfiller-schema').ValidationRule;
       // Extract from compare rules
@@ -180,7 +179,6 @@ export class DependencyGraphBuilder {
       }
     } else if (isValidationRuleGroup(ruleOrGroup)) {
       const group = ruleOrGroup as import('formfiller-schema').ValidationRuleGroup;
-      const { getGroupRules } = require('./typeGuards');
       // Recursively process grouped rules
       const nestedRules = getGroupRules(group);
       for (const nestedRule of nestedRules) {

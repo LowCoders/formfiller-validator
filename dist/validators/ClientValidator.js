@@ -1,24 +1,21 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClientValidator = void 0;
-const ClientValidationContext_1 = require("./ClientValidationContext");
-const ClientValidationResult_1 = require("./ClientValidationResult");
-const ClientConditionalEvaluator_1 = require("./ClientConditionalEvaluator");
-const ClientValidationConditionEvaluator_1 = require("./ClientValidationConditionEvaluator");
-const ClientCallbackRegistry_1 = require("./ClientCallbackRegistry");
-const typeGuards_1 = require("../utils/typeGuards");
-class ClientValidator {
+import { ClientValidationContext } from './ClientValidationContext.js';
+import { ClientValidationResult } from './ClientValidationResult.js';
+import { ClientConditionalEvaluator } from './ClientConditionalEvaluator.js';
+import { ClientValidationConditionEvaluator } from './ClientValidationConditionEvaluator.js';
+import { getClientRegistry } from './ClientCallbackRegistry.js';
+import { isValidationRule, isValidationRuleGroup, getGroupRules, getGroupOperator, getGroupMessage, isCrossFieldType, enrichCrossFieldRule, } from '../utils/typeGuards.js';
+export class ClientValidator {
     conditionalEvaluator;
     validationConditionEvaluator;
     callbackRegistry;
     constructor() {
-        this.conditionalEvaluator = new ClientConditionalEvaluator_1.ClientConditionalEvaluator();
-        this.validationConditionEvaluator = new ClientValidationConditionEvaluator_1.ClientValidationConditionEvaluator(this.conditionalEvaluator);
-        this.callbackRegistry = (0, ClientCallbackRegistry_1.getClientRegistry)();
+        this.conditionalEvaluator = new ClientConditionalEvaluator();
+        this.validationConditionEvaluator = new ClientValidationConditionEvaluator(this.conditionalEvaluator);
+        this.callbackRegistry = getClientRegistry();
     }
     async validate(fieldName, value, rules, formData) {
-        const result = new ClientValidationResult_1.ClientValidationResult();
-        const context = new ClientValidationContext_1.ClientValidationContext(formData);
+        const result = new ClientValidationResult();
+        const context = new ClientValidationContext(formData);
         for (const ruleOrGroup of rules) {
             const validationResult = this.validateRuleOrGroup(fieldName, value, ruleOrGroup, context);
             if (!validationResult.valid) {
@@ -28,15 +25,22 @@ class ClientValidator {
         return result;
     }
     validateRuleOrGroup(fieldName, value, ruleOrGroup, context) {
-        if ((0, typeGuards_1.isValidationRuleGroup)(ruleOrGroup)) {
+        if (isValidationRuleGroup(ruleOrGroup)) {
             return this.validateRuleGroup(fieldName, value, ruleOrGroup, context);
         }
-        if ((0, typeGuards_1.isValidationRule)(ruleOrGroup)) {
-            const rule = ruleOrGroup;
+        if (isValidationRule(ruleOrGroup)) {
+            let rule = ruleOrGroup;
             if (!this.validationConditionEvaluator.shouldApplyRule(rule, context)) {
                 return { valid: true, message: '', ruleType: rule.type };
             }
+            const isCrossField = isCrossFieldType(rule.type);
+            console.log(`[ClientValidator] Field: ${fieldName}, Type: ${rule.type}, isCrossField: ${isCrossField}`);
+            if (isCrossField) {
+                rule = enrichCrossFieldRule(rule, fieldName);
+                console.log(`[ClientValidator] Enriched targetFields:`, rule.targetFields);
+            }
             const isValid = this.validateRule(fieldName, value, rule, context);
+            console.log(`[ClientValidator] validateRule result: ${isValid}`);
             return {
                 valid: isValid,
                 message: rule.message || this.getDefaultMessage(rule.type),
@@ -47,9 +51,9 @@ class ClientValidator {
         return { valid: true, message: '', ruleType: 'unknown' };
     }
     validateRuleGroup(fieldName, value, group, context) {
-        const operator = (0, typeGuards_1.getGroupOperator)(group);
-        const rules = (0, typeGuards_1.getGroupRules)(group);
-        const groupMessage = (0, typeGuards_1.getGroupMessage)(group) || 'Validation group failed';
+        const operator = getGroupOperator(group);
+        const rules = getGroupRules(group);
+        const groupMessage = getGroupMessage(group) || 'Validation group failed';
         if (!operator || !rules || rules.length === 0) {
             return { valid: true, message: '', ruleType: 'group' };
         }
@@ -78,7 +82,7 @@ class ClientValidator {
         };
     }
     shouldApplyRule(rule, formData) {
-        const context = new ClientValidationContext_1.ClientValidationContext(formData);
+        const context = new ClientValidationContext(formData);
         return this.validationConditionEvaluator.shouldApplyRule(rule, context);
     }
     validateRule(_fieldName, value, rule, context) {
@@ -97,15 +101,14 @@ class ClientValidator {
                 return this.validateRange(value, rule.min, rule.max);
             case 'pattern':
                 return this.validatePattern(value, rule.pattern);
-            case 'crossFieldEquals':
-            case 'crossFieldNotEquals':
-            case 'crossFieldGreaterThan':
-            case 'crossFieldLessThan':
-            case 'crossFieldSumEquals':
-            case 'crossFieldPercentageSum':
-            case 'crossFieldDateInRange':
-            case 'crossFieldAtLeastOne':
-            case 'crossFieldCustom':
+            case 'equals':
+            case 'notEquals':
+            case 'greaterThan':
+            case 'lessThan':
+            case 'sumEquals':
+            case 'percentageSum':
+            case 'dateInRange':
+            case 'atLeastOne':
                 return this.validateCrossField(value, rule, context);
             case 'compare':
                 return this.validateCompare(value, rule, context);
@@ -115,22 +118,11 @@ class ClientValidator {
         }
     }
     validateCrossField(value, rule, context) {
-        if (!rule.targetFields || !rule.crossFieldValidator) {
+        if (!rule.targetFields) {
+            console.log(`[ClientValidator] validateCrossField: No targetFields, returning true`);
             return true;
         }
-        let validatorName;
-        let params;
-        if (typeof rule.crossFieldValidator === 'string') {
-            validatorName = rule.crossFieldValidator;
-        }
-        else if (typeof rule.crossFieldValidator === 'object' && 'name' in rule.crossFieldValidator) {
-            validatorName = rule.crossFieldValidator.name;
-            params = rule.crossFieldValidator.params;
-        }
-        else {
-            console.warn('ClientValidator: Inline crossFieldValidator functions require backend validation');
-            return true;
-        }
+        const validatorName = rule.type;
         if (!this.callbackRegistry.has(validatorName)) {
             console.warn(`ClientValidator: CrossField validator '${validatorName}' not found in client registry - skipping`);
             return true;
@@ -141,7 +133,10 @@ class ClientValidator {
         for (const targetField of rule.targetFields) {
             values[targetField] = context.getValue(targetField);
         }
-        return this.callbackRegistry.execute(validatorName, values, params);
+        console.log(`[ClientValidator] validateCrossField: ${validatorName}, values:`, values);
+        const result = this.callbackRegistry.execute(validatorName, values);
+        console.log(`[ClientValidator] validateCrossField result: ${result}`);
+        return result;
     }
     validateCompare(value, rule, context) {
         if (value === '' || value === null || value === undefined) {
@@ -285,14 +280,25 @@ class ClientValidator {
                 return 'Az érték a megengedett tartományon kívül van';
             case 'pattern':
                 return 'Az érték nem felel meg a mintának';
-            case 'crossField':
-                return 'Mezők közötti validáció sikertelen';
             case 'compare':
                 return 'A mezők értékei nem egyeznek';
+            case 'equals':
+            case 'notEquals':
+                return 'A mezők értékei nem egyeznek';
+            case 'greaterThan':
+            case 'lessThan':
+                return 'A mezők értékei nem megfelelőek';
+            case 'sumEquals':
+                return 'Az összeg nem megfelelő';
+            case 'percentageSum':
+                return 'A százalékok összege nem 100%';
+            case 'dateInRange':
+                return 'A dátum kívül esik a tartományon';
+            case 'atLeastOne':
+                return 'Legalább egy mező kitöltése kötelező';
             default:
                 return 'Érvénytelen érték';
         }
     }
 }
-exports.ClientValidator = ClientValidator;
 //# sourceMappingURL=ClientValidator.js.map

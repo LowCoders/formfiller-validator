@@ -9,14 +9,14 @@
  */
 
 // Client-side validators (Joi-free, lightweight)
-export * from './validators';
+export * from './validators/index.js';
 
 // Types (no runtime dependencies)
-export * from './types';
+export * from './types/index.js';
 
 // Utils (Joi-free)
-export { DependencyGraphBuilder } from './utils/DependencyGraphBuilder';
-export { FieldPathBuilder } from './utils/FieldPathBuilder';
-export * from './utils/typeGuards';
-export * from './utils/typeHelpers';
-export * from './utils/errorMessageBuilder';
+export { DependencyGraphBuilder } from './utils/DependencyGraphBuilder.js';
+export { FieldPathBuilder } from './utils/FieldPathBuilder.js';
+export * from './utils/typeGuards.js';
+export * from './utils/typeHelpers.js';
+export * from './utils/errorMessageBuilder.js';

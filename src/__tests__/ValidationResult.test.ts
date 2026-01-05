@@ -2,7 +2,7 @@
  * ValidationResult Tests
  */
 
-import { ValidationResult } from '../core/ValidationResult';
+import { ValidationResult } from '../core/ValidationResult.js';
 
 describe('ValidationResult', () => {
   let result: ValidationResult;

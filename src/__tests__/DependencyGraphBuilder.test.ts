@@ -2,8 +2,8 @@
  * DependencyGraphBuilder Tests
  */
 
-import { DependencyGraphBuilder } from '../utils/DependencyGraphBuilder';
-import { FormConfig } from '../types';
+import { DependencyGraphBuilder } from '../utils/DependencyGraphBuilder.js';
+import { FormConfig } from '../types/index.js';
 
 describe('DependencyGraphBuilder', () => {
   let builder: DependencyGraphBuilder;
@@ -172,7 +172,7 @@ describe('DependencyGraphBuilder', () => {
           {
             type: 'text',
             name: 'field3',
-            validationRules: [{ type: 'crossField', targetFields: ['field1', 'field2'] }],
+            validationRules: [{ type: 'atLeastOne' as any, targetFields: ['field1', 'field2'] }],
           },
         ],
       };

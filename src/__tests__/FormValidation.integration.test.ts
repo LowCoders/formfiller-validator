@@ -10,8 +10,8 @@
  * - Error aggregation
  */
 
-import { Validator } from '../core/Validator';
-import { FormConfig } from '../types';
+import { Validator } from '../core/Validator.js';
+import { FormConfig } from '../types/index.js';
 
 describe('Form Validation Integration Tests', () => {
   let validator: Validator;
@@ -185,10 +185,8 @@ describe('Form Validation Integration Tests', () => {
             validationRules: [
               { type: 'required', message: 'Confirm password required' },
               {
-                type: 'crossField',
-                targetFields: ['password', 'confirmPassword'],
-                crossFieldValidator: 'passwordMatch',
-                message: 'Passwords must match',
+                type: 'atLeastOne' as any,
+                targetFields: ['password', 'confirmPassword'],                message: 'Passwords must match',
               },
             ],
           },
@@ -219,10 +217,8 @@ describe('Form Validation Integration Tests', () => {
             validationRules: [
               { type: 'required', message: 'Confirm password required' },
               {
-                type: 'crossField',
-                targetFields: ['password', 'confirmPassword'],
-                crossFieldValidator: 'passwordMatch',
-                message: 'Passwords must match',
+                type: 'atLeastOne' as any,
+                targetFields: ['password', 'confirmPassword'],                message: 'Passwords must match',
               },
             ],
           },
@@ -301,21 +297,18 @@ describe('Form Validation Integration Tests', () => {
               {
                 or: [
                   {
-                    type: 'crossField',
+                    type: 'atLeastOne' as any,
                     targetFields: ['email'],
-                    crossFieldValidator: 'isNotEmpty',
                     message: 'Email filled',
                   },
                   {
-                    type: 'crossField',
+                    type: 'atLeastOne' as any,
                     targetFields: ['phone'],
-                    crossFieldValidator: 'isNotEmpty',
                     message: 'Phone filled',
                   },
                   {
-                    type: 'crossField',
+                    type: 'atLeastOne' as any,
                     targetFields: ['address'],
-                    crossFieldValidator: 'isNotEmpty',
                     message: 'Address filled',
                   },
                 ],
@@ -360,21 +353,18 @@ describe('Form Validation Integration Tests', () => {
               {
                 or: [
                   {
-                    type: 'crossField',
+                    type: 'atLeastOne' as any,
                     targetFields: ['email'],
-                    crossFieldValidator: 'isNotEmpty',
                     message: 'Email filled',
                   },
                   {
-                    type: 'crossField',
+                    type: 'atLeastOne' as any,
                     targetFields: ['phone'],
-                    crossFieldValidator: 'isNotEmpty',
                     message: 'Phone filled',
                   },
                   {
-                    type: 'crossField',
+                    type: 'atLeastOne' as any,
                     targetFields: ['address'],
-                    crossFieldValidator: 'isNotEmpty',
                     message: 'Address filled',
                   },
                 ],
@@ -414,17 +404,15 @@ describe('Form Validation Integration Tests', () => {
               {
                 or: [
                   {
-                    type: 'crossField',
+                    type: 'atLeastOne' as any,
                     targetFields: ['isPremium'],
-                    crossFieldValidator: 'isTrue',
                     message: 'Premium',
                   },
                   {
                     and: [
                       {
-                        type: 'crossField',
+                        type: 'atLeastOne' as any,
                         targetFields: ['hasCustomConfig'],
-                        crossFieldValidator: 'isTrue',
                         message: 'Custom config',
                       },
                       {

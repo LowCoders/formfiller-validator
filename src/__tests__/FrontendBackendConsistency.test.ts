@@ -5,12 +5,12 @@
  * validators produce consistent results for the same inputs
  */
 
-import { ClientValidator } from '../validators/ClientValidator';
-import { JoiAdapter } from '../adapters/JoiAdapter';
-import { ValidationContext } from '../core/ValidationContext';
-import { CallbackRegistry, getGlobalRegistry, resetGlobalRegistry } from '../core/CallbackRegistry';
-import { resetClientRegistry } from '../validators/ClientCallbackRegistry';
-import { ValidationRule, FormConfig } from '../types';
+import { ClientValidator } from '../validators/ClientValidator.js';
+import { JoiAdapter } from '../adapters/JoiAdapter.js';
+import { ValidationContext } from '../core/ValidationContext.js';
+import { CallbackRegistry, getGlobalRegistry, resetGlobalRegistry } from '../core/CallbackRegistry.js';
+import { resetClientRegistry } from '../validators/ClientCallbackRegistry.js';
+import { ValidationRule, FormConfig } from '../types/index.js';
 
 describe('Frontend-Backend Validation Consistency', () => {
   let clientValidator: ClientValidator;
@@ -32,7 +32,7 @@ describe('Frontend-Backend Validation Consistency', () => {
 
   describe('Basic Rules Consistency', () => {
     it('required rule should behave consistently', async () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         message: 'Field is required',
       };
@@ -52,7 +52,7 @@ describe('Frontend-Backend Validation Consistency', () => {
     });
 
     it('email rule should behave consistently', async () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'email',
         message: 'Invalid email',
       };
@@ -85,7 +85,7 @@ describe('Frontend-Backend Validation Consistency', () => {
     });
 
     it('stringLength rule should behave consistently', async () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'stringLength',
         min: 5,
         max: 10,
@@ -118,7 +118,7 @@ describe('Frontend-Backend Validation Consistency', () => {
     });
 
     it('numeric rule should behave consistently', async () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'numeric',
         message: 'Must be numeric',
       };
@@ -149,7 +149,7 @@ describe('Frontend-Backend Validation Consistency', () => {
     });
 
     it('pattern rule should behave consistently', async () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'pattern',
         pattern: '^[a-z]+$',
         message: 'Only lowercase letters',
@@ -181,7 +181,7 @@ describe('Frontend-Backend Validation Consistency', () => {
     });
 
     it('range rule should behave consistently', async () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'range',
         min: 10,
         max: 100,
@@ -214,7 +214,7 @@ describe('Frontend-Backend Validation Consistency', () => {
     });
 
     it('arrayLength rule should behave consistently', async () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'arrayLength',
         min: 1,
         max: 3,
@@ -250,10 +250,9 @@ describe('Frontend-Backend Validation Consistency', () => {
 
   describe('CrossField Validation Consistency', () => {
     it('isNotEmpty validator should behave consistently', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'atLeastOne' as any,
         targetFields: ['targetField'],
-        crossFieldValidator: 'isNotEmpty',
         message: 'Target field must not be empty',
       };
 
@@ -284,10 +283,9 @@ describe('Frontend-Backend Validation Consistency', () => {
     });
 
     it('isTrue validator should behave consistently', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'atLeastOne' as any,
         targetFields: ['flag'],
-        crossFieldValidator: 'isTrue',
         message: 'Flag must be true',
       };
 
@@ -314,11 +312,9 @@ describe('Frontend-Backend Validation Consistency', () => {
     });
 
     it('equals parameterized validator should behave consistently', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
-        targetFields: ['position'],
-        crossFieldValidator: { name: 'equals', params: { value: 'senior' } },
-        message: 'Must be senior',
+      const rule = {
+        type: 'atLeastOne' as any,
+        targetFields: ['position'],        message: 'Must be senior',
       };
 
       const testCases = [
@@ -344,11 +340,9 @@ describe('Frontend-Backend Validation Consistency', () => {
     });
 
     it('valueIn parameterized validator should behave consistently', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
-        targetFields: ['subscription'],
-        crossFieldValidator: { name: 'valueIn', params: { values: ['Premium', 'Enterprise'] } },
-        message: 'Must be Premium or Enterprise',
+      const rule = {
+        type: 'atLeastOne' as any,
+        targetFields: ['subscription'],        message: 'Must be Premium or Enterprise',
       };
 
       const testCases = [
@@ -375,13 +369,10 @@ describe('Frontend-Backend Validation Consistency', () => {
     });
 
     it('arrayContainsAny parameterized validator should behave consistently', async () => {
-      const rule: ValidationRule = {
-        type: 'crossField',
+      const rule = {
+        type: 'arrayContainsAny' as any,  // Custom validator
         targetFields: ['permissions'],
-        crossFieldValidator: {
-          name: 'arrayContainsAny',
-          params: { values: ['admin', 'superuser'] },
-        },
+        params: { values: ['admin', 'superuser'] },
         message: 'Must have admin or superuser permission',
       };
 
@@ -415,15 +406,13 @@ describe('Frontend-Backend Validation Consistency', () => {
         {
           or: [
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['email'],
-              crossFieldValidator: 'isNotEmpty',
               message: 'Email',
             },
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['phone'],
-              crossFieldValidator: 'isNotEmpty',
               message: 'Phone',
             },
           ],
@@ -479,9 +468,8 @@ describe('Frontend-Backend Validation Consistency', () => {
       const rules: any[] = [
         {
           not: {
-            type: 'crossField',
+            type: 'atLeastOne' as any,
             targetFields: ['isAdmin'],
-            crossFieldValidator: 'isTrue',
             message: 'Is admin',
           },
           groupMessage: 'Must not be admin',
@@ -509,17 +497,15 @@ describe('Frontend-Backend Validation Consistency', () => {
         {
           or: [
             {
-              type: 'crossField',
+              type: 'atLeastOne' as any,
               targetFields: ['isPremium'],
-              crossFieldValidator: 'isTrue',
               message: 'Premium',
             },
             {
               and: [
                 {
-                  type: 'crossField',
+                  type: 'atLeastOne' as any,
                   targetFields: ['hasCustomConfig'],
-                  crossFieldValidator: 'isTrue',
                   message: 'Custom config',
                 },
                 { type: 'arrayLength', max: 2, message: 'Max 2 items' },

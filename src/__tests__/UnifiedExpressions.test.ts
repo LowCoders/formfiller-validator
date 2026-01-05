@@ -11,8 +11,8 @@
  * Migrated from: formfiller-backend/src/__tests__/integration/validator-unified-expressions.test.ts
  */
 
-import { Validator } from '../core/Validator';
-import { FormConfig } from '../types';
+import { Validator } from '../core/Validator.js';
+import { FormConfig } from '../types/index.js';
 
 describe('Unified Expression System', () => {
   let validator: Validator;

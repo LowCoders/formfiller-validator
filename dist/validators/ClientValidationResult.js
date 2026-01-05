@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClientValidationResult = void 0;
-class ClientValidationResult {
+export class ClientValidationResult {
     valid;
     errors;
     constructor() {
@@ -21,5 +18,4 @@ class ClientValidationResult {
         return this.errors.filter((error) => error.field === field);
     }
 }
-exports.ClientValidationResult = ClientValidationResult;
 //# sourceMappingURL=ClientValidationResult.js.map

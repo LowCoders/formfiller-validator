@@ -2,7 +2,7 @@
  * CrossField Types and ErrorTarget Tests
  *
  * Tests for:
- * - New crossField* type format (e.g., crossFieldEquals, crossFieldSumEquals)
+ * - CrossField type format (e.g., equals, sumEquals, atLeastOne)
  * - Automatic targetFields enrichment when rule is defined at field level
  * - errorTarget property for controlling where errors are displayed
  */
@@ -12,7 +12,7 @@ import {
   getCrossFieldValidatorName,
   enrichCrossFieldRule,
   CROSS_FIELD_TYPES,
-} from '../utils/typeGuards';
+} from '../utils/typeGuards.js';
 import { ValidationRule } from 'formfiller-schema';
 
 describe('CrossField Type Helpers', () => {
@@ -21,21 +21,16 @@ describe('CrossField Type Helpers', () => {
   // ═══════════════════════════════════════════════════════════════════════════
 
   describe('isCrossFieldType', () => {
-    it('should return true for legacy crossField type', () => {
-      expect(isCrossFieldType('crossField')).toBe(true);
-    });
-
-    it('should return true for all new crossField types', () => {
+    it('should return true for all crossField types', () => {
       const crossFieldTypes = [
-        'crossFieldEquals',
-        'crossFieldNotEquals',
-        'crossFieldGreaterThan',
-        'crossFieldLessThan',
-        'crossFieldSumEquals',
-        'crossFieldPercentageSum',
-        'crossFieldDateInRange',
-        'crossFieldAtLeastOne',
-        'crossFieldCustom',
+        'equals',
+        'notEquals',
+        'greaterThan',
+        'lessThan',
+        'sumEquals',
+        'percentageSum',
+        'dateInRange',
+        'atLeastOne',
       ];
 
       crossFieldTypes.forEach((type) => {
@@ -57,28 +52,28 @@ describe('CrossField Type Helpers', () => {
   // ═══════════════════════════════════════════════════════════════════════════
 
   describe('getCrossFieldValidatorName', () => {
-    it('should return correct validator name for crossFieldEquals', () => {
-      expect(getCrossFieldValidatorName('crossFieldEquals')).toBe('equals');
+    it('should return correct validator name for equals', () => {
+      expect(getCrossFieldValidatorName('equals')).toBe('equals');
     });
 
-    it('should return correct validator name for crossFieldSumEquals', () => {
-      expect(getCrossFieldValidatorName('crossFieldSumEquals')).toBe('validateSumEquals');
+    it('should return correct validator name for sumEquals', () => {
+      expect(getCrossFieldValidatorName('sumEquals')).toBe('sumEquals');
     });
 
-    it('should return correct validator name for crossFieldPercentageSum', () => {
-      expect(getCrossFieldValidatorName('crossFieldPercentageSum')).toBe('validatePercentageSum');
+    it('should return correct validator name for percentageSum', () => {
+      expect(getCrossFieldValidatorName('percentageSum')).toBe('percentageSum');
     });
 
-    it('should return correct validator name for crossFieldDateInRange', () => {
-      expect(getCrossFieldValidatorName('crossFieldDateInRange')).toBe('validateDateInRange');
+    it('should return correct validator name for dateInRange', () => {
+      expect(getCrossFieldValidatorName('dateInRange')).toBe('dateInRange');
     });
 
-    it('should return correct validator name for crossFieldAtLeastOne', () => {
-      expect(getCrossFieldValidatorName('crossFieldAtLeastOne')).toBe('atLeastOneRequired');
+    it('should return correct validator name for atLeastOne', () => {
+      expect(getCrossFieldValidatorName('atLeastOne')).toBe('atLeastOne');
     });
 
-    it('should fallback to lowercase name for unknown types', () => {
-      expect(getCrossFieldValidatorName('crossFieldUnknown')).toBe('unknown');
+    it('should return the type as-is for unknown types', () => {
+      expect(getCrossFieldValidatorName('unknownType')).toBe('unknownType');
     });
   });
 
@@ -88,8 +83,8 @@ describe('CrossField Type Helpers', () => {
 
   describe('enrichCrossFieldRule', () => {
     it('should add current field to targetFields if not present', () => {
-      const rule: ValidationRule = {
-        type: 'crossFieldEquals',
+      const rule = {
+        type: 'equals',
         targetFields: ['otherField'],
         message: 'Fields must be equal',
       };
@@ -102,8 +97,8 @@ describe('CrossField Type Helpers', () => {
     });
 
     it('should not duplicate current field if already in targetFields', () => {
-      const rule: ValidationRule = {
-        type: 'crossFieldEquals',
+      const rule = {
+        type: 'equals',
         targetFields: ['currentField', 'otherField'],
         message: 'Fields must be equal',
       };
@@ -115,8 +110,8 @@ describe('CrossField Type Helpers', () => {
     });
 
     it('should create targetFields array if undefined', () => {
-      const rule: ValidationRule = {
-        type: 'crossFieldEquals',
+      const rule = {
+        type: 'equals',
         message: 'Fields must be equal',
       };
 
@@ -128,7 +123,7 @@ describe('CrossField Type Helpers', () => {
     });
 
     it('should not modify non-crossField rules', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         message: 'Field is required',
       };
@@ -140,8 +135,8 @@ describe('CrossField Type Helpers', () => {
     });
 
     it('should not mutate the original rule', () => {
-      const rule: ValidationRule = {
-        type: 'crossFieldEquals',
+      const rule = {
+        type: 'equals',
         targetFields: ['otherField'],
         message: 'Fields must be equal',
       };
@@ -159,10 +154,14 @@ describe('CrossField Type Helpers', () => {
 
   describe('CROSS_FIELD_TYPES constant', () => {
     it('should contain all expected crossField types', () => {
-      expect(CROSS_FIELD_TYPES).toContain('crossField');
-      expect(CROSS_FIELD_TYPES).toContain('crossFieldEquals');
-      expect(CROSS_FIELD_TYPES).toContain('crossFieldSumEquals');
-      expect(CROSS_FIELD_TYPES).toContain('crossFieldAtLeastOne');
+      expect(CROSS_FIELD_TYPES).toContain('equals');
+      expect(CROSS_FIELD_TYPES).toContain('notEquals');
+      expect(CROSS_FIELD_TYPES).toContain('greaterThan');
+      expect(CROSS_FIELD_TYPES).toContain('lessThan');
+      expect(CROSS_FIELD_TYPES).toContain('sumEquals');
+      expect(CROSS_FIELD_TYPES).toContain('percentageSum');
+      expect(CROSS_FIELD_TYPES).toContain('dateInRange');
+      expect(CROSS_FIELD_TYPES).toContain('atLeastOne');
     });
 
     it('should have correct length', () => {
@@ -178,7 +177,7 @@ describe('ErrorTarget Property', () => {
 
   describe('errorTarget values', () => {
     it('should accept currentField as errorTarget', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         message: 'Required field',
         errorTarget: 'currentField',
@@ -188,8 +187,8 @@ describe('ErrorTarget Property', () => {
     });
 
     it('should accept allTargetFields as errorTarget', () => {
-      const rule: ValidationRule = {
-        type: 'crossFieldEquals',
+      const rule = {
+        type: 'equals',
         targetFields: ['field1', 'field2'],
         message: 'Fields must match',
         errorTarget: 'allTargetFields',
@@ -199,8 +198,8 @@ describe('ErrorTarget Property', () => {
     });
 
     it('should accept array of field paths as errorTarget', () => {
-      const rule: ValidationRule = {
-        type: 'crossFieldEquals',
+      const rule = {
+        type: 'equals',
         targetFields: ['field1', 'field2', 'field3'],
         message: 'Fields must match',
         errorTarget: ['field1', 'field3'], // Only show error on field1 and field3
@@ -211,7 +210,7 @@ describe('ErrorTarget Property', () => {
     });
 
     it('should allow undefined errorTarget (use defaults)', () => {
-      const rule: ValidationRule = {
+      const rule = {
         type: 'required',
         message: 'Required field',
         // errorTarget not specified - defaults apply

@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const originalConsole = {
     log: console.log,
     warn: console.warn,
@@ -51,4 +49,5 @@ expect.extend({
         };
     },
 });
+export {};
 //# sourceMappingURL=setup.js.map

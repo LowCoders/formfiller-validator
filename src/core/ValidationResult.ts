@@ -11,7 +11,7 @@ import {
   ValidationMetadata,
   ValidationStats,
   DependencyGraphExport,
-} from '../types';
+} from '../types/index.js';
 
 export class ValidationResult implements IValidationResult {
   public valid: boolean;

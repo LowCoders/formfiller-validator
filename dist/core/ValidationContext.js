@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ValidationContext = void 0;
-class ValidationContext {
+export class ValidationContext {
     data;
     config;
     validatorConfig;
@@ -84,5 +81,4 @@ class ValidationContext {
         });
     }
 }
-exports.ValidationContext = ValidationContext;
 //# sourceMappingURL=ValidationContext.js.map

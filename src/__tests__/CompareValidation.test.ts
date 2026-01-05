@@ -7,8 +7,8 @@
  * Migrated from: formfiller-backend/src/__tests__/integration/compare-validation.test.ts
  */
 
-import { Validator } from '../core/Validator';
-import { FormConfig } from '../types';
+import { Validator } from '../core/Validator.js';
+import { FormConfig } from '../types/index.js';
 
 describe('Compare Validation', () => {
   let validator: Validator;

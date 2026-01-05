@@ -9,10 +9,10 @@
  * - Error handling
  */
 
-import { ConfigProcessor } from '../processors/ConfigProcessor';
-import { ValidationContext } from '../core/ValidationContext';
-import { getGlobalRegistry, resetGlobalRegistry } from '../core/CallbackRegistry';
-import { FormConfig } from '../types';
+import { ConfigProcessor } from '../processors/ConfigProcessor.js';
+import { ValidationContext } from '../core/ValidationContext.js';
+import { getGlobalRegistry, resetGlobalRegistry } from '../core/CallbackRegistry.js';
+import { FormConfig } from '../types/index.js';
 
 describe('ConfigProcessor Integration Tests', () => {
   let processor: ConfigProcessor;
@@ -202,15 +202,13 @@ describe('ConfigProcessor Integration Tests', () => {
               {
                 or: [
                   {
-                    type: 'crossField',
+                    type: 'atLeastOne' as any,
                     targetFields: ['email'],
-                    crossFieldValidator: 'isNotEmpty',
                     message: 'Email filled',
                   },
                   {
-                    type: 'crossField',
+                    type: 'atLeastOne' as any,
                     targetFields: ['phone'],
-                    crossFieldValidator: 'isNotEmpty',
                     message: 'Phone filled',
                   },
                 ],
@@ -252,15 +250,13 @@ describe('ConfigProcessor Integration Tests', () => {
               {
                 or: [
                   {
-                    type: 'crossField',
+                    type: 'atLeastOne' as any,
                     targetFields: ['email'],
-                    crossFieldValidator: 'isNotEmpty',
                     message: 'Email filled',
                   },
                   {
-                    type: 'crossField',
+                    type: 'atLeastOne' as any,
                     targetFields: ['phone'],
-                    crossFieldValidator: 'isNotEmpty',
                     message: 'Phone filled',
                   },
                 ],
