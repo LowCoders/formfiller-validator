@@ -269,6 +269,12 @@ export interface ValidationError {
   pathLabels?: string[];
 
   /**
+   * For crossField validators: target field paths
+   * Used for errorTarget: 'allTargetFields' distribution
+   */
+  targetFields?: string[];
+
+  /**
    * For crossField validators: labels for all target fields
    * Enables form-level error display with proper field references
    */

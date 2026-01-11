@@ -5,13 +5,15 @@ export class ClientValidationResult {
         this.valid = true;
         this.errors = [];
     }
-    addError(field, message, rule, params) {
+    addError(field, message, rule, params, targetFields, errorTarget) {
         this.valid = false;
         this.errors.push({
             field,
             message,
             rule,
             params,
+            targetFields,
+            errorTarget,
         });
     }
     getFieldErrors(field) {

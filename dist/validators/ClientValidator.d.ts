@@ -12,6 +12,8 @@ export declare class ClientValidator {
         message: string;
         ruleType: string;
         params?: Record<string, any>;
+        errorTarget?: 'currentField' | 'allTargetFields' | string[];
+        targetFields?: string[];
     };
     private validateRuleGroup;
     shouldApplyRule(rule: ValidationRule, formData: Record<string, any>): boolean;

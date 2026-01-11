@@ -92,6 +92,7 @@ export interface ValidationError {
     params?: Record<string, any>;
     path?: string[];
     pathLabels?: string[];
+    targetFields?: string[];
     targetFieldLabels?: TargetFieldLabel[];
     errorTarget?: 'currentField' | 'allTargetFields' | string[];
 }

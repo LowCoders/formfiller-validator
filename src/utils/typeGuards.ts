@@ -33,6 +33,9 @@ export function getCrossFieldValidatorName(type: string): string {
  * When a crossField rule is defined at field level, the current field should be
  * included in the validation without requiring explicit declaration.
  *
+ * NOTE: Some crossField types should NOT include the current field in targetFields:
+ * - sumEquals: currentValue is compared against sum(targetFields), so current field must NOT be included
+ *
  * @param rule - The validation rule to enrich
  * @param currentFieldPath - The path of the field where the rule is defined
  * @returns A new enriched rule (original is not mutated)
@@ -40,6 +43,13 @@ export function getCrossFieldValidatorName(type: string): string {
 export function enrichCrossFieldRule(rule: ValidationRule, currentFieldPath: string): ValidationRule {
   if (!isCrossFieldType(rule.type)) {
     return rule;
+  }
+
+  // sumEquals: current field should NOT be in targetFields
+  // The validation checks if currentValue === sum(targetFields)
+  // Including current field would cause incorrect calculations
+  if (rule.type === 'sumEquals') {
+    return rule; // Don't enrich - keep original targetFields
   }
 
   const targetFields = [...(rule.targetFields || [])];

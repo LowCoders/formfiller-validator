@@ -1,7 +1,8 @@
 /**
  * ClientValidationContext - Lightweight validation context for client-side validation
  *
- * Similar to ValidationContext but without server-only dependencies
+ * Similar to ValidationContext but without server-only dependencies.
+ * Uses nested object structure for data access (DevExtreme form is initialized with nested structure).
  */
 
 export class ClientValidationContext {
@@ -14,7 +15,10 @@ export class ClientValidationContext {
   }
 
   /**
-   * Get value from data by field path
+   * Get value from data by field path (nested path resolution)
+   * 
+   * @param fieldPath - Dot-separated path (e.g., "field_level.morning_hours")
+   * @returns The value at the path or undefined
    */
   getValue(fieldPath: string): any {
     const parts = fieldPath.split('.');
@@ -31,7 +35,10 @@ export class ClientValidationContext {
   }
 
   /**
-   * Check if a field exists in the data
+   * Check if a field exists in the data (nested path resolution)
+   * 
+   * @param fieldPath - Dot-separated path (e.g., "field_level.morning_hours")
+   * @returns true if the field exists
    */
   hasField(fieldPath: string): boolean {
     const parts = fieldPath.split('.');

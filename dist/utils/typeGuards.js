@@ -10,6 +10,9 @@ export function enrichCrossFieldRule(rule, currentFieldPath) {
     if (!isCrossFieldType(rule.type)) {
         return rule;
     }
+    if (rule.type === 'sumEquals') {
+        return rule;
+    }
     const targetFields = [...(rule.targetFields || [])];
     if (!targetFields.includes(currentFieldPath)) {
         targetFields.push(currentFieldPath);

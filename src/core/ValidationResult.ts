@@ -40,13 +40,29 @@ export class ValidationResult implements IValidationResult {
     path?: string[]
   ): void {
     this.valid = false;
-    this.errors.push({
+    
+    // Extract errorTarget and targetFields from params if present
+    const errorTarget = params?.errorTarget as 'currentField' | 'allTargetFields' | string[] | undefined;
+    const targetFields = params?.targetFields as string[] | undefined;
+    
+    // Remove errorTarget and targetFields from params to avoid duplication
+    const cleanParams = params ? { ...params } : undefined;
+    if (cleanParams) {
+      delete cleanParams.errorTarget;
+      delete cleanParams.targetFields;
+    }
+    
+    const error: ValidationError = {
       field,
       message,
       rule,
-      params,
+      params: cleanParams && Object.keys(cleanParams).length > 0 ? cleanParams : undefined,
       path,
-    });
+      errorTarget,
+      targetFields,
+    };
+    
+    this.errors.push(error);
 
     // Update field result
     if (!this.fieldResults) {
@@ -59,13 +75,7 @@ export class ValidationResult implements IValidationResult {
       };
     }
     this.fieldResults[field].valid = false;
-    this.fieldResults[field].errors.push({
-      field,
-      message,
-      rule,
-      params,
-      path,
-    });
+    this.fieldResults[field].errors.push(error);
   }
 
   /**

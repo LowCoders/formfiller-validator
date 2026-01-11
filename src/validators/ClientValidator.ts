@@ -73,7 +73,14 @@ export class ClientValidator {
     value: any,
     ruleOrGroup: ValidationRuleOrGroup,
     context: ClientValidationContext
-  ): { valid: boolean; message: string; ruleType: string; params?: Record<string, any> } {
+  ): { 
+    valid: boolean; 
+    message: string; 
+    ruleType: string; 
+    params?: Record<string, any>;
+    errorTarget?: 'currentField' | 'allTargetFields' | string[];
+    targetFields?: string[];
+  } {
     if (isValidationRuleGroup(ruleOrGroup)) {
       return this.validateRuleGroup(fieldName, value, ruleOrGroup, context);
     }
@@ -102,6 +109,8 @@ export class ClientValidator {
         message: rule.message || this.getDefaultMessage(rule.type),
         ruleType: rule.type,
         params: { min: rule.min, max: rule.max, pattern: rule.pattern },
+        errorTarget: rule.errorTarget,
+        targetFields: rule.targetFields,
       };
     }
 
@@ -117,7 +126,14 @@ export class ClientValidator {
     value: any,
     group: ValidationRuleGroup,
     context: ClientValidationContext
-  ): { valid: boolean; message: string; ruleType: string; params?: Record<string, any> } {
+  ): { 
+    valid: boolean; 
+    message: string; 
+    ruleType: string; 
+    params?: Record<string, any>;
+    errorTarget?: 'currentField' | 'allTargetFields' | string[];
+    targetFields?: string[];
+  } {
     const operator = getGroupOperator(group);
     const rules = getGroupRules(group);
     const groupMessage = getGroupMessage(group) || 'Validation group failed';
@@ -131,10 +147,22 @@ export class ClientValidator {
     });
 
     let isValid: boolean;
+    // Collect errorTarget and targetFields from failed rules
+    let errorTarget: 'currentField' | 'allTargetFields' | string[] | undefined;
+    let targetFields: string[] | undefined;
+    
     switch (operator) {
       case 'and':
         // All rules must pass
         isValid = results.every((r) => r.valid);
+        // Get errorTarget from first failed rule
+        if (!isValid) {
+          const failedResult = results.find((r) => !r.valid);
+          if (failedResult) {
+            errorTarget = failedResult.errorTarget;
+            targetFields = failedResult.targetFields;
+          }
+        }
         break;
       case 'or':
         // At least one rule must pass
@@ -153,6 +181,8 @@ export class ClientValidator {
       message: groupMessage,
       ruleType: 'group',
       params: { operator },
+      errorTarget,
+      targetFields,
     };
   }
 

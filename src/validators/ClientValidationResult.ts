@@ -7,6 +7,10 @@ export interface ClientValidationError {
   message: string;
   rule: string;
   params?: Record<string, any>;
+  /** Target fields for crossField validation errors */
+  targetFields?: string[];
+  /** Where to display the error: currentField (default), allTargetFields, or specific field paths */
+  errorTarget?: 'currentField' | 'allTargetFields' | string[];
 }
 
 export class ClientValidationResult {
@@ -21,13 +25,22 @@ export class ClientValidationResult {
   /**
    * Add a validation error
    */
-  addError(field: string, message: string, rule: string, params?: Record<string, any>): void {
+  addError(
+    field: string,
+    message: string,
+    rule: string,
+    params?: Record<string, any>,
+    targetFields?: string[],
+    errorTarget?: 'currentField' | 'allTargetFields' | string[]
+  ): void {
     this.valid = false;
     this.errors.push({
       field,
       message,
       rule,
       params,
+      targetFields,
+      errorTarget,
     });
   }
 

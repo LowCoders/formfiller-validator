@@ -14,13 +14,23 @@ export class ValidationResult {
     }
     addError(field, message, rule, params, path) {
         this.valid = false;
-        this.errors.push({
+        const errorTarget = params?.errorTarget;
+        const targetFields = params?.targetFields;
+        const cleanParams = params ? { ...params } : undefined;
+        if (cleanParams) {
+            delete cleanParams.errorTarget;
+            delete cleanParams.targetFields;
+        }
+        const error = {
             field,
             message,
             rule,
-            params,
+            params: cleanParams && Object.keys(cleanParams).length > 0 ? cleanParams : undefined,
             path,
-        });
+            errorTarget,
+            targetFields,
+        };
+        this.errors.push(error);
         if (!this.fieldResults) {
             this.fieldResults = {};
         }
@@ -31,13 +41,7 @@ export class ValidationResult {
             };
         }
         this.fieldResults[field].valid = false;
-        this.fieldResults[field].errors.push({
-            field,
-            message,
-            rule,
-            params,
-            path,
-        });
+        this.fieldResults[field].errors.push(error);
     }
     addErrors(errors) {
         for (const error of errors) {

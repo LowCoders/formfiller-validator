@@ -46,6 +46,8 @@ export class ClientValidator {
                 message: rule.message || this.getDefaultMessage(rule.type),
                 ruleType: rule.type,
                 params: { min: rule.min, max: rule.max, pattern: rule.pattern },
+                errorTarget: rule.errorTarget,
+                targetFields: rule.targetFields,
             };
         }
         return { valid: true, message: '', ruleType: 'unknown' };
@@ -61,9 +63,18 @@ export class ClientValidator {
             return this.validateRuleOrGroup(fieldName, value, rule, context);
         });
         let isValid;
+        let errorTarget;
+        let targetFields;
         switch (operator) {
             case 'and':
                 isValid = results.every((r) => r.valid);
+                if (!isValid) {
+                    const failedResult = results.find((r) => !r.valid);
+                    if (failedResult) {
+                        errorTarget = failedResult.errorTarget;
+                        targetFields = failedResult.targetFields;
+                    }
+                }
                 break;
             case 'or':
                 isValid = results.some((r) => r.valid);
@@ -79,6 +90,8 @@ export class ClientValidator {
             message: groupMessage,
             ruleType: 'group',
             params: { operator },
+            errorTarget,
+            targetFields,
         };
     }
     shouldApplyRule(rule, formData) {
