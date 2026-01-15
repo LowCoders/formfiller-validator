@@ -440,17 +440,29 @@ export class ClientCallbackRegistry {
     );
 
     /**
-     * Checks if value does NOT equal a specific value
-     * params: { value: any }
+     * Checks if value does NOT equal target field values or a specific value
+     * params: { value: any } (optional)
+     * 
+     * Two modes:
+     * 1. If params.value is set: checks that current value !== params.value
+     * 2. If params.value is NOT set: checks that current value !== any targetField value
      */
     this.register(
       'notEquals',
       (values: Record<string, any>, params?: Record<string, any>) => {
+        const currentValue = values._currentValue;
         const targetVals = getTargetValues(values);
-        const val = targetVals.find((v) => v !== undefined);
-        return val !== params?.value;
+        
+        // If params.value is set, compare against it
+        if (params?.value !== undefined) {
+          return currentValue !== params.value;
+        }
+        
+        // Otherwise, compare against targetFields values
+        // Current field value must not equal any of the target field values
+        return !targetVals.some(targetVal => currentValue === targetVal);
       },
-      'Checks if value does NOT equal a specific value',
+      'Checks if value does NOT equal target field values or a specific value',
       true // parameterized
     );
 

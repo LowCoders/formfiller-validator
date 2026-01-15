@@ -201,6 +201,21 @@ export class CallbackRegistry {
                 type: 'crossField',
                 description: 'Checks if value equals a specific value',
             },
+            notEquals: {
+                callback: (values, context) => {
+                    const currentValue = values._currentValue;
+                    const targetVals = Object.entries(values)
+                        .filter(([key]) => key !== '_currentValue')
+                        .map(([, val]) => val);
+                    const params = context.params;
+                    if (params?.value !== undefined) {
+                        return currentValue !== params.value;
+                    }
+                    return !targetVals.some(targetVal => currentValue === targetVal);
+                },
+                type: 'crossField',
+                description: 'Checks if value does NOT equal target field values or a specific value',
+            },
             valueIn: {
                 callback: (values, context) => {
                     const targetVals = Object.entries(values)

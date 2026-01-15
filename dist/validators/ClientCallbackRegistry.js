@@ -212,10 +212,13 @@ export class ClientCallbackRegistry {
             return val === params?.value;
         }, 'Checks if value equals a specific value', true);
         this.register('notEquals', (values, params) => {
+            const currentValue = values._currentValue;
             const targetVals = getTargetValues(values);
-            const val = targetVals.find((v) => v !== undefined);
-            return val !== params?.value;
-        }, 'Checks if value does NOT equal a specific value', true);
+            if (params?.value !== undefined) {
+                return currentValue !== params.value;
+            }
+            return !targetVals.some(targetVal => currentValue === targetVal);
+        }, 'Checks if value does NOT equal target field values or a specific value', true);
         this.register('valueIn', (values, params) => {
             const targetVals = getTargetValues(values);
             const val = targetVals.find((v) => v !== undefined);
