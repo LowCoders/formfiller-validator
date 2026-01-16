@@ -191,15 +191,19 @@ export class CallbackRegistry {
             },
             equals: {
                 callback: (values, context) => {
+                    const currentValue = values._currentValue;
                     const targetVals = Object.entries(values)
                         .filter(([key]) => key !== '_currentValue')
                         .map(([, val]) => val);
-                    const val = targetVals.find((v) => v !== undefined);
                     const params = context.params;
-                    return val === params?.value;
+                    if (params?.value !== undefined) {
+                        return currentValue === params.value;
+                    }
+                    const targetValue = targetVals.find((v) => v !== undefined);
+                    return currentValue === targetValue;
                 },
                 type: 'crossField',
-                description: 'Checks if value equals a specific value',
+                description: 'Checks if current value equals target field value or a specific value',
             },
             notEquals: {
                 callback: (values, context) => {
@@ -215,6 +219,34 @@ export class CallbackRegistry {
                 },
                 type: 'crossField',
                 description: 'Checks if value does NOT equal target field values or a specific value',
+            },
+            lessThan: {
+                callback: (values) => {
+                    const currentValue = values._currentValue;
+                    const targetVals = Object.entries(values)
+                        .filter(([key]) => key !== '_currentValue')
+                        .map(([, val]) => val);
+                    const targetValue = targetVals.find(v => v !== undefined);
+                    if (currentValue === undefined || targetValue === undefined)
+                        return true;
+                    return Number(currentValue) < Number(targetValue);
+                },
+                type: 'crossField',
+                description: 'Checks if current value is less than target field value',
+            },
+            greaterThan: {
+                callback: (values) => {
+                    const currentValue = values._currentValue;
+                    const targetVals = Object.entries(values)
+                        .filter(([key]) => key !== '_currentValue')
+                        .map(([, val]) => val);
+                    const targetValue = targetVals.find(v => v !== undefined);
+                    if (currentValue === undefined || targetValue === undefined)
+                        return true;
+                    return Number(currentValue) > Number(targetValue);
+                },
+                type: 'crossField',
+                description: 'Checks if current value is greater than target field value',
             },
             valueIn: {
                 callback: (values, context) => {

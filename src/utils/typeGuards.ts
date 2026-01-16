@@ -45,13 +45,14 @@ export function enrichCrossFieldRule(rule: ValidationRule, currentFieldPath: str
     return rule;
   }
 
-  // sumEquals: current field should NOT be in targetFields
-  // The validation checks if currentValue === sum(targetFields)
-  // Including current field would cause incorrect calculations
-  // notEquals: current field should NOT be in targetFields
-  // The validation checks if currentValue !== targetField values
-  // Including current field would always find a match (with itself)
-  if (rule.type === 'sumEquals' || rule.type === 'notEquals') {
+  // These crossField types should NOT include the current field in targetFields:
+  // - sumEquals: currentValue is compared against sum(targetFields)
+  // - notEquals: currentValue !== targetField values (would always match itself)
+  // - lessThan: currentValue < targetField value
+  // - greaterThan: currentValue > targetField value
+  // - equals: currentValue === targetField value
+  // Including current field would cause incorrect comparisons
+  if (rule.type === 'sumEquals' || rule.type === 'notEquals' || rule.type === 'lessThan' || rule.type === 'greaterThan' || rule.type === 'equals') {
     return rule; // Don't enrich - keep original targetFields
   }
 

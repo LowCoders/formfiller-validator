@@ -207,10 +207,14 @@ export class ClientCallbackRegistry {
             }
         }, 'Checks if string matches a pattern', true);
         this.register('equals', (values, params) => {
+            const currentValue = values._currentValue;
             const targetVals = getTargetValues(values);
-            const val = targetVals.find((v) => v !== undefined);
-            return val === params?.value;
-        }, 'Checks if value equals a specific value', true);
+            if (params?.value !== undefined) {
+                return currentValue === params.value;
+            }
+            const targetValue = targetVals.find((v) => v !== undefined);
+            return currentValue === targetValue;
+        }, 'Checks if current value equals target field value or a specific value', true);
         this.register('notEquals', (values, params) => {
             const currentValue = values._currentValue;
             const targetVals = getTargetValues(values);
@@ -219,6 +223,22 @@ export class ClientCallbackRegistry {
             }
             return !targetVals.some(targetVal => currentValue === targetVal);
         }, 'Checks if value does NOT equal target field values or a specific value', true);
+        this.register('lessThan', (values) => {
+            const currentValue = values._currentValue;
+            const targetVals = getTargetValues(values);
+            const targetValue = targetVals.find(v => v !== undefined);
+            if (currentValue === undefined || targetValue === undefined)
+                return true;
+            return Number(currentValue) < Number(targetValue);
+        }, 'Checks if current value is less than target field value');
+        this.register('greaterThan', (values) => {
+            const currentValue = values._currentValue;
+            const targetVals = getTargetValues(values);
+            const targetValue = targetVals.find(v => v !== undefined);
+            if (currentValue === undefined || targetValue === undefined)
+                return true;
+            return Number(currentValue) > Number(targetValue);
+        }, 'Checks if current value is greater than target field value');
         this.register('valueIn', (values, params) => {
             const targetVals = getTargetValues(values);
             const val = targetVals.find((v) => v !== undefined);
