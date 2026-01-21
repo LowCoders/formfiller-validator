@@ -13,7 +13,7 @@ import {
   enrichCrossFieldRule,
   CROSS_FIELD_TYPES,
 } from '../utils/typeGuards.js';
-import { ValidationRule } from 'formfiller-schema';
+// Note: ValidationRule type import removed - using inline type assertions
 
 describe('CrossField Type Helpers', () => {
   // ═══════════════════════════════════════════════════════════════════════════
@@ -82,11 +82,14 @@ describe('CrossField Type Helpers', () => {
   // ═══════════════════════════════════════════════════════════════════════════
 
   describe('enrichCrossFieldRule', () => {
-    it('should add current field to targetFields if not present', () => {
+    // Note: equals, notEquals, lessThan, greaterThan, sumEquals are intentionally NOT enriched
+    // because currentValue is compared against targetField values
+    
+    it('should add current field to targetFields for atLeastOne', () => {
       const rule = {
-        type: 'equals',
+        type: 'atLeastOne' as const,
         targetFields: ['otherField'],
-        message: 'Fields must be equal',
+        message: 'At least one field required',
       };
 
       const enrichedRule = enrichCrossFieldRule(rule, 'currentField');
@@ -96,11 +99,25 @@ describe('CrossField Type Helpers', () => {
       expect(enrichedRule.targetFields?.length).toBe(2);
     });
 
-    it('should not duplicate current field if already in targetFields', () => {
+    it('should NOT add current field for equals (comparison types)', () => {
       const rule = {
-        type: 'equals',
-        targetFields: ['currentField', 'otherField'],
+        type: 'equals' as const,
+        targetFields: ['otherField'],
         message: 'Fields must be equal',
+      };
+
+      const enrichedRule = enrichCrossFieldRule(rule, 'currentField');
+
+      // equals should NOT be enriched - currentValue is compared against target
+      expect(enrichedRule.targetFields).not.toContain('currentField');
+      expect(enrichedRule.targetFields?.length).toBe(1);
+    });
+
+    it('should not duplicate current field if already in targetFields for atLeastOne', () => {
+      const rule = {
+        type: 'atLeastOne' as const,
+        targetFields: ['currentField', 'otherField'],
+        message: 'At least one field required',
       };
 
       const enrichedRule = enrichCrossFieldRule(rule, 'currentField');
@@ -109,10 +126,10 @@ describe('CrossField Type Helpers', () => {
       expect(enrichedRule.targetFields?.length).toBe(2);
     });
 
-    it('should create targetFields array if undefined', () => {
+    it('should create targetFields array for atLeastOne if undefined', () => {
       const rule = {
-        type: 'equals',
-        message: 'Fields must be equal',
+        type: 'atLeastOne' as const,
+        message: 'At least one field required',
       };
 
       const enrichedRule = enrichCrossFieldRule(rule, 'currentField');
@@ -124,21 +141,21 @@ describe('CrossField Type Helpers', () => {
 
     it('should not modify non-crossField rules', () => {
       const rule = {
-        type: 'required',
+        type: 'required' as const,
         message: 'Field is required',
       };
 
       const enrichedRule = enrichCrossFieldRule(rule, 'currentField');
 
       expect(enrichedRule).toBe(rule); // Same reference
-      expect(enrichedRule.targetFields).toBeUndefined();
+      expect((enrichedRule as { targetFields?: string[] }).targetFields).toBeUndefined();
     });
 
-    it('should not mutate the original rule', () => {
+    it('should not mutate the original rule for atLeastOne', () => {
       const rule = {
-        type: 'equals',
+        type: 'atLeastOne' as const,
         targetFields: ['otherField'],
-        message: 'Fields must be equal',
+        message: 'At least one required',
       };
 
       const enrichedRule = enrichCrossFieldRule(rule, 'currentField');
@@ -165,7 +182,7 @@ describe('CrossField Type Helpers', () => {
     });
 
     it('should have correct length', () => {
-      expect(CROSS_FIELD_TYPES.length).toBe(10);
+      expect(CROSS_FIELD_TYPES.length).toBe(8);
     });
   });
 });
@@ -210,7 +227,7 @@ describe('ErrorTarget Property', () => {
     });
 
     it('should allow undefined errorTarget (use defaults)', () => {
-      const rule = {
+      const rule: { type: string; message: string; errorTarget?: string } = {
         type: 'required',
         message: 'Required field',
         // errorTarget not specified - defaults apply

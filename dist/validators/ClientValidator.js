@@ -34,13 +34,10 @@ export class ClientValidator {
                 return { valid: true, message: '', ruleType: rule.type };
             }
             const isCrossField = isCrossFieldType(rule.type);
-            console.log(`[ClientValidator] Field: ${fieldName}, Type: ${rule.type}, isCrossField: ${isCrossField}`);
             if (isCrossField) {
                 rule = enrichCrossFieldRule(rule, fieldName);
-                console.log(`[ClientValidator] Enriched targetFields:`, rule.targetFields);
             }
             const isValid = this.validateRule(fieldName, value, rule, context);
-            console.log(`[ClientValidator] validateRule result: ${isValid}`);
             return {
                 valid: isValid,
                 message: rule.message || this.getDefaultMessage(rule.type),
@@ -132,7 +129,6 @@ export class ClientValidator {
     }
     validateCrossField(value, rule, context) {
         if (!rule.targetFields) {
-            console.log(`[ClientValidator] validateCrossField: No targetFields, returning true`);
             return true;
         }
         const validatorName = rule.type;
@@ -146,10 +142,7 @@ export class ClientValidator {
         for (const targetField of rule.targetFields) {
             values[targetField] = context.getValue(targetField);
         }
-        console.log(`[ClientValidator] validateCrossField: ${validatorName}, values:`, values);
-        const result = this.callbackRegistry.execute(validatorName, values);
-        console.log(`[ClientValidator] validateCrossField result: ${result}`);
-        return result;
+        return this.callbackRegistry.execute(validatorName, values);
     }
     validateCompare(value, rule, context) {
         if (value === '' || value === null || value === undefined) {

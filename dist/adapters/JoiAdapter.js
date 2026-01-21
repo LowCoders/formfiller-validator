@@ -125,6 +125,9 @@ export class JoiAdapter {
     }
     createStringLengthSchema(rule) {
         let schema = Joi.string();
+        if (rule.min === undefined || rule.min === 0) {
+            schema = schema.allow('');
+        }
         if (rule.min !== undefined) {
             schema = schema.min(rule.min);
         }
@@ -168,6 +171,7 @@ export class JoiAdapter {
         }
         const pattern = typeof rule.pattern === 'string' ? new RegExp(rule.pattern) : rule.pattern;
         return Joi.string()
+            .allow('')
             .pattern(pattern)
             .messages({
             'string.pattern.base': rule.message || 'Value does not match the required pattern',

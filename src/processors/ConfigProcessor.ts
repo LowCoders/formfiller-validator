@@ -71,10 +71,8 @@ export class ConfigProcessor {
     // Reset field computed results
     this.fieldComputedResults = {};
 
-    // Process form-level validation rules
-    if (context.config.validationRules && context.config.validationRules.length > 0) {
-      // TODO: Implement form-level validation
-    }
+    // Form-level validation rules are processed at field level via crossField validations
+    // The validationRules array at form level is reserved for future use
 
     // Process form items with empty parent path (root level)
     if (context.config.items) {
@@ -166,8 +164,8 @@ export class ConfigProcessor {
         break;
 
       case 'custom':
-        // TODO: Implement custom evaluator support
-        console.warn(`Custom evaluator not yet implemented for field ${rule.fieldName}`);
+        // Custom evaluators are not supported - use standard computed rule types
+        console.warn(`Custom evaluator not supported for field ${rule.fieldName}. Use standard types instead.`);
         return;
 
       default:
@@ -499,8 +497,8 @@ export class ConfigProcessor {
         break;
 
       case 'custom':
-        // TODO: Implement custom evaluator support
-        console.warn(`Custom evaluator not yet implemented for field ${fieldName}`);
+        // Custom evaluators are not supported - use standard computed rule types
+        console.warn(`Custom evaluator not supported for field ${fieldName}. Use standard types instead.`);
         return;
 
       default:

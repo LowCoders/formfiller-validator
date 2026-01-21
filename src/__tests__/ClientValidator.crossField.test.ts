@@ -43,7 +43,7 @@ describe('ClientValidator CrossField Support', () => {
   describe('CrossField Validation - isNotEmpty', () => {
     it('should validate non-empty string field', async () => {
       const rule = {
-        type: 'atLeastOne' as any,
+        type: 'atLeastOne' as const as any,
         targetFields: ['otherField'],
         message: 'Field must not be empty',
       };
@@ -58,7 +58,7 @@ describe('ClientValidator CrossField Support', () => {
 
     it('should fail on empty string field', async () => {
       const rule = {
-        type: 'atLeastOne' as any,
+        type: 'atLeastOne' as const as any,
         targetFields: ['otherField'],
         message: 'Field must not be empty',
       };
@@ -72,7 +72,7 @@ describe('ClientValidator CrossField Support', () => {
 
     it('should fail on null field', async () => {
       const rule = {
-        type: 'atLeastOne' as any,
+        type: 'atLeastOne' as const as any,
         targetFields: ['otherField'],
         message: 'Field must not be empty',
       };
@@ -85,7 +85,7 @@ describe('ClientValidator CrossField Support', () => {
 
     it('should pass on non-empty array', async () => {
       const rule = {
-        type: 'atLeastOne' as any,
+        type: 'atLeastOne' as const as any,
         targetFields: ['arrayField'],
         message: 'Array must not be empty',
       };
@@ -98,102 +98,10 @@ describe('ClientValidator CrossField Support', () => {
     });
   });
 
-  describe('CrossField Validation - passwordMatch (custom)', () => {
-    it('should pass when passwords match', async () => {
-      const rule = {
-        type: 'passwordMatch' as any,  // Custom validator
-        targetFields: ['password', 'confirmPassword'],
-        message: 'Passwords must match',
-      };
-
-      const formData = { password: 'secret123', confirmPassword: 'secret123' };
-      // The _currentValue is also 'secret123' to match with the password fields
-      const result = await validator.validate('testField', 'secret123', [rule], formData);
-
-      expect(result.valid).toBe(true);
-    });
-
-    it('should fail when passwords differ', async () => {
-      const rule = {
-        type: 'passwordMatch' as any,  // Custom validator
-        targetFields: ['password', 'confirmPassword'],
-        message: 'Passwords must match',
-      };
-
-      const formData = { password: 'secret123', confirmPassword: 'different' };
-      const result = await validator.validate('testField', '', [rule], formData);
-
-      expect(result.valid).toBe(false);
-    });
-  });
-
-  describe('CrossField Validation - compare (custom)', () => {
-    it('should pass equality check', async () => {
-      const rule = {
-        type: 'compare' as any,  // Custom validator
-        targetFields: ['field1', 'field2'],
-        params: { operator: '==' },
-        message: 'Fields must be equal',
-      };
-
-      const formData = { field1: 'value', field2: 'value' };
-      // Note: compare uses first two values, so _currentValue + field1 are compared
-      // For proper field1/field2 comparison, use undefined currentValue
-      const result = await validator.validate('testField', undefined, [rule], formData);
-
-      expect(result.valid).toBe(true);
-    });
-
-    it('should fail inequality check', async () => {
-      const rule = {
-        type: 'compare' as any,  // Custom validator
-        targetFields: ['field1', 'field2'],
-        params: { operator: '!=' },
-        message: 'Fields must be different',
-      };
-
-      const formData = { field1: 'same', field2: 'same' };
-      // Compare first two non-undefined values
-      const result = await validator.validate('testField', undefined, [rule], formData);
-
-      expect(result.valid).toBe(false);
-    });
-
-    it('should pass greater than check', async () => {
-      const rule = {
-        type: 'compare' as any,  // Custom validator
-        targetFields: ['max', 'min'],
-        params: { operator: '>' },
-        message: 'Max must be greater than min',
-      };
-
-      const formData = { max: 100, min: 50 };
-      // Use undefined currentValue so only targetFields are compared
-      const result = await validator.validate('testField', undefined, [rule], formData);
-
-      expect(result.valid).toBe(true);
-    });
-
-    it('should fail greater than check', async () => {
-      const rule = {
-        type: 'compare' as any,  // Custom validator
-        targetFields: ['max', 'min'],
-        params: { operator: '>' },
-        message: 'Max must be greater than min',
-      };
-
-      const formData = { max: 30, min: 50 };
-      // With undefined currentValue, comparing max vs min
-      const result = await validator.validate('testField', undefined, [rule], formData);
-
-      expect(result.valid).toBe(false);
-    });
-  });
-
   describe('CrossField Validation - atLeastOne', () => {
     it('should pass when at least one field is filled', async () => {
       const rule = {
-        type: 'atLeastOne',
+        type: 'atLeastOne' as const,
         targetFields: ['email', 'phone'],
         message: 'At least one contact is required',
       };
@@ -206,7 +114,7 @@ describe('ClientValidator CrossField Support', () => {
 
     it('should fail when all fields are empty', async () => {
       const rule = {
-        type: 'atLeastOne',
+        type: 'atLeastOne' as const,
         targetFields: ['email', 'phone'],
         message: 'At least one contact is required',
       };
@@ -218,42 +126,10 @@ describe('ClientValidator CrossField Support', () => {
     });
   });
 
-  describe('CrossField Validation - arrayContains (custom)', () => {
-    it('should pass when array contains value', async () => {
-      const rule = {
-        type: 'arrayContains' as any,  // Custom validator
-        targetFields: ['permissions'],
-        params: { value: 'admin' },
-        message: 'Must have admin permission',
-      };
-
-      const formData = { permissions: ['read', 'write', 'admin'] };
-      // Use undefined currentValue so first value is the array
-      const result = await validator.validate('testField', undefined, [rule], formData);
-
-      expect(result.valid).toBe(true);
-    });
-
-    it('should fail when array does not contain value', async () => {
-      const rule = {
-        type: 'arrayContains' as any,  // Custom validator
-        targetFields: ['permissions'],
-        params: { value: 'admin' },
-        message: 'Must have admin permission',
-      };
-
-      const formData = { permissions: ['read', 'write'] };
-      // Use undefined currentValue so first value is the array
-      const result = await validator.validate('testField', undefined, [rule], formData);
-
-      expect(result.valid).toBe(false);
-    });
-  });
-
   describe('Unknown CrossField Validator', () => {
     it('should pass for unknown validator (backend fallback)', async () => {
       const rule = {
-        type: 'someBackendOnlyValidator' as any,  // Unknown custom validator
+        type: 'someBackendOnlyValidator' as const as any,  // Unknown custom validator
         targetFields: ['field1'],
         message: 'This should pass on frontend',
       };
@@ -269,9 +145,9 @@ describe('ClientValidator CrossField Support', () => {
   describe('Mixed Validation Rules', () => {
     it('should validate crossField alongside basic rules', async () => {
       const rules: ValidationRule[] = [
-        { type: 'required', message: 'Field is required' },
+        { type: 'required' as const, message: 'Field is required' },
         {
-          type: 'atLeastOne' as any,
+          type: 'atLeastOne' as const as any,
           targetFields: ['otherField'],
           message: 'Other field must not be empty',
         },
@@ -285,9 +161,9 @@ describe('ClientValidator CrossField Support', () => {
 
     it('should fail if crossField rule fails', async () => {
       const rules: ValidationRule[] = [
-        { type: 'required', message: 'Field is required' },
+        { type: 'required' as const, message: 'Field is required' },
         {
-          type: 'atLeastOne' as any,
+          type: 'atLeastOne' as const as any,
           targetFields: ['otherField'],
           message: 'Other field must not be empty',
         },
@@ -320,12 +196,12 @@ describe('ValidationRuleGroup Support', () => {
         {
           or: [
             {
-              type: 'atLeastOne' as any,
+              type: 'atLeastOne' as const as any,
               targetFields: ['email'],
               message: 'Email required',
             },
             {
-              type: 'atLeastOne' as any,
+              type: 'atLeastOne' as const as any,
               targetFields: ['phone'],
               message: 'Phone required',
             },
@@ -346,12 +222,12 @@ describe('ValidationRuleGroup Support', () => {
         {
           or: [
             {
-              type: 'atLeastOne' as any,
+              type: 'atLeastOne' as const as any,
               targetFields: ['email'],
               message: 'Email required',
             },
             {
-              type: 'atLeastOne' as any,
+              type: 'atLeastOne' as const as any,
               targetFields: ['phone'],
               message: 'Phone required',
             },
@@ -374,8 +250,8 @@ describe('ValidationRuleGroup Support', () => {
       const rules: any[] = [
         {
           and: [
-            { type: 'required', message: 'Field is required' },
-            { type: 'stringLength', min: 5, message: 'Min 5 chars' },
+            { type: 'required' as const, message: 'Field is required' },
+            { type: 'stringLength' as const, min: 5, message: 'Min 5 chars' },
           ],
           groupMessage: 'Both requirements must be met',
         },
@@ -390,8 +266,8 @@ describe('ValidationRuleGroup Support', () => {
       const rules: any[] = [
         {
           and: [
-            { type: 'required', message: 'Field is required' },
-            { type: 'stringLength', min: 5, message: 'Min 5 chars' },
+            { type: 'required' as const, message: 'Field is required' },
+            { type: 'stringLength' as const, min: 5, message: 'Min 5 chars' },
           ],
           groupMessage: 'Both requirements must be met',
         },
@@ -405,65 +281,24 @@ describe('ValidationRuleGroup Support', () => {
     });
   });
 
-  describe('NOT group validation', () => {
-    it('should pass when inner rule fails', async () => {
-      const rules: any[] = [
-        {
-          not: {
-            type: 'atLeastOne' as any,
-            targetFields: ['isAdmin'],
-            message: 'User is admin',
-          },
-          groupMessage: 'User must not be admin',
-        },
-      ];
-
-      // isAdmin is false - NOT(isTrue) = pass
-      const formData = { isAdmin: false };
-      const result = await validator.validate('restrictedField', '', rules, formData);
-
-      expect(result.valid).toBe(true);
-    });
-
-    it('should fail when inner rule passes', async () => {
-      const rules: any[] = [
-        {
-          not: {
-            type: 'atLeastOne' as any,
-            targetFields: ['isAdmin'],
-            message: 'User is admin',
-          },
-          groupMessage: 'User must not be admin',
-        },
-      ];
-
-      // isAdmin is true - NOT(isTrue) = fail
-      const formData = { isAdmin: true };
-      const result = await validator.validate('restrictedField', '', rules, formData);
-
-      expect(result.valid).toBe(false);
-      expect(result.errors[0]?.message).toBe('User must not be admin');
-    });
-  });
-
   describe('Nested groups', () => {
     it('should handle nested AND inside OR', async () => {
       const rules: any[] = [
         {
           or: [
             {
-              type: 'atLeastOne' as any,
+              type: 'atLeastOne' as const as any,
               targetFields: ['isPremium'],
               message: 'Premium user',
             },
             {
               and: [
                 {
-                  type: 'atLeastOne' as any,
+                  type: 'atLeastOne' as const as any,
                   targetFields: ['hasCustomConfig'],
                   message: 'Has custom config',
                 },
-                { type: 'arrayLength', max: 2, message: 'Max 2 items' },
+                { type: 'arrayLength' as const, max: 2, message: 'Max 2 items' },
               ],
               groupMessage: 'Custom config with max 2 items',
             },

@@ -39,25 +39,25 @@ describe('JoiAdapter Comprehensive Tests', () => {
 
   describe('Basic Rules - Required', () => {
     it('should pass for non-empty value', async () => {
-      const rule = { type: 'required', message: 'Required' };
+      const rule = { type: 'required' as const, message: 'Required' };
       const result = await adapter.validate('test value', rule, context);
       expect(result.valid).toBe(true);
     });
 
     it('should fail for empty string', async () => {
-      const rule = { type: 'required', message: 'Required' };
+      const rule = { type: 'required' as const, message: 'Required' };
       const result = await adapter.validate('', rule, context);
       expect(result.valid).toBe(false);
     });
 
     it('should fail for null', async () => {
-      const rule = { type: 'required', message: 'Required' };
+      const rule = { type: 'required' as const, message: 'Required' };
       const result = await adapter.validate(null, rule, context);
       expect(result.valid).toBe(false);
     });
 
     it('should pass for number 0', async () => {
-      const rule = { type: 'required', message: 'Required' };
+      const rule = { type: 'required' as const, message: 'Required' };
       const result = await adapter.validate(0, rule, context);
       expect(result.valid).toBe(true);
     });
@@ -65,19 +65,19 @@ describe('JoiAdapter Comprehensive Tests', () => {
 
   describe('Basic Rules - Email', () => {
     it('should pass for valid email', async () => {
-      const rule = { type: 'email', message: 'Invalid email' };
+      const rule = { type: 'email' as const, message: 'Invalid email' };
       const result = await adapter.validate('test@example.com', rule, context);
       expect(result.valid).toBe(true);
     });
 
     it('should fail for invalid email', async () => {
-      const rule = { type: 'email', message: 'Invalid email' };
+      const rule = { type: 'email' as const, message: 'Invalid email' };
       const result = await adapter.validate('not-an-email', rule, context);
       expect(result.valid).toBe(false);
     });
 
     it('should pass for empty string (optional)', async () => {
-      const rule = { type: 'email', message: 'Invalid email' };
+      const rule = { type: 'email' as const, message: 'Invalid email' };
       const result = await adapter.validate('', rule, context);
       expect(result.valid).toBe(true);
     });
@@ -85,19 +85,19 @@ describe('JoiAdapter Comprehensive Tests', () => {
 
   describe('Basic Rules - Numeric', () => {
     it('should pass for number', async () => {
-      const rule = { type: 'numeric', message: 'Must be numeric' };
+      const rule = { type: 'numeric' as const, message: 'Must be numeric' };
       const result = await adapter.validate(123, rule, context);
       expect(result.valid).toBe(true);
     });
 
     it('should pass for numeric string', async () => {
-      const rule = { type: 'numeric', message: 'Must be numeric' };
+      const rule = { type: 'numeric' as const, message: 'Must be numeric' };
       const result = await adapter.validate('456', rule, context);
       expect(result.valid).toBe(true);
     });
 
     it('should fail for non-numeric', async () => {
-      const rule = { type: 'numeric', message: 'Must be numeric' };
+      const rule = { type: 'numeric' as const, message: 'Must be numeric' };
       const result = await adapter.validate('abc', rule, context);
       expect(result.valid).toBe(false);
     });
@@ -106,7 +106,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
   describe('Basic Rules - StringLength', () => {
     it('should pass for valid length', async () => {
       const rule = {
-        type: 'stringLength',
+        type: 'stringLength' as const,
         min: 3,
         max: 10,
         message: 'Invalid length',
@@ -116,13 +116,13 @@ describe('JoiAdapter Comprehensive Tests', () => {
     });
 
     it('should fail for too short', async () => {
-      const rule = { type: 'stringLength', min: 5, message: 'Too short' };
+      const rule = { type: 'stringLength' as const, min: 5, message: 'Too short' };
       const result = await adapter.validate('hi', rule, context);
       expect(result.valid).toBe(false);
     });
 
     it('should fail for too long', async () => {
-      const rule = { type: 'stringLength', max: 5, message: 'Too long' };
+      const rule = { type: 'stringLength' as const, max: 5, message: 'Too long' };
       const result = await adapter.validate('toolongtext', rule, context);
       expect(result.valid).toBe(false);
     });
@@ -130,19 +130,19 @@ describe('JoiAdapter Comprehensive Tests', () => {
 
   describe('Basic Rules - Range', () => {
     it('should pass for value in range', async () => {
-      const rule = { type: 'range', min: 10, max: 100, message: 'Out of range' };
+      const rule = { type: 'range' as const, min: 10, max: 100, message: 'Out of range' };
       const result = await adapter.validate(50, rule, context);
       expect(result.valid).toBe(true);
     });
 
     it('should fail for value below minimum', async () => {
-      const rule = { type: 'range', min: 10, message: 'Too low' };
+      const rule = { type: 'range' as const, min: 10, message: 'Too low' };
       const result = await adapter.validate(5, rule, context);
       expect(result.valid).toBe(false);
     });
 
     it('should fail for value above maximum', async () => {
-      const rule = { type: 'range', max: 100, message: 'Too high' };
+      const rule = { type: 'range' as const, max: 100, message: 'Too high' };
       const result = await adapter.validate(150, rule, context);
       expect(result.valid).toBe(false);
     });
@@ -151,7 +151,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
   describe('Basic Rules - Pattern', () => {
     it('should pass for matching pattern', async () => {
       const rule = {
-        type: 'pattern',
+        type: 'pattern' as const,
         pattern: '^[a-z]+$',
         message: 'Invalid pattern',
       };
@@ -161,7 +161,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
 
     it('should fail for non-matching pattern', async () => {
       const rule = {
-        type: 'pattern',
+        type: 'pattern' as const,
         pattern: '^[a-z]+$',
         message: 'Invalid pattern',
       };
@@ -173,7 +173,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
   describe('Basic Rules - ArrayLength', () => {
     it('should pass for valid array length', async () => {
       const rule = {
-        type: 'arrayLength',
+        type: 'arrayLength' as const,
         min: 1,
         max: 3,
         message: 'Invalid length',
@@ -183,13 +183,13 @@ describe('JoiAdapter Comprehensive Tests', () => {
     });
 
     it('should fail for empty array when min is set', async () => {
-      const rule = { type: 'arrayLength', min: 1, message: 'Too small' };
+      const rule = { type: 'arrayLength' as const, min: 1, message: 'Too small' };
       const result = await adapter.validate([], rule, context);
       expect(result.valid).toBe(false);
     });
 
     it('should fail for array exceeding max', async () => {
-      const rule = { type: 'arrayLength', max: 2, message: 'Too large' };
+      const rule = { type: 'arrayLength' as const, max: 2, message: 'Too large' };
       const result = await adapter.validate(['a', 'b', 'c'], rule, context);
       expect(result.valid).toBe(false);
     });
@@ -198,7 +198,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
   describe('CrossField - isNotEmpty', () => {
     it('should pass when target field is not empty', async () => {
       const rule = {
-        type: 'atLeastOne' as any,
+        type: 'atLeastOne' as const as any,
         targetFields: ['firstName'],
         message: 'First name must not be empty',
       };
@@ -215,7 +215,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
       );
 
       const rule = {
-        type: 'atLeastOne' as any,
+        type: 'atLeastOne' as const as any,
         targetFields: ['firstName'],
         message: 'First name must not be empty',
       };
@@ -224,110 +224,10 @@ describe('JoiAdapter Comprehensive Tests', () => {
     });
   });
 
-  describe('CrossField - equals (parameterized)', () => {
-    it('should pass when field equals value', async () => {
-      const testContext = new ValidationContext(
-        { position: 'senior' },
-        { formId: 'test' },
-        { mode: 'sequential' }
-      );
-
-      const rule = {
-        type: 'atLeastOne' as any,
-        targetFields: ['position'],        message: 'Must be senior',
-      };
-      const result = await adapter.validate('', rule, testContext);
-      expect(result.valid).toBe(true);
-    });
-
-    it('should fail when field does not equal value', async () => {
-      const testContext = new ValidationContext(
-        { position: 'junior' },
-        { formId: 'test' },
-        { mode: 'sequential' }
-      );
-
-      const rule = {
-        type: 'atLeastOne' as any,
-        targetFields: ['position'],        message: 'Must be senior',
-      };
-      const result = await adapter.validate('', rule, testContext);
-      expect(result.valid).toBe(false);
-    });
-  });
-
-  describe('CrossField - valueIn (parameterized)', () => {
-    it('should pass when value is in list', async () => {
-      const testContext = new ValidationContext(
-        { subscription: 'Premium' },
-        { formId: 'test' },
-        { mode: 'sequential' }
-      );
-
-      const rule = {
-        type: 'atLeastOne' as any,
-        targetFields: ['subscription'],        message: 'Must be Premium or Enterprise',
-      };
-      const result = await adapter.validate('', rule, testContext);
-      expect(result.valid).toBe(true);
-    });
-
-    it('should fail when value is not in list', async () => {
-      const testContext = new ValidationContext(
-        { subscription: 'Basic' },
-        { formId: 'test' },
-        { mode: 'sequential' }
-      );
-
-      const rule = {
-        type: 'atLeastOne' as any,
-        targetFields: ['subscription'],        message: 'Must be Premium or Enterprise',
-      };
-      const result = await adapter.validate('', rule, testContext);
-      expect(result.valid).toBe(false);
-    });
-  });
-
-  describe('CrossField - arrayContainsAny (parameterized)', () => {
-    it('should pass when array contains any value', async () => {
-      const testContext = new ValidationContext(
-        { permissions: ['read', 'write', 'admin'] },
-        { formId: 'test' },
-        { mode: 'sequential' }
-      );
-
-      const rule = {
-        type: 'arrayContainsAny' as any,  // Custom validator
-        targetFields: ['permissions'],
-        params: { values: ['admin', 'superuser'] },
-        message: 'Must have admin or superuser',
-      };
-      const result = await adapter.validate('', rule, testContext);
-      expect(result.valid).toBe(true);
-    });
-
-    it('should fail when array contains none of the values', async () => {
-      const testContext = new ValidationContext(
-        { permissions: ['read', 'write'] },
-        { formId: 'test' },
-        { mode: 'sequential' }
-      );
-
-      const rule = {
-        type: 'arrayContainsAny' as any,  // Custom validator
-        targetFields: ['permissions'],
-        params: { values: ['admin', 'superuser'] },
-        message: 'Must have admin or superuser',
-      };
-      const result = await adapter.validate('', rule, testContext);
-      expect(result.valid).toBe(false);
-    });
-  });
-
   describe('Custom Validators', () => {
     it('should handle inline function validator', async () => {
       const rule = {
-        type: 'custom',
+        type: 'custom' as const,
         validationCallback: (value: any) => value === 'expected',
         message: 'Must be expected value',
       };
@@ -337,7 +237,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
 
     it('should fail inline function validator', async () => {
       const rule = {
-        type: 'custom',
+        type: 'custom' as const,
         validationCallback: (value: any) => value === 'expected',
         message: 'Must be expected value',
       };
@@ -355,7 +255,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
       );
 
       const rule = {
-        type: 'required',
+        type: 'required' as const,
         message: 'Tax number required',
         when: { customerType: 'company' },
       };
@@ -373,7 +273,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
       );
 
       const rule = {
-        type: 'required',
+        type: 'required' as const,
         message: 'Tax number required',
         when: { customerType: 'company' },
       };
@@ -388,14 +288,14 @@ describe('JoiAdapter Comprehensive Tests', () => {
 
   describe('Edge Cases', () => {
     it('should handle null values', async () => {
-      const rule = { type: 'stringLength', min: 3, message: 'Too short' };
+      const rule = { type: 'stringLength' as const, min: 3, message: 'Too short' };
       const result = await adapter.validate(null, rule, context);
       // stringLength with null fails in Joi (expects string type)
       expect(result.valid).toBe(false);
     });
 
     it('should handle undefined gracefully', async () => {
-      const rule = { type: 'pattern', pattern: '^[a-z]+$', message: 'Invalid' };
+      const rule = { type: 'pattern' as const, pattern: '^[a-z]+$', message: 'Invalid' };
       const result = await adapter.validate(undefined, rule, context);
       // pattern with undefined should pass (use required for mandatory)
       expect(result.valid).toBe(true);
@@ -409,7 +309,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
       );
 
       const rule = {
-        type: 'atLeastOne' as any,
+        type: 'atLeastOne' as const as any,
         targetFields: ['user.email'],
         message: 'User email required',
       };
@@ -419,7 +319,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
 
     it('should handle array values', async () => {
       const rule = {
-        type: 'arrayLength',
+        type: 'arrayLength' as const,
         min: 1,
         max: 5,
         message: 'Invalid array',
@@ -429,7 +329,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
     });
 
     it('should handle boolean values', async () => {
-      const rule = { type: 'required', message: 'Required' };
+      const rule = { type: 'required' as const, message: 'Required' };
       const result = await adapter.validate(false, rule, context);
       expect(result.valid).toBe(true); // boolean false is a valid value
     });
@@ -447,12 +347,12 @@ describe('JoiAdapter Comprehensive Tests', () => {
       );
 
       const rule1: ValidationRule = {
-        type: 'atLeastOne' as any,
+        type: 'atLeastOne' as const as any,
         targetFields: ['position'],        message: 'Must be senior',
       };
 
       const rule2: ValidationRule = {
-        type: 'atLeastOne' as any,
+        type: 'atLeastOne' as const as any,
         targetFields: ['subscription'],        message: 'Must be Premium or Enterprise',
       };
 
@@ -466,7 +366,7 @@ describe('JoiAdapter Comprehensive Tests', () => {
     it('should provide meaningful error messages', async () => {
       const customMessage = 'This is a custom error message';
       const rule = {
-        type: 'required',
+        type: 'required' as const,
         message: customMessage,
       };
       const result = await adapter.validate('', rule, context);

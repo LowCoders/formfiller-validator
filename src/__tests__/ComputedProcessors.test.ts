@@ -14,7 +14,7 @@ import { NumericMatchProcessor } from '../processors/computed/NumericMatchProces
 import { ArrayMatchProcessor } from '../processors/computed/ArrayMatchProcessor.js';
 import { KeywordMatchProcessor } from '../processors/computed/KeywordMatchProcessor.js';
 import { AggregateProcessor } from '../processors/computed/AggregateProcessor.js';
-import { ValidationRule, ComputedRule } from 'formfiller-schema';
+import { ComputedRule } from 'formfiller-schema';
 
 describe('ComputedProcessors', () => {
   // ═══════════════════════════════════════════════════════════════════════════
@@ -31,7 +31,7 @@ describe('ComputedProcessors', () => {
     describe('String matching', () => {
       it('should return correct=true for exact string match (case insensitive)', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 'Budapest',
         };
 
@@ -44,7 +44,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=true for match with leading/trailing spaces', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 'Budapest',
         };
 
@@ -55,7 +55,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=false for incorrect string', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 'Budapest',
           message: 'Wrong city!',
         };
@@ -69,7 +69,7 @@ describe('ComputedProcessors', () => {
 
       it('should use default message when no custom message provided', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 'Budapest',
         };
 
@@ -82,7 +82,7 @@ describe('ComputedProcessors', () => {
     describe('Number matching', () => {
       it('should return correct=true for exact number match', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 42,
           points: 2,
         };
@@ -96,7 +96,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=true for number as string match', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 42,
         };
 
@@ -107,7 +107,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=false for incorrect number', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 42,
         };
 
@@ -118,7 +118,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=false for NaN input', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 42,
         };
 
@@ -131,7 +131,7 @@ describe('ComputedProcessors', () => {
     describe('Points and Penalty', () => {
       it('should apply penalty for incorrect answer', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 'correct',
           points: 5,
           penalty: 2,
@@ -146,7 +146,7 @@ describe('ComputedProcessors', () => {
 
       it('should use default points (1) when not specified', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 'test',
         };
 
@@ -160,7 +160,7 @@ describe('ComputedProcessors', () => {
     describe('Edge cases', () => {
       it('should handle null input', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 'test',
         };
 
@@ -172,7 +172,7 @@ describe('ComputedProcessors', () => {
 
       it('should handle undefined input', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 'test',
         };
 
@@ -183,7 +183,7 @@ describe('ComputedProcessors', () => {
 
       it('should handle empty string', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: '',
         };
 
@@ -208,7 +208,7 @@ describe('ComputedProcessors', () => {
     describe('Exact numeric match', () => {
       it('should return correct=true for exact match', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 100,
         };
 
@@ -220,7 +220,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=false for non-matching value', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 100,
         };
 
@@ -233,7 +233,7 @@ describe('ComputedProcessors', () => {
     describe('Tolerance matching', () => {
       it('should return correct=true within tolerance', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 100,
           tolerance: 5,
         };
@@ -245,7 +245,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=true at tolerance boundary', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 100,
           tolerance: 5,
         };
@@ -257,7 +257,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=false outside tolerance', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 100,
           tolerance: 5,
         };
@@ -270,7 +270,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=true for negative direction tolerance', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 100,
           tolerance: 5,
         };
@@ -284,7 +284,7 @@ describe('ComputedProcessors', () => {
     describe('Invalid inputs', () => {
       it('should return correct=false for non-numeric user input', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 100,
         };
 
@@ -296,7 +296,7 @@ describe('ComputedProcessors', () => {
 
       it('should handle string numbers correctly', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 100,
         };
 
@@ -309,7 +309,7 @@ describe('ComputedProcessors', () => {
     describe('Points and penalties', () => {
       it('should award correct points on match', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 42,
           points: 10,
         };
@@ -321,7 +321,7 @@ describe('ComputedProcessors', () => {
 
       it('should apply penalty on mismatch', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 42,
           points: 10,
           penalty: 3,
@@ -348,7 +348,7 @@ describe('ComputedProcessors', () => {
     describe('Exact array match', () => {
       it('should return correct=true for exact array match (same order)', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: ['A', 'B', 'C'],
         };
 
@@ -360,7 +360,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=true for exact match regardless of order', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: ['A', 'B', 'C'],
         };
 
@@ -371,7 +371,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=false for partial match without partialCredit', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: ['A', 'B', 'C'],
           partialCredit: false,
         };
@@ -383,7 +383,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=false for extra items', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: ['A', 'B'],
         };
 
@@ -396,7 +396,7 @@ describe('ComputedProcessors', () => {
     describe('Partial credit', () => {
       it('should award partial credit for partial match', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: ['A', 'B', 'C'],
           points: 3,
           partialCredit: true,
@@ -412,7 +412,7 @@ describe('ComputedProcessors', () => {
 
       it('should apply penalty for incorrect items with partial credit', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: ['A', 'B', 'C'],
           points: 3,
           penalty: 1,
@@ -429,7 +429,7 @@ describe('ComputedProcessors', () => {
     describe('Single value to array', () => {
       it('should convert single value to array for comparison', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: ['A'],
         };
 
@@ -442,7 +442,7 @@ describe('ComputedProcessors', () => {
     describe('Invalid configuration', () => {
       it('should return error for non-array correctAnswer', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: 'not an array',
         };
 
@@ -456,7 +456,7 @@ describe('ComputedProcessors', () => {
     describe('Points and penalties', () => {
       it('should use custom points', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           correctAnswer: ['A', 'B'],
           points: 5,
         };
@@ -483,7 +483,7 @@ describe('ComputedProcessors', () => {
     describe('Required keywords', () => {
       it('should return correct=true when all required keywords present', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           keywords: {
             required: ['important', 'keyword'],
             optional: [],
@@ -497,7 +497,7 @@ describe('ComputedProcessors', () => {
 
       it('should return correct=false when required keyword missing', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           keywords: {
             required: ['important', 'missing'],
             optional: [],
@@ -512,7 +512,7 @@ describe('ComputedProcessors', () => {
 
       it('should be case insensitive', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           keywords: {
             required: ['IMPORTANT'],
             optional: [],
@@ -528,7 +528,7 @@ describe('ComputedProcessors', () => {
     describe('Minimum length', () => {
       it('should fail if text is shorter than minLength', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           keywords: { required: [], optional: [] },
           minLength: 100,
         };
@@ -541,7 +541,7 @@ describe('ComputedProcessors', () => {
 
       it('should pass if text meets minLength', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           keywords: { required: [], optional: [] },
           minLength: 5,
         };
@@ -555,7 +555,7 @@ describe('ComputedProcessors', () => {
     describe('Optional keywords and partial credit', () => {
       it('should award full points with 50%+ optional keywords', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           keywords: {
             required: ['main'],
             optional: ['extra1', 'extra2', 'extra3', 'extra4'],
@@ -572,7 +572,7 @@ describe('ComputedProcessors', () => {
 
       it('should award partial points with some optional keywords', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           keywords: {
             required: ['main'],
             optional: ['extra1', 'extra2', 'extra3', 'extra4', 'extra5', 'extra6'],
@@ -590,7 +590,7 @@ describe('ComputedProcessors', () => {
 
       it('should award base points with no optional keywords', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           keywords: {
             required: ['main'],
             optional: ['extra1', 'extra2'],
@@ -610,7 +610,7 @@ describe('ComputedProcessors', () => {
     describe('Edge cases', () => {
       it('should handle empty input', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           keywords: { required: ['test'], optional: [] },
         };
 
@@ -621,7 +621,7 @@ describe('ComputedProcessors', () => {
 
       it('should handle null input', () => {
         const rule = {
-          type: 'computed',
+          type: 'computed' as const,
           keywords: { required: ['test'], optional: [] },
         };
 
@@ -675,7 +675,7 @@ describe('ComputedProcessors', () => {
         const config: ComputedRule = {
           id: 'test-basic',
           name: 'Basic Aggregate',
-          type: 'aggregate',
+          type: 'aggregate' as const,
           inputFields: ['field1', 'field2', 'field3'],
         };
 
@@ -692,7 +692,7 @@ describe('ComputedProcessors', () => {
         const config: ComputedRule = {
           id: 'test-empty',
           name: 'Empty Fields',
-          type: 'aggregate',
+          type: 'aggregate' as const,
           inputFields: [],
         };
 
@@ -707,7 +707,7 @@ describe('ComputedProcessors', () => {
       it('should handle missing inputFields', () => {
         const fieldResults = {};
         const config = {
-          type: 'aggregate',
+          type: 'aggregate' as const,
         } as ComputedRule;
 
         const result = processor.aggregate(fieldResults, config);
@@ -731,7 +731,7 @@ describe('ComputedProcessors', () => {
         const config: ComputedRule = {
           id: 'test-skip-missing',
           name: 'Skip Missing',
-          type: 'aggregate',
+          type: 'aggregate' as const,
           inputFields: ['field1', 'field2', 'nonExistent'],
         };
 
@@ -775,7 +775,7 @@ describe('ComputedProcessors', () => {
         const config: ComputedRule = {
           id: 'test-category',
           name: 'Category Aggregate',
-          type: 'aggregate',
+          type: 'aggregate' as const,
           inputFields: ['math1', 'math2', 'lang1'],
           categoryMapping: {
             math1: 'Mathematics',
@@ -810,7 +810,7 @@ describe('ComputedProcessors', () => {
         const config: ComputedRule = {
           id: 'test-uncategorized',
           name: 'Uncategorized',
-          type: 'aggregate',
+          type: 'aggregate' as const,
           inputFields: ['field1'],
           categoryMapping: {},
         };
@@ -838,7 +838,7 @@ describe('ComputedProcessors', () => {
         const config: ComputedRule = {
           id: 'test-eval-rules',
           name: 'Evaluation Rules',
-          type: 'aggregate',
+          type: 'aggregate' as const,
           inputFields: ['field1'],
           evaluationRules: [
             { condition: { percentage: ['>=', 90] }, result: 'Excellent', message: 'Great job!' },
@@ -869,7 +869,7 @@ describe('ComputedProcessors', () => {
         const config: ComputedRule = {
           id: 'test-eval-1',
           name: 'Test Evaluation',
-          type: 'aggregate',
+          type: 'aggregate' as const,
           inputFields: ['field1'],
           evaluationRules: [
             { condition: { percentage: ['>=', 90] }, result: 'Excellent', message: 'Great!' },
@@ -901,7 +901,7 @@ describe('ComputedProcessors', () => {
         const config: ComputedRule = {
           id: 'test-aggregate-1',
           name: 'Test Aggregate',
-          type: 'aggregate',
+          type: 'aggregate' as const,
           inputFields: ['field1'],
         };
 
@@ -926,7 +926,7 @@ describe('ComputedProcessors', () => {
         const config: ComputedRule = {
           id: 'test-aggregate-2',
           name: 'Test Aggregate 2',
-          type: 'aggregate',
+          type: 'aggregate' as const,
           inputFields: ['field1'],
         };
 

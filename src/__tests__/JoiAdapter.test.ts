@@ -2,6 +2,7 @@
  * JoiAdapter Tests
  */
 
+import { jest } from '@jest/globals';
 import { JoiAdapter } from '../adapters/JoiAdapter.js';
 import { ValidationContext } from '../core/ValidationContext.js';
 import { CallbackRegistry } from '../core/CallbackRegistry.js';
@@ -34,7 +35,7 @@ describe('JoiAdapter', () => {
   describe('Required Rule', () => {
     it('should validate non-empty value', async () => {
       const rule = {
-        type: 'required',
+        type: 'required' as const,
         message: 'Field is required',
       };
 
@@ -44,7 +45,7 @@ describe('JoiAdapter', () => {
 
     it('should fail for empty string', async () => {
       const rule = {
-        type: 'required',
+        type: 'required' as const,
         message: 'Field is required',
       };
 
@@ -55,7 +56,7 @@ describe('JoiAdapter', () => {
 
     it('should fail for null', async () => {
       const rule = {
-        type: 'required',
+        type: 'required' as const,
         message: 'Field is required',
       };
 
@@ -67,7 +68,7 @@ describe('JoiAdapter', () => {
   describe('StringLength Rule', () => {
     it('should validate string within range', async () => {
       const rule = {
-        type: 'stringLength',
+        type: 'stringLength' as const,
         min: 3,
         max: 10,
         message: 'Invalid length',
@@ -79,7 +80,7 @@ describe('JoiAdapter', () => {
 
     it('should fail for string too short', async () => {
       const rule = {
-        type: 'stringLength',
+        type: 'stringLength' as const,
         min: 5,
         message: 'Too short',
       };
@@ -90,7 +91,7 @@ describe('JoiAdapter', () => {
 
     it('should fail for string too long', async () => {
       const rule = {
-        type: 'stringLength',
+        type: 'stringLength' as const,
         max: 5,
         message: 'Too long',
       };
@@ -103,7 +104,7 @@ describe('JoiAdapter', () => {
   describe('Range Rule', () => {
     it('should validate number within range', async () => {
       const rule = {
-        type: 'range',
+        type: 'range' as const,
         min: 18,
         max: 100,
         message: 'Invalid range',
@@ -115,7 +116,7 @@ describe('JoiAdapter', () => {
 
     it('should fail for number below minimum', async () => {
       const rule = {
-        type: 'range',
+        type: 'range' as const,
         min: 18,
         message: 'Too low',
       };
@@ -126,7 +127,7 @@ describe('JoiAdapter', () => {
 
     it('should fail for number above maximum', async () => {
       const rule = {
-        type: 'range',
+        type: 'range' as const,
         max: 100,
         message: 'Too high',
       };
@@ -139,7 +140,7 @@ describe('JoiAdapter', () => {
   describe('ArrayLength Rule', () => {
     it('should validate array within range', async () => {
       const rule = {
-        type: 'arrayLength',
+        type: 'arrayLength' as const,
         min: 2,
         max: 5,
         message: 'Invalid array length',
@@ -151,7 +152,7 @@ describe('JoiAdapter', () => {
 
     it('should fail for array below minimum', async () => {
       const rule = {
-        type: 'arrayLength',
+        type: 'arrayLength' as const,
         min: 3,
         message: 'Too few items',
       };
@@ -162,7 +163,7 @@ describe('JoiAdapter', () => {
 
     it('should fail for array above maximum', async () => {
       const rule = {
-        type: 'arrayLength',
+        type: 'arrayLength' as const,
         max: 3,
         message: 'Too many items',
       };
@@ -175,7 +176,7 @@ describe('JoiAdapter', () => {
   describe('Pattern Rule', () => {
     it('should validate matching pattern', async () => {
       const rule = {
-        type: 'pattern',
+        type: 'pattern' as const,
         pattern: /^[A-Z]{3}-\d{3}$/,
         message: 'Invalid format',
       };
@@ -186,7 +187,7 @@ describe('JoiAdapter', () => {
 
     it('should fail for non-matching pattern', async () => {
       const rule = {
-        type: 'pattern',
+        type: 'pattern' as const,
         pattern: /^[A-Z]{3}-\d{3}$/,
         message: 'Invalid format',
       };
@@ -197,7 +198,7 @@ describe('JoiAdapter', () => {
 
     it('should handle string pattern', async () => {
       const rule = {
-        type: 'pattern',
+        type: 'pattern' as const,
         pattern: '^[0-9]+$',
         message: 'Must be numeric',
       };
@@ -210,7 +211,7 @@ describe('JoiAdapter', () => {
   describe('Numeric Rule', () => {
     it('should validate number', async () => {
       const rule = {
-        type: 'numeric',
+        type: 'numeric' as const,
         message: 'Must be a number',
       };
 
@@ -220,7 +221,7 @@ describe('JoiAdapter', () => {
 
     it('should fail for non-number', async () => {
       const rule = {
-        type: 'numeric',
+        type: 'numeric' as const,
         message: 'Must be a number',
       };
 
@@ -232,9 +233,9 @@ describe('JoiAdapter', () => {
   describe('Compare Rule', () => {
     it('should validate equal values', async () => {
       const rule = {
-        type: 'compare',
+        type: 'compare' as const,
         comparisonTarget: 'password',
-        comparisonType: '==',
+        comparisonType: '==' as const,
         message: 'Passwords must match',
       };
 
@@ -244,9 +245,9 @@ describe('JoiAdapter', () => {
 
     it('should fail for non-equal values', async () => {
       const rule = {
-        type: 'compare',
+        type: 'compare' as const,
         comparisonTarget: 'password',
-        comparisonType: '==',
+        comparisonType: '==' as const,
         message: 'Passwords must match',
       };
 
@@ -256,9 +257,9 @@ describe('JoiAdapter', () => {
 
     it('should validate greater than', async () => {
       const rule = {
-        type: 'compare',
+        type: 'compare' as const,
         comparisonTarget: 'age',
-        comparisonType: '>',
+        comparisonType: '>' as const,
         message: 'Must be greater',
       };
 
@@ -268,9 +269,9 @@ describe('JoiAdapter', () => {
 
     it('should validate less than', async () => {
       const rule = {
-        type: 'compare',
+        type: 'compare' as const,
         comparisonTarget: 'age',
-        comparisonType: '<',
+        comparisonType: '<' as const,
         message: 'Must be less',
       };
 
@@ -281,10 +282,10 @@ describe('JoiAdapter', () => {
 
   describe('Custom Rule', () => {
     it('should validate with custom function', async () => {
-      const customValidator = jest.fn().mockResolvedValue(true);
+      const customValidator = jest.fn<(value: unknown, ctx: unknown) => Promise<boolean>>().mockResolvedValue(true);
 
       const rule = {
-        type: 'custom',
+        type: 'custom' as const,
         validationCallback: customValidator,
         message: 'Custom validation failed',
       };
@@ -298,8 +299,8 @@ describe('JoiAdapter', () => {
   describe('validateRules', () => {
     it('should validate multiple rules', async () => {
       const rules: ValidationRule[] = [
-        { type: 'required', message: 'Required' },
-        { type: 'stringLength', min: 3, max: 10, message: 'Invalid length' },
+        { type: 'required' as const, message: 'Required' },
+        { type: 'stringLength' as const, min: 3, max: 10, message: 'Invalid length' },
       ];
 
       const result = await adapter.validateRules('hello', rules, context);
@@ -309,8 +310,8 @@ describe('JoiAdapter', () => {
 
     it('should collect all errors', async () => {
       const rules: ValidationRule[] = [
-        { type: 'required', message: 'Required' },
-        { type: 'stringLength', min: 10, message: 'Too short' },
+        { type: 'required' as const, message: 'Required' },
+        { type: 'stringLength' as const, min: 10, message: 'Too short' },
       ];
 
       const result = await adapter.validateRules('hi', rules, context);
@@ -322,7 +323,7 @@ describe('JoiAdapter', () => {
   describe('Schema Cache (OPTIMIZATION)', () => {
     it('should cache schema for static rules', async () => {
       const rule = {
-        type: 'required',
+        type: 'required' as const,
         message: 'Field is required',
       };
 
@@ -341,12 +342,12 @@ describe('JoiAdapter', () => {
 
     it('should create different cache entries for different rules', async () => {
       const rule1: ValidationRule = {
-        type: 'stringLength',
+        type: 'stringLength' as const,
         min: 5,
         message: 'Min 5 chars',
       };
       const rule2: ValidationRule = {
-        type: 'stringLength',
+        type: 'stringLength' as const,
         min: 10,
         message: 'Min 10 chars',
       };
@@ -360,9 +361,9 @@ describe('JoiAdapter', () => {
 
     it('should not cache context-dependent rules', async () => {
       const rule = {
-        type: 'compare',
+        type: 'compare' as const,
         comparisonTarget: 'password',
-        comparisonType: '==',
+        comparisonType: '==' as const,
         message: 'Must match',
       };
 
@@ -375,7 +376,7 @@ describe('JoiAdapter', () => {
 
     it('should clear cache when clearSchemaCache() is called', async () => {
       const rule = {
-        type: 'required',
+        type: 'required' as const,
         message: 'Required',
       };
 
@@ -388,7 +389,7 @@ describe('JoiAdapter', () => {
 
     it('should cache email rule', async () => {
       const rule = {
-        type: 'email',
+        type: 'email' as const,
         message: 'Invalid email',
       };
 
@@ -402,7 +403,7 @@ describe('JoiAdapter', () => {
 
     it('should cache range rule with same params', async () => {
       const rule = {
-        type: 'range',
+        type: 'range' as const,
         min: 0,
         max: 100,
         message: 'Must be 0-100',
@@ -417,7 +418,7 @@ describe('JoiAdapter', () => {
 
     it('should cache pattern rule', async () => {
       const rule = {
-        type: 'pattern',
+        type: 'pattern' as const,
         pattern: '^[A-Z]+$',
         message: 'Must be uppercase',
       };
@@ -431,11 +432,11 @@ describe('JoiAdapter', () => {
 
     it('should distinguish rules with different messages', async () => {
       const rule1: ValidationRule = {
-        type: 'required',
+        type: 'required' as const,
         message: 'First message',
       };
       const rule2: ValidationRule = {
-        type: 'required',
+        type: 'required' as const,
         message: 'Second message',
       };
 

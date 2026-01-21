@@ -33,32 +33,32 @@ describe('Form Validation Integration Tests', () => {
         formId: 'user-form',
         items: [
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'firstName',
             validationRules: [
-              { type: 'required', message: 'First name required' },
-              { type: 'stringLength', min: 2, max: 50, message: 'Invalid length' },
+              { type: 'required' as const, message: 'First name required' },
+              { type: 'stringLength' as const, min: 2, max: 50, message: 'Invalid length' },
             ],
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'lastName',
-            validationRules: [{ type: 'required', message: 'Last name required' }],
+            validationRules: [{ type: 'required' as const, message: 'Last name required' }],
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'email',
             validationRules: [
-              { type: 'required', message: 'Email required' },
-              { type: 'email', message: 'Invalid email' },
+              { type: 'required' as const, message: 'Email required' },
+              { type: 'email' as const, message: 'Invalid email' },
             ],
           },
           {
-            type: 'number',
+            type: 'number' as const,
             name: 'age',
             validationRules: [
-              { type: 'required', message: 'Age required' },
-              { type: 'range', min: 18, max: 120, message: 'Age must be 18-120' },
+              { type: 'required' as const, message: 'Age required' },
+              { type: 'range' as const, min: 18, max: 120, message: 'Age must be 18-120' },
             ],
           },
         ],
@@ -81,24 +81,24 @@ describe('Form Validation Integration Tests', () => {
         formId: 'user-form',
         items: [
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'firstName',
-            validationRules: [{ type: 'required', message: 'First name required' }],
+            validationRules: [{ type: 'required' as const, message: 'First name required' }],
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'lastName',
-            validationRules: [{ type: 'stringLength', min: 2, message: 'Last name too short' }],
+            validationRules: [{ type: 'stringLength' as const, min: 2, message: 'Last name too short' }],
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'email',
-            validationRules: [{ type: 'email', message: 'Invalid email' }],
+            validationRules: [{ type: 'email' as const, message: 'Invalid email' }],
           },
           {
-            type: 'number',
+            type: 'number' as const,
             name: 'age',
-            validationRules: [{ type: 'range', min: 18, message: 'Must be 18+' }],
+            validationRules: [{ type: 'range' as const, min: 18, message: 'Must be 18+' }],
           },
         ],
       };
@@ -120,14 +120,14 @@ describe('Form Validation Integration Tests', () => {
         formId: 'customer-form',
         items: [
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'customerType',
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'taxNumber',
             visibleIf: { customerType: 'company' },
-            validationRules: [{ type: 'required', message: 'Tax number required' }],
+            validationRules: [{ type: 'required' as const, message: 'Tax number required' }],
           },
         ],
       };
@@ -147,14 +147,14 @@ describe('Form Validation Integration Tests', () => {
         formId: 'customer-form',
         items: [
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'customerType',
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'taxNumber',
             visibleIf: { customerType: 'company' },
-            validationRules: [{ type: 'required', message: 'Tax number required' }],
+            validationRules: [{ type: 'required' as const, message: 'Tax number required' }],
           },
         ],
       };
@@ -175,18 +175,19 @@ describe('Form Validation Integration Tests', () => {
         formId: 'registration-form',
         items: [
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'password',
-            validationRules: [{ type: 'required', message: 'Password required' }],
+            validationRules: [{ type: 'required' as const, message: 'Password required' }],
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'confirmPassword',
             validationRules: [
-              { type: 'required', message: 'Confirm password required' },
+              { type: 'required' as const, message: 'Confirm password required' },
               {
-                type: 'atLeastOne' as any,
-                targetFields: ['password', 'confirmPassword'],                message: 'Passwords must match',
+                type: 'equals' as const,
+                targetFields: ['password'],
+                message: 'Passwords must match',
               },
             ],
           },
@@ -207,18 +208,19 @@ describe('Form Validation Integration Tests', () => {
         formId: 'registration-form',
         items: [
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'password',
-            validationRules: [{ type: 'required', message: 'Password required' }],
+            validationRules: [{ type: 'required' as const, message: 'Password required' }],
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'confirmPassword',
             validationRules: [
-              { type: 'required', message: 'Confirm password required' },
+              { type: 'required' as const, message: 'Confirm password required' },
               {
-                type: 'atLeastOne' as any,
-                targetFields: ['password', 'confirmPassword'],                message: 'Passwords must match',
+                type: 'equals' as const,
+                targetFields: ['password'],
+                message: 'Passwords must match',
               },
             ],
           },
@@ -243,19 +245,19 @@ describe('Form Validation Integration Tests', () => {
         formId: 'profile-form',
         items: [
           {
-            type: 'group',
+            type: 'group' as const,
             name: 'userGroup',
             excludeFromPath: true,
             items: [
               {
-                type: 'text',
+                type: 'text' as const,
                 name: 'user.firstName',
-                validationRules: [{ type: 'required', message: 'First name required' }],
+                validationRules: [{ type: 'required' as const, message: 'First name required' }],
               },
               {
-                type: 'text',
+                type: 'text' as const,
                 name: 'user.lastName',
-                validationRules: [{ type: 'required', message: 'Last name required' }],
+                validationRules: [{ type: 'required' as const, message: 'Last name required' }],
               },
             ],
           },
@@ -279,35 +281,35 @@ describe('Form Validation Integration Tests', () => {
         formId: 'contact-form',
         items: [
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'email',
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'phone',
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'address',
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'contactCheck',
             validationRules: [
               {
                 or: [
                   {
-                    type: 'atLeastOne' as any,
+                    type: 'atLeastOne' as const as any,
                     targetFields: ['email'],
                     message: 'Email filled',
                   },
                   {
-                    type: 'atLeastOne' as any,
+                    type: 'atLeastOne' as const as any,
                     targetFields: ['phone'],
                     message: 'Phone filled',
                   },
                   {
-                    type: 'atLeastOne' as any,
+                    type: 'atLeastOne' as const as any,
                     targetFields: ['address'],
                     message: 'Address filled',
                   },
@@ -335,35 +337,35 @@ describe('Form Validation Integration Tests', () => {
         formId: 'contact-form',
         items: [
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'email',
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'phone',
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'address',
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'contactCheck',
             validationRules: [
               {
                 or: [
                   {
-                    type: 'atLeastOne' as any,
+                    type: 'atLeastOne' as const as any,
                     targetFields: ['email'],
                     message: 'Email filled',
                   },
                   {
-                    type: 'atLeastOne' as any,
+                    type: 'atLeastOne' as const as any,
                     targetFields: ['phone'],
                     message: 'Phone filled',
                   },
                   {
-                    type: 'atLeastOne' as any,
+                    type: 'atLeastOne' as const as any,
                     targetFields: ['address'],
                     message: 'Address filled',
                   },
@@ -390,33 +392,33 @@ describe('Form Validation Integration Tests', () => {
         formId: 'features-form',
         items: [
           {
-            type: 'checkbox',
+            type: 'checkbox' as const,
             name: 'isPremium',
           },
           {
-            type: 'checkbox',
+            type: 'checkbox' as const,
             name: 'hasCustomConfig',
           },
           {
-            type: 'tagbox',
+            type: 'tagbox' as const,
             name: 'features',
             validationRules: [
               {
                 or: [
                   {
-                    type: 'atLeastOne' as any,
+                    type: 'atLeastOne' as const as any,
                     targetFields: ['isPremium'],
                     message: 'Premium',
                   },
                   {
                     and: [
                       {
-                        type: 'atLeastOne' as any,
+                        type: 'atLeastOne' as const as any,
                         targetFields: ['hasCustomConfig'],
                         message: 'Custom config',
                       },
                       {
-                        type: 'arrayLength',
+                        type: 'arrayLength' as const,
                         max: 2,
                         message: 'Max 2 features',
                       },
@@ -448,19 +450,19 @@ describe('Form Validation Integration Tests', () => {
         formId: 'test-form',
         items: [
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'field1',
-            validationRules: [{ type: 'required', message: 'Field 1 required' }],
+            validationRules: [{ type: 'required' as const, message: 'Field 1 required' }],
           },
           {
-            type: 'text',
+            type: 'text' as const,
             name: 'field2',
-            validationRules: [{ type: 'stringLength', min: 3, message: 'Field 2 too short' }],
+            validationRules: [{ type: 'stringLength' as const, min: 3, message: 'Field 2 too short' }],
           },
           {
-            type: 'number',
+            type: 'number' as const,
             name: 'field3',
-            validationRules: [{ type: 'range', max: 100, message: 'Field 3 too large' }],
+            validationRules: [{ type: 'range' as const, max: 100, message: 'Field 3 too large' }],
           },
         ],
       };

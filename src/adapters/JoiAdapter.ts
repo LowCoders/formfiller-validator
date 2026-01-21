@@ -200,7 +200,14 @@ export class JoiAdapter {
    * Create string length validation schema
    */
   private createStringLengthSchema(rule: ValidationRule): Joi.Schema {
+    // Allow empty strings for optional fields - stringLength validation should only apply to non-empty values
+    // Exception: if min is set and > 0, then empty string should fail the minimum check
     let schema = Joi.string();
+
+    // Only allow empty if there's no min requirement or min is 0
+    if (rule.min === undefined || rule.min === 0) {
+      schema = schema.allow('');
+    }
 
     if (rule.min !== undefined) {
       schema = schema.min(rule.min);
@@ -266,7 +273,9 @@ export class JoiAdapter {
 
     const pattern = typeof rule.pattern === 'string' ? new RegExp(rule.pattern) : rule.pattern;
 
+    // Allow empty strings for optional fields - pattern validation should only apply to non-empty values
     return Joi.string()
+      .allow('')
       .pattern(pattern)
       .messages({
         'string.pattern.base': rule.message || 'Value does not match the required pattern',
@@ -502,10 +511,10 @@ export class JoiAdapter {
             }
           }
 
-          // TODO: Implement schedule (cron) validation
+          // Schedule (cron) validation is not implemented - would need a cron parser library
+          // Passing through if schedule is defined
           if (rule.schedule) {
-            // Would need a cron parser library
-            // For now, just pass through
+            // No-op: cron validation not available
           }
 
           return value;

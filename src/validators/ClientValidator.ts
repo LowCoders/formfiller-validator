@@ -96,14 +96,11 @@ export class ClientValidator {
       // Enrich crossField rules: automatically add current field to targetFields
       // and derive crossFieldValidator from type if not explicitly set
       const isCrossField = isCrossFieldType(rule.type);
-      console.log(`[ClientValidator] Field: ${fieldName}, Type: ${rule.type}, isCrossField: ${isCrossField}`);
       if (isCrossField) {
         rule = enrichCrossFieldRule(rule, fieldName);
-        console.log(`[ClientValidator] Enriched targetFields:`, rule.targetFields);
       }
 
       const isValid = this.validateRule(fieldName, value, rule, context);
-      console.log(`[ClientValidator] validateRule result: ${isValid}`);
       return {
         valid: isValid,
         message: rule.message || this.getDefaultMessage(rule.type),
@@ -254,7 +251,6 @@ export class ClientValidator {
     context: ClientValidationContext
   ): boolean {
     if (!rule.targetFields) {
-      console.log(`[ClientValidator] validateCrossField: No targetFields, returning true`);
       return true; // No targetFields, pass
     }
 
@@ -277,12 +273,8 @@ export class ClientValidator {
       values[targetField] = context.getValue(targetField);
     }
 
-    console.log(`[ClientValidator] validateCrossField: ${validatorName}, values:`, values);
-
     // Execute callback
-    const result = this.callbackRegistry.execute(validatorName, values);
-    console.log(`[ClientValidator] validateCrossField result: ${result}`);
-    return result;
+    return this.callbackRegistry.execute(validatorName, values);
   }
 
   /**

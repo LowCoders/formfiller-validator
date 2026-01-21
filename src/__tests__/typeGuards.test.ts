@@ -14,7 +14,7 @@ import {
   extractFieldReferences,
   extractConditionalFields,
 } from '../utils/typeGuards.js';
-import { ValidationRule, ValidationRuleGroup, ValidationRuleOrGroup } from 'formfiller-schema';
+import type { ValidationRuleGroup, ValidationRuleOrGroup } from 'formfiller-schema';
 
 describe('typeGuards', () => {
   // ═══════════════════════════════════════════════════════════════════════════
@@ -108,7 +108,7 @@ describe('typeGuards', () => {
     });
 
     it('should return false for validation rule', () => {
-      const rule = { type: 'required' };
+      const rule = { type: 'required' as const };
       expect(isValidationRuleGroup(rule)).toBe(false);
     });
   });

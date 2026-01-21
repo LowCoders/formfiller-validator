@@ -1,8 +1,8 @@
 # FormFiller Validator
 
-Fejlett validációs rendszer a FormFiller alkalmazáshoz. Beágyazott struktúrák támogatása, feltételes szabályok, számított értékek és párhuzamos végrehajtás.
+Advanced validation system for the FormFiller application. Supports nested structures, conditional rules, computed values, and parallel execution.
 
-## Telepítés
+## Installation
 
 ```bash
 npm install formfiller-validator
@@ -10,24 +10,24 @@ npm install formfiller-validator
 
 ## Entry Points
 
-A csomag két entry point-ot biztosít:
+The package provides two entry points:
 
-### Client-only (Alapértelmezett) - Joi-mentes
+### Client-only (Default) - Joi-free
 
 ```typescript
-// Könnyűsúlyú, Joi-mentes validátorok frontend használatra
+// Lightweight, Joi-free validators for frontend use
 import { ClientValidator, ClientValidationContext, ClientValidationResult } from 'formfiller-validator';
 
 const validator = new ClientValidator();
 const result = await validator.validate(fieldName, value, rules, formData);
 ```
 
-Támogatott szabálytípusok: `required`, `email`, `numeric`, `stringLength`, `range`, `pattern`, `arrayLength`, `crossField`
+Supported rule types: `required`, `email`, `numeric`, `stringLength`, `range`, `pattern`, `arrayLength`, `crossField`
 
-### Full Validator - Joi-alapú
+### Full Validator - Joi-based
 
 ```typescript
-// Teljes Joi-alapú validátor backend vagy advanced frontend használatra
+// Full Joi-based validator for backend or advanced frontend use
 import { Validator } from 'formfiller-validator/full';
 
 const validator = new Validator({
@@ -38,46 +38,97 @@ const validator = new Validator({
 const result = await validator.validate(formData, config);
 
 if (!result.valid) {
-  console.error('Validációs hibák:', result.errors);
+  console.error('Validation errors:', result.errors);
 }
 ```
 
-További szabálytípusok: `compare`, `custom`, `async`, `computed`, `temporal`, `plugin`
+Additional rule types: `compare`, `custom`, `async`, `computed`, `temporal`, `plugin`
 
-## Bundle Méretek
+## Bundle Sizes
 
-| Entry Point | Méret (gzip) | Függőségek |
-|-------------|--------------|------------|
-| Client-only (alapértelmezett) | ~3 KB | Nincs |
-| Full (Joi-val) | ~50 KB | Joi |
+| Entry Point | Size (gzip) | Dependencies |
+|-------------|-------------|--------------|
+| Client-only (default) | ~3 KB | None |
+| Full (with Joi) | ~50 KB | Joi |
 
-## Fő Funkciók
+## Key Features
 
-- Beágyazott struktúrák feldolgozása (group, tabbed, nested forms)
-- Feltételes validáció (visibleIf, disabledIf, requiredIf)
-- Keresztmező validáció
-- Számított szabályok
-- Külső API integráció (AI validáció, adatbázis ellenőrzések)
-- Párhuzamos végrehajtás függőségi gráf alapján
-- DevExtreme ValidationRule kompatibilitás
+- Nested structure processing (group, tabbed, nested forms)
+- Conditional validation (visibleIf, disabledIf, requiredIf)
+- Cross-field validation
+- Computed rules
+- External API integration (AI validation, database checks)
+- Parallel execution based on dependency graph
+- DevExtreme ValidationRule compatibility
 
-## Fejlesztés
+## Cross-Field Validation
+
+Cross-field validators enable validation across multiple fields. The type directly indicates the validator type.
+
+### Available CrossField Types
+
+| Type | Description |
+|------|-------------|
+| `crossFieldEquals` | Checks if fields are equal |
+| `crossFieldNotEquals` | Checks if fields are not equal |
+| `crossFieldGreaterThan` | First field > second field |
+| `crossFieldLessThan` | First field < second field |
+| `crossFieldSumEquals` | Sum of fields equals a value |
+| `crossFieldPercentageSum` | Sum of fields equals 100% |
+| `crossFieldDateInRange` | Date within other dates range |
+| `crossFieldAtLeastOne` | At least one field filled |
+| `crossFieldCustom` | Custom validator |
+
+### Example
+
+```typescript
+const rules = [
+  {
+    type: 'crossFieldEquals',
+    targetFields: ['password', 'passwordConfirm'],
+    message: 'Passwords must match'
+  }
+];
+```
+
+## Development
 
 ```bash
-# Függőségek telepítése
+# Install dependencies
 npm install
 
 # Build
 npm run build
 
-# Tesztek futtatása
+# Run tests
 npm test
+
+# Run tests with coverage
+npm run test:coverage
 ```
 
-## Részletes Dokumentáció
+## Type Safety
 
-A teljes dokumentáció: [formfiller-docs](https://lowcoders.github.io/formfiller-docs/)
+The validator package is fully typed with TypeScript. Key types:
 
-## Licenc
+```typescript
+interface ValidationResult {
+  valid: boolean;
+  errors: ValidationError[];
+}
+
+interface ValidationError {
+  field: string;
+  message: string;
+  type: string;
+  value?: unknown;
+}
+```
+
+## Detailed Documentation
+
+Full documentation: [formfiller-docs](https://lowcoders.github.io/formfiller-docs/)
+
+## License
 
 MIT

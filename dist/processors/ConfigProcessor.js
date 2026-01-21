@@ -31,8 +31,6 @@ export class ConfigProcessor {
     async process(context) {
         const result = new ValidationResult();
         this.fieldComputedResults = {};
-        if (context.config.validationRules && context.config.validationRules.length > 0) {
-        }
         if (context.config.items) {
             for (const item of context.config.items) {
                 const itemResult = await this.processItem(item, context, '');
@@ -93,7 +91,7 @@ export class ConfigProcessor {
                 computedResult = this.keywordMatchProcessor.evaluate(fieldValue, rule);
                 break;
             case 'custom':
-                console.warn(`Custom evaluator not yet implemented for field ${rule.fieldName}`);
+                console.warn(`Custom evaluator not supported for field ${rule.fieldName}. Use standard types instead.`);
                 return;
             default:
                 computedResult = this.exactMatchProcessor.evaluate(fieldValue, rule);
@@ -264,7 +262,7 @@ export class ConfigProcessor {
                 computedResult = this.keywordMatchProcessor.evaluate(fieldValue, rule);
                 break;
             case 'custom':
-                console.warn(`Custom evaluator not yet implemented for field ${fieldName}`);
+                console.warn(`Custom evaluator not supported for field ${fieldName}. Use standard types instead.`);
                 return;
             default:
                 computedResult = this.exactMatchProcessor.evaluate(fieldValue, rule);

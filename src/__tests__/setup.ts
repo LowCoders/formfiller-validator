@@ -6,6 +6,8 @@
  * - Sets up global test utilities
  */
 
+import { jest, beforeAll, afterAll, expect } from '@jest/globals';
+
 // Store original console methods
 const originalConsole = {
   log: console.log,

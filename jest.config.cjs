@@ -1,12 +1,20 @@
-import type { Config } from 'jest';
-
-const config: Config = {
-  preset: 'ts-jest',
+/** @type {import('jest').Config} */
+const config = {
+  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.test.ts'],
+  extensionsToTreatAsEsm: ['.ts'],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.ts$': ['ts-jest', {
+      useESM: true,
+      tsconfig: {
+        module: 'NodeNext',
+        moduleResolution: 'NodeNext',
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+      },
+    }],
   },
   
   // Test setup - suppress console logs unless DEBUG=true
@@ -40,7 +48,16 @@ const config: Config = {
   // Clear mocks between tests
   clearMocks: true,
   restoreMocks: true,
+  
+  // Module name mapper for ESM .js extensions
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+  },
+  
+  // Transform ESM packages from node_modules
+  transformIgnorePatterns: [
+    'node_modules/(?!(formfiller-schema|formfiller-types)/)',
+  ],
 };
 
-export default config;
-
+module.exports = config;

@@ -21,7 +21,7 @@
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
     "build:watch": "tsc --watch",
-    "test": "jest --no-verbose",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --no-verbose",
     "test:watch": "jest --watch",
     "test:verbose": "jest --verbose",
     "test:debug": "DEBUG=true jest --verbose",
