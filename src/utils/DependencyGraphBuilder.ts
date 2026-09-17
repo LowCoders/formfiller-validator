@@ -161,7 +161,7 @@ export class DependencyGraphBuilder {
     node: DependencyNode
   ): void {
     if (isValidationRule(ruleOrGroup)) {
-      const rule = ruleOrGroup as import('formfiller-schema').ValidationRule;
+      const rule = ruleOrGroup;
       // Extract from compare rules
       if (rule.type === 'compare' && rule.comparisonTarget) {
         if (!node.dependencies.includes(rule.comparisonTarget)) {
@@ -178,7 +178,7 @@ export class DependencyGraphBuilder {
         }
       }
     } else if (isValidationRuleGroup(ruleOrGroup)) {
-      const group = ruleOrGroup as import('formfiller-schema').ValidationRuleGroup;
+      const group = ruleOrGroup;
       // Recursively process grouped rules
       const nestedRules = getGroupRules(group);
       for (const nestedRule of nestedRules) {

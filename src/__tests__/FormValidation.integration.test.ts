@@ -299,17 +299,17 @@ describe('Form Validation Integration Tests', () => {
               {
                 or: [
                   {
-                    type: 'atLeastOne' as const as any,
+                    type: 'atLeastOne' as const,
                     targetFields: ['email'],
                     message: 'Email filled',
                   },
                   {
-                    type: 'atLeastOne' as const as any,
+                    type: 'atLeastOne' as const,
                     targetFields: ['phone'],
                     message: 'Phone filled',
                   },
                   {
-                    type: 'atLeastOne' as const as any,
+                    type: 'atLeastOne' as const,
                     targetFields: ['address'],
                     message: 'Address filled',
                   },
@@ -355,17 +355,17 @@ describe('Form Validation Integration Tests', () => {
               {
                 or: [
                   {
-                    type: 'atLeastOne' as const as any,
+                    type: 'atLeastOne' as const,
                     targetFields: ['email'],
                     message: 'Email filled',
                   },
                   {
-                    type: 'atLeastOne' as const as any,
+                    type: 'atLeastOne' as const,
                     targetFields: ['phone'],
                     message: 'Phone filled',
                   },
                   {
-                    type: 'atLeastOne' as const as any,
+                    type: 'atLeastOne' as const,
                     targetFields: ['address'],
                     message: 'Address filled',
                   },
@@ -406,14 +406,14 @@ describe('Form Validation Integration Tests', () => {
               {
                 or: [
                   {
-                    type: 'atLeastOne' as const as any,
+                    type: 'atLeastOne' as const,
                     targetFields: ['isPremium'],
                     message: 'Premium',
                   },
                   {
                     and: [
                       {
-                        type: 'atLeastOne' as const as any,
+                        type: 'atLeastOne' as const,
                         targetFields: ['hasCustomConfig'],
                         message: 'Custom config',
                       },

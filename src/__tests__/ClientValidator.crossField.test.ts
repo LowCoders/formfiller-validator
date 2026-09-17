@@ -147,7 +147,7 @@ describe('ClientValidator CrossField Support', () => {
       const rules: ValidationRule[] = [
         { type: 'required' as const, message: 'Field is required' },
         {
-          type: 'atLeastOne' as const as any,
+          type: 'atLeastOne' as const,
           targetFields: ['otherField'],
           message: 'Other field must not be empty',
         },
@@ -163,7 +163,7 @@ describe('ClientValidator CrossField Support', () => {
       const rules: ValidationRule[] = [
         { type: 'required' as const, message: 'Field is required' },
         {
-          type: 'atLeastOne' as const as any,
+          type: 'atLeastOne' as const,
           targetFields: ['otherField'],
           message: 'Other field must not be empty',
         },

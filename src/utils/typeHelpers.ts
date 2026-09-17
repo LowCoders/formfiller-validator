@@ -32,7 +32,7 @@ export function isDataField(field: FieldConfig): boolean {
  */
 export function getNestedItems(field: FieldConfig): FieldConfig[] | undefined {
   if ('items' in field) {
-    return field.items as FieldConfig[];
+    return field.items;
   }
   return undefined;
 }

@@ -27,6 +27,22 @@ export class FieldPathBuilder {
   }
 
   /**
+   * Build a map of full field path → field configuration.
+   *
+   * This is the shape `buildPathLabels` expects, so it is what turns a technical error
+   * path like `personalData.emailAddress` into the labels the user sees on the form.
+   * Container fields are included too, since they contribute a path segment.
+   *
+   * @param items - Array of field configurations
+   * @param parentPath - Parent path (empty string for root level)
+   */
+  buildFieldConfigMap(items: FieldConfig[], parentPath: string = ''): Map<string, FieldConfig> {
+    const configMap = new Map<string, FieldConfig>();
+    this.buildConfigMapRecursive(items, parentPath, configMap);
+    return configMap;
+  }
+
+  /**
    * Build path for a single field
    *
    * @param item - Field configuration
@@ -120,6 +136,32 @@ export class FieldPathBuilder {
           const nextPath = this.getNextParentPath(item, parentPath);
           this.buildPathMapRecursive(nestedItems, nextPath, pathMap);
         }
+      }
+    }
+  }
+
+  /**
+   * Recursive builder for the path → config map.
+   *
+   * @param items - Array of field configurations
+   * @param parentPath - Current parent path
+   * @param configMap - Map to populate
+   */
+  private buildConfigMapRecursive(
+    items: FieldConfig[],
+    parentPath: string,
+    configMap: Map<string, FieldConfig>
+  ): void {
+    for (const item of items) {
+      const fieldPath = this.buildPath(item, parentPath);
+
+      if (fieldPath) {
+        configMap.set(fieldPath, item);
+      }
+
+      const nestedItems = getNestedItems(item);
+      if (nestedItems) {
+        this.buildConfigMapRecursive(nestedItems, this.getNextParentPath(item, parentPath), configMap);
       }
     }
   }

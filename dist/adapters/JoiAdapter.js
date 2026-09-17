@@ -346,7 +346,7 @@ export class JoiAdapter {
                 }
                 return value;
             }
-            catch (error) {
+            catch {
                 return helpers.error('custom.temporal.error');
             }
         })

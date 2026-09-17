@@ -370,12 +370,12 @@ export class ConfigProcessor {
   private hasRequiredRule(rules: import('formfiller-schema').ValidationRuleOrGroup[]): boolean {
     for (const ruleOrGroup of rules) {
       if (isValidationRule(ruleOrGroup)) {
-        const rule = ruleOrGroup as import('formfiller-schema').ValidationRule;
+        const rule = ruleOrGroup;
         if (rule.type === 'required') {
           return true;
         }
       } else if (isValidationRuleGroup(ruleOrGroup)) {
-        const group = ruleOrGroup as import('formfiller-schema').ValidationRuleGroup;
+        const group = ruleOrGroup;
         const nestedRules = getGroupRules(group);
         if (this.hasRequiredRule(nestedRules)) {
           return true;
@@ -401,7 +401,7 @@ export class ConfigProcessor {
 
     for (const ruleOrGroup of rules) {
       if (isValidationRule(ruleOrGroup)) {
-        let rule = ruleOrGroup as import('formfiller-schema').ValidationRule;
+        let rule = ruleOrGroup;
 
         // ✨ NEW: Check if rule should be applied based on 'when' condition
         const shouldApply = this.validationConditionEvaluator.shouldApplyRule(rule, context);
@@ -449,7 +449,7 @@ export class ConfigProcessor {
           );
         }
       } else if (isValidationRuleGroup(ruleOrGroup)) {
-        const group = ruleOrGroup as import('formfiller-schema').ValidationRuleGroup;
+        const group = ruleOrGroup;
         // Handle validation rule groups
         const groupResult = await this.validateRuleGroup(
           group,
@@ -536,7 +536,7 @@ export class ConfigProcessor {
 
     for (const ruleOrNestedGroup of rules) {
       if (isValidationRule(ruleOrNestedGroup)) {
-        const rule = ruleOrNestedGroup as import('formfiller-schema').ValidationRule;
+        const rule = ruleOrNestedGroup;
         if (rule.type === 'required' && !isRequired) {
           continue;
         }
@@ -552,7 +552,7 @@ export class ConfigProcessor {
           }
         }
       } else if (isValidationRuleGroup(ruleOrNestedGroup)) {
-        const nestedGroup = ruleOrNestedGroup as import('formfiller-schema').ValidationRuleGroup;
+        const nestedGroup = ruleOrNestedGroup;
         // Recursively validate nested groups
         // Note: We pass a temporary result to avoid adding nested errors to main result
         // until we know if the parent group passes/fails

@@ -28,20 +28,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Configure git for private repos (if PAT available)
-        if: ${{ env.GH_PAT != '' }}
+      # The lockfile pins formfiller-schema to git+ssh://git@github.com/..., which the
+      # runner has no key for, so the ssh forms are rewritten to a token URL before npm ci.
+      - name: Configure git for the private schema package
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GH_PAT: ${{ secrets.GH_PAT || github.token }}
         run: |
-          git config --global url."https://${GH_PAT}@github.com/".insteadOf "https://github.com/"
-
-      - name: Use bundled packages (if no PAT)
-        if: ${{ env.GH_PAT == '' }}
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
-        run: |
-          echo "No GH_PAT found, using bundled tgz packages"
-          sed -i 's|git+https://github.com/zv-dev/formfiller-schema.git#main|file:packages/formfiller-schema-5.1.2.tgz|g' package.json
+          for from in "git+ssh://git@github.com/" "ssh://git@github.com/" "git@github.com:" "https://github.com/"; do
+            git config --global --add url."https://x-access-token:${GH_PAT}@github.com/".insteadOf "$from"
+          done
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -57,7 +52,6 @@ jobs:
 
       - name: Lint
         run: npm run lint
-        continue-on-error: true
 
   # ============================================
   # Build
@@ -71,20 +65,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Configure git for private repos (if PAT available)
-        if: ${{ env.GH_PAT != '' }}
+      # The lockfile pins formfiller-schema to git+ssh://git@github.com/..., which the
+      # runner has no key for, so the ssh forms are rewritten to a token URL before npm ci.
+      - name: Configure git for the private schema package
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GH_PAT: ${{ secrets.GH_PAT || github.token }}
         run: |
-          git config --global url."https://${GH_PAT}@github.com/".insteadOf "https://github.com/"
-
-      - name: Use bundled packages (if no PAT)
-        if: ${{ env.GH_PAT == '' }}
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
-        run: |
-          echo "No GH_PAT found, using bundled tgz packages"
-          sed -i 's|git+https://github.com/zv-dev/formfiller-schema.git#main|file:packages/formfiller-schema-5.1.2.tgz|g' package.json
+          for from in "git+ssh://git@github.com/" "ssh://git@github.com/" "git@github.com:" "https://github.com/"; do
+            git config --global --add url."https://x-access-token:${GH_PAT}@github.com/".insteadOf "$from"
+          done
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -98,6 +87,15 @@ jobs:
       - name: Build
         run: npm run build
 
+      # dist/ is committed and consumed directly by the backend and the frontend through a
+      # GitHub reference, so a stale dist ships broken code without any other signal.
+      - name: Verify committed dist is up to date
+        run: |
+          if ! git diff --exit-code -- dist; then
+            echo "::error::dist/ differs from a fresh build. Run 'npm run build' and commit dist/."
+            exit 1
+          fi
+
   # ============================================
   # Test
   # ============================================
@@ -110,20 +108,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Configure git for private repos (if PAT available)
-        if: ${{ env.GH_PAT != '' }}
+      # The lockfile pins formfiller-schema to git+ssh://git@github.com/..., which the
+      # runner has no key for, so the ssh forms are rewritten to a token URL before npm ci.
+      - name: Configure git for the private schema package
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GH_PAT: ${{ secrets.GH_PAT || github.token }}
         run: |
-          git config --global url."https://${GH_PAT}@github.com/".insteadOf "https://github.com/"
-
-      - name: Use bundled packages (if no PAT)
-        if: ${{ env.GH_PAT == '' }}
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
-        run: |
-          echo "No GH_PAT found, using bundled tgz packages"
-          sed -i 's|git+https://github.com/zv-dev/formfiller-schema.git#main|file:packages/formfiller-schema-5.1.2.tgz|g' package.json
+          for from in "git+ssh://git@github.com/" "ssh://git@github.com/" "git@github.com:" "https://github.com/"; do
+            git config --global --add url."https://x-access-token:${GH_PAT}@github.com/".insteadOf "$from"
+          done
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

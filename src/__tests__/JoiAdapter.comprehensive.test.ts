@@ -347,12 +347,12 @@ describe('JoiAdapter Comprehensive Tests', () => {
       );
 
       const rule1: ValidationRule = {
-        type: 'atLeastOne' as const as any,
+        type: 'atLeastOne' as const,
         targetFields: ['position'],        message: 'Must be senior',
       };
 
       const rule2: ValidationRule = {
-        type: 'atLeastOne' as const as any,
+        type: 'atLeastOne' as const,
         targetFields: ['subscription'],        message: 'Must be Premium or Enterprise',
       };
 

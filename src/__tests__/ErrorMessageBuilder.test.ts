@@ -52,7 +52,7 @@ describe('ErrorMessageBuilder', () => {
   describe('buildPathLabels', () => {
     it('should build labels for simple field path', () => {
       const fieldConfigMap = new Map<string, FieldConfig>([
-        ['email', { type: 'text', name: 'email', label: 'Email cím' } as FieldConfig],
+        ['email', { type: 'text', name: 'email', label: 'Email cím' }],
       ]);
 
       const labels = buildPathLabels('email', fieldConfigMap);
@@ -62,9 +62,9 @@ describe('ErrorMessageBuilder', () => {
 
     it('should build labels for nested field path', () => {
       const fieldConfigMap = new Map<string, FieldConfig>([
-        ['personalData', { type: 'group', name: 'personalData', caption: 'Személyes adatok' } as FieldConfig],
-        ['personalData.address', { type: 'group', name: 'address', caption: 'Lakcím' } as FieldConfig],
-        ['personalData.address.street', { type: 'text', name: 'street', label: 'Utca' } as FieldConfig],
+        ['personalData', { type: 'group', name: 'personalData', caption: 'Személyes adatok' }],
+        ['personalData.address', { type: 'group', name: 'address', caption: 'Lakcím' }],
+        ['personalData.address.street', { type: 'text', name: 'street', label: 'Utca' }],
       ]);
 
       const labels = buildPathLabels('personalData.address.street', fieldConfigMap);
@@ -74,7 +74,7 @@ describe('ErrorMessageBuilder', () => {
 
     it('should use path segment when config not found', () => {
       const fieldConfigMap = new Map<string, FieldConfig>([
-        ['group', { type: 'group', name: 'group', caption: 'Csoport' } as FieldConfig],
+        ['group', { type: 'group', name: 'group', caption: 'Csoport' }],
         // group.field not in map
       ]);
 
@@ -137,10 +137,10 @@ describe('ErrorMessageBuilder', () => {
   describe('buildTargetFieldLabels', () => {
     it('should build labels for multiple target fields', () => {
       const fieldConfigMap = new Map<string, FieldConfig>([
-        ['sum', { type: 'group', name: 'sum', caption: 'Összeg' } as FieldConfig],
-        ['sum.base', { type: 'number', name: 'base', label: 'Alap' } as FieldConfig],
-        ['sum.extra', { type: 'number', name: 'extra', label: 'Extra' } as FieldConfig],
-        ['sum.total', { type: 'number', name: 'total', label: 'Összesen' } as FieldConfig],
+        ['sum', { type: 'group', name: 'sum', caption: 'Összeg' }],
+        ['sum.base', { type: 'number', name: 'base', label: 'Alap' }],
+        ['sum.extra', { type: 'number', name: 'extra', label: 'Extra' }],
+        ['sum.total', { type: 'number', name: 'total', label: 'Összesen' }],
       ]);
 
       const targetFields = ['sum.base', 'sum.extra', 'sum.total'];

@@ -225,4 +225,63 @@ describe('Validator', () => {
       expect(result.errors).toHaveLength(0);
     });
   });
+
+  describe('Error Path Labels', () => {
+    it('should attach path labels from the field labels', async () => {
+      const formConfig: FormConfig = {
+        formId: 'test-form',
+        items: [
+          {
+            type: 'group',
+            name: 'personalData',
+            caption: 'Személyes adatok',
+            items: [
+              {
+                type: 'text',
+                name: 'emailAddress',
+                label: { text: 'E-mail cím' },
+                validationRules: [{ type: 'required', message: 'Kötelező' }],
+              },
+            ],
+          },
+        ],
+      };
+
+      const result = await validator.validate({}, formConfig);
+
+      expect(result.valid).toBe(false);
+      const error = result.errors[0];
+      expect(error?.field).toBe('personalData.emailAddress');
+      expect(error?.path).toEqual(['personalData', 'emailAddress']);
+      expect(error?.pathLabels).toEqual(['Személyes adatok', 'E-mail cím']);
+    });
+
+    it('should fall back to the path segment when a field has no label', async () => {
+      const formConfig: FormConfig = {
+        formId: 'test-form',
+        items: [
+          {
+            type: 'text',
+            name: 'fullName',
+            validationRules: [{ type: 'required', message: 'Kötelező' }],
+          },
+        ],
+      };
+
+      const result = await validator.validate({}, formConfig);
+
+      expect(result.errors[0]?.pathLabels).toEqual(['fullName']);
+    });
+
+    it('should not label synthetic fields', async () => {
+      const result = await validator.validate({}, {
+        formId: 'test-form',
+        items: [{ type: 'text', name: 'a', validationRules: [{ type: 'nonExistentRule' } as any] }],
+      });
+
+      result.errors
+        .filter((error) => error.field.startsWith('_'))
+        .forEach((error) => expect(error.pathLabels).toBeUndefined());
+    });
+  });
 });

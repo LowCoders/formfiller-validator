@@ -7,6 +7,7 @@ export declare class Validator {
     constructor(config?: ValidatorConfig);
     validate(data: Record<string, any>, formConfig: FormConfig, externalContext?: Record<string, any>): Promise<IValidationResult>;
     validateField(fieldName: string, _value: any, data: Record<string, any>, formConfig: FormConfig, externalContext?: Record<string, any>): Promise<IValidationResult>;
+    private attachPathLabels;
     private exportDependencyGraph;
     getConfig(): ValidatorConfig;
 }

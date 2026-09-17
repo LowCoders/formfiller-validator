@@ -88,7 +88,7 @@ describe('CrossField Validation', () => {
           name: 'contactCheck',
           validationRules: [
             {
-              type: 'atLeastOne' as const as any,
+              type: 'atLeastOne' as const,
               targetFields: ['email', 'phone'],
               message: 'At least one contact is required',
             },
@@ -153,7 +153,7 @@ describe('CrossField Validation', () => {
           name: 'checkField',
           validationRules: [
             {
-              type: 'atLeastOne' as const as any,
+              type: 'atLeastOne' as const,
               targetFields: ['otherField'],
               message: 'Other field must not be empty',
             },
@@ -233,17 +233,17 @@ describe('CrossField Validation', () => {
             {
               or: [
                 {
-                  type: 'atLeastOne' as const as any,
+                  type: 'atLeastOne' as const,
                   targetFields: ['email'],
                   message: 'Email filled',
                 },
                 {
-                  type: 'atLeastOne' as const as any,
+                  type: 'atLeastOne' as const,
                   targetFields: ['phone'],
                   message: 'Phone filled',
                 },
                 {
-                  type: 'atLeastOne' as const as any,
+                  type: 'atLeastOne' as const,
                   targetFields: ['address'],
                   message: 'Address filled',
                 },

@@ -77,6 +77,8 @@ expect.extend({
 
 // TypeScript declarations for custom matchers
 declare global {
+  // Jest's matcher types can only be extended through its namespace
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
     interface Matchers<R> {
       toBeValidResult(): R;

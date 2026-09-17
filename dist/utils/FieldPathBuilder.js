@@ -5,6 +5,11 @@ export class FieldPathBuilder {
         this.buildPathMapRecursive(items, parentPath, pathMap);
         return pathMap;
     }
+    buildFieldConfigMap(items, parentPath = '') {
+        const configMap = new Map();
+        this.buildConfigMapRecursive(items, parentPath, configMap);
+        return configMap;
+    }
     buildPath(item, parentPath = '') {
         const fieldName = getFieldName(item);
         if (!fieldName) {
@@ -42,6 +47,18 @@ export class FieldPathBuilder {
                     const nextPath = this.getNextParentPath(item, parentPath);
                     this.buildPathMapRecursive(nestedItems, nextPath, pathMap);
                 }
+            }
+        }
+    }
+    buildConfigMapRecursive(items, parentPath, configMap) {
+        for (const item of items) {
+            const fieldPath = this.buildPath(item, parentPath);
+            if (fieldPath) {
+                configMap.set(fieldPath, item);
+            }
+            const nestedItems = getNestedItems(item);
+            if (nestedItems) {
+                this.buildConfigMapRecursive(nestedItems, this.getNextParentPath(item, parentPath), configMap);
             }
         }
     }

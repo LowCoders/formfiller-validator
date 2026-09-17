@@ -2,6 +2,8 @@ import { ValidationContext } from './ValidationContext.js';
 import { ValidationResult } from './ValidationResult.js';
 import { ConfigProcessor } from '../processors/ConfigProcessor.js';
 import { DependencyGraphBuilder } from '../utils/DependencyGraphBuilder.js';
+import { FieldPathBuilder } from '../utils/FieldPathBuilder.js';
+import { buildPathLabels, buildTargetFieldLabels } from '../utils/errorMessageBuilder.js';
 import { getGlobalRegistry } from './CallbackRegistry.js';
 export class Validator {
     config;
@@ -45,6 +47,7 @@ export class Validator {
             });
             const validationResult = await this.configProcessor.process(context);
             result.merge(validationResult);
+            this.attachPathLabels(result, formConfig);
             const duration = Date.now() - startTime;
             result.setMetadata({
                 timestamp: context.timestamp,
@@ -72,6 +75,28 @@ export class Validator {
             }
         }
         return result;
+    }
+    attachPathLabels(result, formConfig) {
+        if (result.errors.length === 0) {
+            return;
+        }
+        const fieldConfigMap = new FieldPathBuilder().buildFieldConfigMap(formConfig.items || []);
+        const enrich = (error) => {
+            if (!error.field || error.field.startsWith('_')) {
+                return;
+            }
+            if (!error.path) {
+                error.path = error.field.split('.');
+            }
+            if (!error.pathLabels) {
+                error.pathLabels = buildPathLabels(error.field, fieldConfigMap);
+            }
+            if (!error.targetFieldLabels && error.targetFields && error.targetFields.length > 0) {
+                error.targetFieldLabels = buildTargetFieldLabels(error.targetFields, fieldConfigMap);
+            }
+        };
+        result.errors.forEach(enrich);
+        Object.values(result.fieldResults || {}).forEach((fieldResult) => fieldResult.errors.forEach(enrich));
     }
     exportDependencyGraph(_graph) {
         return {

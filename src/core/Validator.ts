@@ -4,11 +4,18 @@
  * Entry point for the validation system
  */
 
-import { ValidatorConfig, FormConfig, ValidationResult as IValidationResult } from '../types/index.js';
+import {
+  ValidatorConfig,
+  FormConfig,
+  ValidationResult as IValidationResult,
+  ValidationError,
+} from '../types/index.js';
 import { ValidationContext } from './ValidationContext.js';
 import { ValidationResult } from './ValidationResult.js';
 import { ConfigProcessor } from '../processors/ConfigProcessor.js';
 import { DependencyGraphBuilder } from '../utils/DependencyGraphBuilder.js';
+import { FieldPathBuilder } from '../utils/FieldPathBuilder.js';
+import { buildPathLabels, buildTargetFieldLabels } from '../utils/errorMessageBuilder.js';
 import { CallbackRegistry, getGlobalRegistry } from './CallbackRegistry.js';
 
 export class Validator {
@@ -76,6 +83,11 @@ export class Validator {
       // Set result
       result.merge(validationResult);
 
+      // Attach the localized field labels so API consumers can render an error without
+      // knowing the form configuration. Done here rather than in ValidationResult.addError
+      // because ConfigProcessor errors arrive via merge(), which bypasses addError.
+      this.attachPathLabels(result, formConfig);
+
       // Add metadata
       const duration = Date.now() - startTime;
       result.setMetadata({
@@ -125,6 +137,44 @@ export class Validator {
     }
 
     return result;
+  }
+
+  /**
+   * Fill in `path` and `pathLabels` on every error that does not have them yet.
+   *
+   * `field` stays untouched: it is the key clients use to bind an error to an input.
+   */
+  private attachPathLabels(result: ValidationResult, formConfig: FormConfig): void {
+    if (result.errors.length === 0) {
+      return;
+    }
+
+    const fieldConfigMap = new FieldPathBuilder().buildFieldConfigMap(formConfig.items || []);
+
+    const enrich = (error: ValidationError): void => {
+      // '_global' and similar synthetic fields have no configuration to label.
+      if (!error.field || error.field.startsWith('_')) {
+        return;
+      }
+
+      if (!error.path) {
+        error.path = error.field.split('.');
+      }
+
+      if (!error.pathLabels) {
+        error.pathLabels = buildPathLabels(error.field, fieldConfigMap);
+      }
+
+      if (!error.targetFieldLabels && error.targetFields && error.targetFields.length > 0) {
+        error.targetFieldLabels = buildTargetFieldLabels(error.targetFields, fieldConfigMap);
+      }
+    };
+
+    result.errors.forEach(enrich);
+
+    // fieldResults holds the same error objects, so they are already enriched, but a
+    // producer may have cloned them.
+    Object.values(result.fieldResults || {}).forEach((fieldResult) => fieldResult.errors.forEach(enrich));
   }
 
   /**

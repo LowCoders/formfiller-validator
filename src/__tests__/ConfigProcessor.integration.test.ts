@@ -202,12 +202,12 @@ describe('ConfigProcessor Integration Tests', () => {
               {
                 or: [
                   {
-                    type: 'atLeastOne' as any,
+                    type: 'atLeastOne',
                     targetFields: ['email'],
                     message: 'Email filled',
                   },
                   {
-                    type: 'atLeastOne' as any,
+                    type: 'atLeastOne',
                     targetFields: ['phone'],
                     message: 'Phone filled',
                   },
@@ -250,12 +250,12 @@ describe('ConfigProcessor Integration Tests', () => {
               {
                 or: [
                   {
-                    type: 'atLeastOne' as any,
+                    type: 'atLeastOne',
                     targetFields: ['email'],
                     message: 'Email filled',
                   },
                   {
-                    type: 'atLeastOne' as any,
+                    type: 'atLeastOne',
                     targetFields: ['phone'],
                     message: 'Phone filled',
                   },
